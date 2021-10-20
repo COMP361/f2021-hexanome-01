@@ -13,12 +13,12 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-function preload() {
-
+function preload () {
+    this.load.image('woodBkgrd', 'public/assets/wood.png');
 }
 
-function create() {
-
+function create () {
+    this.add.image(313, 200, 'woodBkgrd').setOrigin(0, 0);
 }
 
 function update () {
