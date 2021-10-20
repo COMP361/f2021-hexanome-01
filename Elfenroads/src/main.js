@@ -1,26 +1,12 @@
-/** @type {import("../typings/phaser")} */
+import Phaser from 'phaser'
 
-var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
-};
+import BoardGame from './scenes/BoardGame'
 
-var game = new Phaser.Game(config);
-
-function preload () {
-    this.load.image('woodBkgrd', 'public/assets/wood.png');
+const config = {
+	type: Phaser.AUTO,
+	width: 800,
+	height: 600,
+	scene: [BoardGame]
 }
 
-function create () {
-    this.add.image(313, 200, 'woodBkgrd').setOrigin(0, 0);
-}
-
-function update () {
-    
-}
+export default new Phaser.Game(config)
