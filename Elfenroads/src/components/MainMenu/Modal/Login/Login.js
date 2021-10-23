@@ -1,7 +1,6 @@
 import './Login.scss';
 
-export default function Login({next, setGame}) {
-    
+export default function Login({next, setGame}) { 
     return(
         <section className="login">
             <div className="login__panel">

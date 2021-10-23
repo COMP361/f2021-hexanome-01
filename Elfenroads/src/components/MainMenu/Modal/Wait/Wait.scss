@@ -1,0 +1,59 @@
+.wait {
+    background-image: url(../../../../assets/img/paper-texture.jpg);
+    box-shadow: 5px 5px 10px 5px rgb(0, 0, 0, 0.15), inset 0 0 10px 5px rgb(0, 0, 0, 0.25);
+    border-radius: 2rem;
+    padding: 2rem;
+    min-width: 30rem;
+
+    &__title {
+        color: rgb(29, 17, 3);
+        font-family: 'Alegreya SC', serif;
+        font-weight: 700;
+        font-size: 2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(65, 40, 12, 0.15);
+    }
+    &__subtitle {
+        font-size: 1.5rem;
+        margin: 0.5rem 0;
+        font-family: 'Alegreya SC', serif;
+    }
+    &__player-count {
+        font-weight: 400;
+    }
+    &__game {
+        font-size: 0.85rem;
+        font-weight: 800;
+    }
+    &__player-list {
+        list-style-type: none;
+        margin-bottom: 2rem;
+    }
+    &__player {
+        margin: 0.25rem 0;
+        font-size: 1.25rem;
+    }
+    &__footer {
+        text-align: center;
+    }
+    &__button {
+        width: 50%;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        font-family: 'Alegreya SC', serif;
+        text-transform: uppercase;
+        border: 2px solid rgb(29, 17, 3);
+        background-color: rgb(161, 110, 52);
+        color: white;
+        cursor: pointer;
+        transition: 0.2s background-color;
+        margin: 0.5rem 0;
+
+        &:hover, &:focus {
+            background-color: rgb(235, 202, 15);
+            outline: none;
+        }
+    }
+}
