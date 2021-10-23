@@ -1,0 +1,54 @@
+.create {
+    background-image: url(../../assets/img/paper-texture.jpg);
+    box-shadow: 5px 5px 10px 5px rgb(0, 0, 0, 0.15), inset 0 0 10px 5px rgb(0, 0, 0, 0.25);
+    border-radius: 2rem;
+    padding: 2rem;
+    min-width: 30rem;
+
+    &__panel {
+        &:first-child {
+            padding-right: 2rem;
+            border-right: 2px solid rgba(65, 40, 12, 0.15);
+        }
+        &:last-child {
+            padding-left: 2rem;
+        }
+    }
+    &__title {
+        color: rgb(29, 17, 3);
+        font-family: 'Alegreya SC', serif;
+        font-weight: 700;
+        font-size: 1.75rem;
+    }
+}
+
+.form {
+    &__input {
+        &--create {
+            width: 100% !important;
+        }
+        &--radio {
+            border: none !important;
+            background-color: transparent !important;
+            & > * {
+                &:first-child {
+                    margin-right: 1rem;
+                }
+            }
+        }
+    }
+    &__group {
+        display: flex;
+    }
+    &__button {
+        &--create {
+            margin: 1rem auto 0 auto;
+        }
+    }
+    label {
+        font-size: 1.1rem;
+    }
+    input[type="radio"] {
+        filter: hue-rotate(-180deg);
+    }
+}

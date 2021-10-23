@@ -1,0 +1,71 @@
+.login {
+    background-image: url(../../assets/img/paper-texture.jpg);
+    box-shadow: 5px 5px 10px 5px rgb(0, 0, 0, 0.15), inset 0 0 10px 5px rgb(0, 0, 0, 0.25);
+    border-radius: 2rem;
+    padding: 2rem;
+    display: flex;
+
+    &__panel {
+        &:first-child {
+            padding-right: 2rem;
+            border-right: 2px solid rgba(65, 40, 12, 0.15);
+        }
+        &:last-child {
+            padding-left: 2rem;
+        }
+    }
+    &__title {
+        color: rgb(29, 17, 3);
+        font-family: 'Alegreya SC', serif;
+        font-weight: 700;
+        font-size: 1.75rem;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: calc(100% - 3.25rem);
+    margin: 1rem 0;
+
+    &__input {
+        width: 16rem;
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: 2px solid rgb(29, 17, 3);
+        background-color: rgb(255, 255, 255, 0.5);
+        outline: none;
+        transition: 0.2s box-shadow, 0.2s background-color;
+        font-size: 1rem;
+
+        // &:hover {
+        //     background-color: rgb(255, 255, 255, 0.75);
+        // }
+        &:focus {
+            background-color: white;
+        }
+    }
+    &__button {
+        margin-top: auto;
+        margin-left: auto;
+        width: 50%;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        font-family: 'Alegreya SC', serif;
+        text-transform: uppercase;
+        border: 2px solid rgb(29, 17, 3);
+        background-color: rgb(161, 110, 52);
+        color: white;
+        cursor: pointer;
+        transition: 0.2s background-color;
+
+        &:hover, &:focus {
+            background-color: rgb(235, 202, 15);
+            outline: none;
+        }
+    }
+}

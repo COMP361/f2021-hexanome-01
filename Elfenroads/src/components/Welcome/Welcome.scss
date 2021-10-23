@@ -1,0 +1,42 @@
+.welcome {
+    background-image: url(../../assets/img/paper-texture.jpg);
+    box-shadow: 5px 5px 10px 5px rgb(0, 0, 0, 0.15), inset 0 0 10px 5px rgb(0, 0, 0, 0.25);
+    border-radius: 2rem;
+    padding: 2rem;
+    display: flex;
+    min-width: 30rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__title {
+        color: rgb(29, 17, 3);
+        font-family: 'Alegreya SC', serif;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin: 0 auto 1rem auto;
+    }
+    &__user {
+        color: rgb(131, 79, 21);
+    }
+    &__button {
+        width: 50%;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        font-family: 'Alegreya SC', serif;
+        text-transform: uppercase;
+        border: 2px solid rgb(29, 17, 3);
+        background-color: rgb(161, 110, 52);
+        color: white;
+        cursor: pointer;
+        transition: 0.2s background-color;
+        margin: 0.5rem 0;
+
+        &:hover, &:focus {
+            background-color: rgb(235, 202, 15);
+            outline: none;
+        }
+    }
+}
