@@ -8,4 +8,3 @@ To install dependencies:
 
 To run server:
 ```npm run start```
-

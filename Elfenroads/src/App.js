@@ -1,21 +1,14 @@
-import logo from './assets/img/elfenroads.png';
 import './App.scss';
-import Scene from './components/Scene';
-import Modal from './components/Modal';
+import MainMenu from './components/MainMenu';
 import Game from './components/Game/Game';
 import { useState } from 'react';
 
 function App() {
-  const [game, setGame] = useState(false);
+  const [game, setGame] = useState(null);
 
   return (
-    <div className="main">
-      {!game && <><Scene />
-      <div className="main__content">
-        <img className="main__logo" src={logo} alt="Elfenroads" height="80" />
-        <Modal setGame={setGame} />
-      </div></>}
-      {game &&  <Game />}
+    <div className="App">
+      {game ? <Game /> : <MainMenu setGame={setGame} />}
     </div>
   );
 }
