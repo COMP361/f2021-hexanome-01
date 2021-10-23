@@ -1,0 +1,33 @@
+.scene {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    top: 0;
+    left: 0;
+  
+    &__clouds {
+      position: absolute;
+      width: 5000rem;
+      height: 1000px;
+      background-image: url(../../assets/img/clouds.png);
+      background-repeat: repeat;
+      background-size: auto 100%;
+      top: 0;
+      animation: clouds 3500s linear infinite;
+    }
+    &__backdrop {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      background-image: url(../../assets/img/backdrop.png);
+      background-size: cover;
+    }
+  }
+  
+  @keyframes clouds {
+    0% {
+      right: 0;
+    } 100% {
+      right: calc(-1 * (5000rem - 100vw));
+    }
+  }
