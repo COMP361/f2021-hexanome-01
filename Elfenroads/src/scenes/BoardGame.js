@@ -15,12 +15,13 @@ export default class BoardGame extends Phaser.Scene {
         // all the images are displayed here
 
         // setting the background
-        let background = this.add.image(0, 0, 'brownBackground').setOrigin(0,0);
+        const background = this.add.image(0, 0, 'brownBackground').setOrigin(0,0);
         background.displayWidth = this.sys.canvas.width;
         background.displayHeight = this.sys.canvas.height;
 
-        let map = this.add.image(1000, 500, 'map');
-        map.setScale(0.2);
+        const map = this.add.image(0, 0, 'map').setOrigin(-0.35, -0.1);
+
+        map.setDisplaySize(0.6 * window.innerWidth, 0.75 * window.innerHeight);
 
     }
 }
