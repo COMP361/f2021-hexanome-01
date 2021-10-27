@@ -1,9 +1,12 @@
 import Phaser from 'phaser'
 
 export default class BoardGame extends Phaser.Scene {
-    constructor(){
+
+    constructor()
+    {
 		super('movebootscene')
 	}
+
     create() {
         /* move boot */
         // set initial position and relative size
