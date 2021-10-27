@@ -8,7 +8,8 @@ import {Plugin as NineSlicePlugin} from 'phaser3-nineslice'
 import Preloader from '../../scenes/Preloader'
 import MainScene from '../../scenes/MainScene'
 import UIScene from '../../scenes/UIScene'
-import BoardScene from '../../scenes/BoardScene';
+import BoardScene from '../../scenes/BoardScene'
+import MoveBootScene from '../../scenes/MoveBootScene';
 
 // React/ion-phaser stuff
 import { IonPhaser } from '@ion-phaser/react';
@@ -22,7 +23,7 @@ const game = {
     plugins: {
 		global: [ NineSlicePlugin.DefaultCfg ]
 	},
-    scene: [Preloader, MainScene, UIScene, BoardScene]
+    scene: [Preloader, MainScene, UIScene, BoardScene, MoveBootScene]
 }
 
 export default function Game () {

@@ -10,7 +10,7 @@ export default class UIScene extends Phaser.Scene
 	}
 
 	create(){
-        
+        this.scene.launch('movebootscene'); // Launch MoveBootScene.js
         // Create menu that will slide out after clicking settingsButton
         //const settingsMenu = new SettingsMenu(this);
 
