@@ -18,7 +18,8 @@ clang-format --version
 
 EXIT_CODE=0
 
-for FILE in Elfenroads/src/*; do
+for FILE in Elfenroads/src/scenes/* \
+            Elfenroads/src/components/*; do
   case $FILE in
     *.js|*.ts)
       if [ "$1" = "diff" ]
