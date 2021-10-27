@@ -20,4 +20,4 @@ jobs:
         clang-format --version
     - name: Run clang-format
       run: |
-        ./clang-format.sh diff
+        sh clang-format.sh diff
