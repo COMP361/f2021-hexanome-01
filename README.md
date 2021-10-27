@@ -4,7 +4,7 @@ To access the project:
 ```cd ./Elfenroads```
 
 To install dependencies:
-```npm i --force```
+```npm ci```
 
 To run server:
 ```npm run start```
