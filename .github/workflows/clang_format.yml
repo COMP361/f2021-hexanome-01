@@ -8,15 +8,15 @@ jobs:
   clang_format:
     name: Run clang-format
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install clang-format-13
+    - name: Install clang-format
       run: |
-        sudo apt install clang-format-13
-        alias clang-format=clang-format-13
+        sudo apt install clang-format-12
+        alias clang-format=clang-format-12
         clang-format --version
     - name: Run clang-format
       run: |
