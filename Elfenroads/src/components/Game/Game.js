@@ -1,14 +1,28 @@
 import './Game.scss';
 import Phaser from 'phaser';
-import BoardGame from '../../scenes/BoardGame';
+
+// Plug in for better image scaling
+import {Plugin as NineSlicePlugin} from 'phaser3-nineslice'
+
+// All of our scenes in Phaser Game
+import Preloader from '../../scenes/Preloader'
+import MainScene from '../../scenes/MainScene'
+import UIScene from '../../scenes/UIScene'
+import BoardScene from '../../scenes/BoardScene';
+
+// React/ion-phaser stuff
 import { IonPhaser } from '@ion-phaser/react';
 import { useState, useRef } from 'react';
 
+// Phaser Game config
 const game = {
     type: Phaser.AUTO,
     width: "100%",
     height: "100%",
-    scene: [BoardGame]
+    plugins: {
+		global: [ NineSlicePlugin.DefaultCfg ]
+	},
+    scene: [Preloader, MainScene, UIScene, BoardScene]
 }
 
 export default function Game () {
