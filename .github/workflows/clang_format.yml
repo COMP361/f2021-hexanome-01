@@ -1,0 +1,23 @@
+name: Run clang-format
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  clang_format:
+    name: Run clang-format
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install clang-format-13
+      run: |
+        sudo apt install clang-format-13
+        alias clang-format=clang-format-13
+        clang-format --version
+    - name: Run clang-format
+      run: |
+        ./clang-format.sh diff
