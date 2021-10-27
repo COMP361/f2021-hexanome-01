@@ -1,7 +1,7 @@
 # Elfenroads
 
 To install dependencies:
-```npm i --force```
+```npm ci```
 
 To run server:
 ```npm run start```
