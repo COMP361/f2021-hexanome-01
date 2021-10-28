@@ -1,10 +1,6 @@
 name: Run clang-format
 
-on:
-  push:
-    branches: [ '*' ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   clang_format:
