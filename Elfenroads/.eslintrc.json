@@ -14,6 +14,7 @@
         "indent": 0,
         "react/react-in-jsx-scope": 1,
         "max-len": 0,
-        "react/prop-types":1
+        "react/prop-types":1,
+        "no-multi-spaces": 1
     }
 }
