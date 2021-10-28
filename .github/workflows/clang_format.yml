@@ -19,3 +19,19 @@ jobs:
     - name: Run clang-format
       run: |
         sh clang-format.sh diff
+  
+  npm:
+    name: Run npm ci
+    
+    runs-on: ubuntu-20.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install Node.js
+      run: |
+        sudo apt install nodejs
+    
+    - name: Run npm ci
+      run: |
+        npm ci
