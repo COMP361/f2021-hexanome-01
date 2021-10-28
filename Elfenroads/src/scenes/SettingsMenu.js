@@ -1,4 +1,4 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 
 export default class SettingsMenu {
   /**
@@ -9,7 +9,7 @@ export default class SettingsMenu {
     this.scene = scene;
 
     // Initialize/make settings menu hidden
-    var isOpen = false;
+    const isOpen = false;
     this.isOpen = isOpen;
 
     // Initialize container to group elements
@@ -18,8 +18,7 @@ export default class SettingsMenu {
     this.container = container;
 
     // Create grey ui panel element
-    const panel = this.scene.add.nineslice(0, 0, 137, 50, 'grey-panel', 24)
-                      .setOrigin(1, 0);
+    const panel = this.scene.add.nineslice(0, 0, 137, 50, 'grey-panel', 24).setOrigin(1, 0);
     this.panel = panel;
     this.container.add(this.panel);
 
@@ -31,25 +30,15 @@ export default class SettingsMenu {
   // Create toggle music button to be added to panel / container
   createMusicButton() {
     // Create grey ui button element
-    const toggleMusic =
-        this.scene.add.image(-this.panel.width + 10, 8, 'grey-box')
-            .setOrigin(0, 0);
+    const toggleMusic = this.scene.add.image(-this.panel.width + 10, 8, 'grey-box').setOrigin(0, 0);
 
     // Create music icons elements
     const musicOn =
-        this.scene.add
-            .image(
-                toggleMusic.x + toggleMusic.height * 0.5,
-                toggleMusic.y + toggleMusic.height * 0.5, 'music-on')
-            .setScale(0.7);
+        this.scene.add.image(toggleMusic.x + toggleMusic.height * 0.5, toggleMusic.y + toggleMusic.height * 0.5, 'music-on').setScale(0.7);
 
-    const musicOff =
-        this.scene.add
-            .image(
-                toggleMusic.x + toggleMusic.height * 0.5,
-                toggleMusic.y + toggleMusic.height * 0.5, 'music-off')
-            .setScale(0.7)
-            .setVisible(false);
+    const musicOff = this.scene.add.image(toggleMusic.x + toggleMusic.height * 0.5, toggleMusic.y + toggleMusic.height * 0.5, 'music-off')
+                         .setScale(0.7)
+                         .setVisible(false);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleMusic);
@@ -81,16 +70,10 @@ export default class SettingsMenu {
   // Create toggle save button to be added to panel / container
   createSaveButton() {
     // Create grey ui button element
-    const toggleSave =
-        this.scene.add.image(-this.panel.width + 50, 8, 'grey-box')
-            .setOrigin(0, 0);
+    const toggleSave = this.scene.add.image(-this.panel.width + 50, 8, 'grey-box').setOrigin(0, 0);
 
     // Create save icon element
-    const saveIcon = this.scene.add
-                         .image(
-                             (toggleSave.x + toggleSave.height * 0.5) + 1,
-                             toggleSave.y + toggleSave.height * 0.5, 'save')
-                         .setScale(0.7);
+    const saveIcon = this.scene.add.image((toggleSave.x + toggleSave.height * 0.5) + 1, toggleSave.y + toggleSave.height * 0.5, 'save').setScale(0.7);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleSave);
@@ -114,16 +97,10 @@ export default class SettingsMenu {
   // Create toggle exit button to be added to panel / container
   createExitButton() {
     // Create grey ui button element
-    const toggleExit =
-        this.scene.add.image(-this.panel.width + 90, 8, 'grey-box')
-            .setOrigin(0, 0);
+    const toggleExit = this.scene.add.image(-this.panel.width + 90, 8, 'grey-box').setOrigin(0, 0);
 
     // Create exit icon element
-    const exitIcon = this.scene.add
-                         .image(
-                             (toggleExit.x + toggleExit.height * 0.5) + 1,
-                             toggleExit.y + toggleExit.height * 0.5, 'door')
-                         .setScale(0.7);
+    const exitIcon = this.scene.add.image((toggleExit.x + toggleExit.height * 0.5) + 1, toggleExit.y + toggleExit.height * 0.5, 'door').setScale(0.7);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleExit);
@@ -152,15 +129,14 @@ export default class SettingsMenu {
 
     const {width} = this.scene.scale;
 
-    this.scene.tweens
-        .add({
-          targets: this.container,
-          x: width - 10,
-          duration: 300,
-          ease: Phaser.Math.Easing.Sine.InOut
-        })
+    this.scene.tweens.add({
+      targets: this.container,
+      x: width - 10,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
 
-            this.isOpen = true;
+    this.isOpen = true;
   }
 
   // Hide entire settings menu
@@ -170,14 +146,13 @@ export default class SettingsMenu {
     }
     const {width} = this.scene.scale;
 
-    this.scene.tweens
-        .add({
-          targets: this.container,
-          x: width + 300,
-          duration: 300,
-          ease: Phaser.Math.Easing.Sine.InOut
-        })
+    this.scene.tweens.add({
+      targets: this.container,
+      x: width + 300,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
 
-            this.isOpen = false;
+    this.isOpen = false;
   }
 }
