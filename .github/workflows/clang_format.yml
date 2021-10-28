@@ -21,7 +21,7 @@ jobs:
         sh clang-format.sh diff
   
   npm:
-    name: Run npm ci
+    name: Run npm install
     
     runs-on: ubuntu-20.04
     
@@ -32,7 +32,7 @@ jobs:
       run: |
         sudo apt install nodejs
     
-    - name: Run npm ci
+    - name: Run npm install
       run: |
         cd Elfenroads
-        npm ci
+        npm install
