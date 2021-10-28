@@ -25,8 +25,8 @@ for FILE in Elfenroads/src/scenes/* \
             Elfenroads/src/components/MainMenu/Modal/Create/* \
             Elfenroads/src/components/MainMenu/Modal/Login/* \
             Elfenroads/src/components/MainMenu/Modal/Wait/* \
-            Elfenroads/src/components/MainMenu/Modal/*Welcome/*\ ;
-            Elfenroads/src/components/MainMenu/Scene/* \ do
+            Elfenroads/src/components/MainMenu/Modal/*Welcome/* \
+            Elfenroads/src/components/MainMenu/Scene/* do
   case $FILE in
     *.js|*.ts)
       if [ "$1" = "diff" ]
