@@ -1,9 +1,9 @@
-import Phaser from 'phaser'
-import SettingsMenu from './SettingsMenu'
+import Phaser from 'phaser';
+import SettingsMenu from './SettingsMenu';
 
 export default class SettingsScene extends Phaser.Scene {
   constructor() {
-    super('settingsscene')
+    super('settingsscene');
   }
 
   create() {
@@ -26,11 +26,10 @@ export default class SettingsScene extends Phaser.Scene {
               this.clearTint();
             })
         .on('pointerup', function() {
-          this.clearTint()
+          this.clearTint();
           if (settingsMenu.isOpen) {
             settingsMenu.hide();
-          }
-          else {
+          } else {
             settingsMenu.show();
           }
         });

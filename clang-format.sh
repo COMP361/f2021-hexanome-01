@@ -19,16 +19,23 @@ clang-format --version
 EXIT_CODE=0
 
 for FILE in Elfenroads/src/scenes/* \
-            Elfenroads/src/components/*; do
+            Elfenroads/src/components/Game/* \
+            Elfenroads/src/components/MainMenu/* \
+            Elfenroads/src/components/MainMenu/Modal/* \
+            Elfenroads/src/components/MainMenu/Modal/Create/* \
+            Elfenroads/src/components/MainMenu/Modal/Login/* \
+            Elfenroads/src/components/MainMenu/Modal/Wait/* \
+            Elfenroads/src/components/MainMenu/Modal/*Welcome/*\ ;
+            Elfenroads/src/components/MainMenu/Scene/* \ do
   case $FILE in
     *.js|*.ts)
       if [ "$1" = "diff" ]
       then
             # Run clang-format, then compare the output.
-            clang-format --verbose $FILE | diff --color $FILE -
+            clang-format $FILE | diff --color $FILE -
       else
             # Run clang-format to format code.
-            clang-format --verbose -i $FILE
+            clang-format -i $FILE
       fi
 
       # If diff found any difference, its exit code would be non-zero.

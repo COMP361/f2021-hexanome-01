@@ -24,14 +24,14 @@ const game = {
   height: '100%',
   plugins: {global: [NineSlicePlugin.DefaultCfg]},
   scene:
-      [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene]
-}
+      [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene],
+};
 
 export default function
 Game() {
-    const gameRef = useRef(null)
-    const [initialize] = useState(true)
+    const gameRef = useRef(null);
+    const [initialize] = useState(true);
     return (
         <IonPhaser className='game' ref={gameRef} game={game} initialize={initialize} />
-    )
+    );
 }

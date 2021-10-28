@@ -1,14 +1,14 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 
 export default class Preloader extends Phaser.Scene {
   constructor() {
-    super('preloader')
+    super('preloader');
   }
 
   preload() {
-    ///////////////////////////////////////////////////////////
-    /////// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
-    ///////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////
+    // ///// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
+    // /////////////////////////////////////////////////////////
 
     // Assets for BoardScene.js
     this.load.image('brownBackground', 'assets/background/brown.jpg');
@@ -34,6 +34,6 @@ export default class Preloader extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('mainscene')  // Starts MainScene.js
+    this.scene.start('mainscene'); // Starts MainScene.js
   }
 }

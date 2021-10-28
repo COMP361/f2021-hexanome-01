@@ -1,4 +1,4 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 
 export default class SettingsMenu {
   /**
@@ -9,7 +9,7 @@ export default class SettingsMenu {
     this.scene = scene;
 
     // Initialize/make settings menu hidden
-    var isOpen = false;
+    const isOpen = false;
     this.isOpen = isOpen;
 
     // Initialize container to group elements
@@ -157,8 +157,8 @@ export default class SettingsMenu {
           targets: this.container,
           x: width - 10,
           duration: 300,
-          ease: Phaser.Math.Easing.Sine.InOut
-        })
+          ease: Phaser.Math.Easing.Sine.InOut,
+        });
 
             this.isOpen = true;
   }
@@ -175,8 +175,8 @@ export default class SettingsMenu {
           targets: this.container,
           x: width + 300,
           duration: 300,
-          ease: Phaser.Math.Easing.Sine.InOut
-        })
+          ease: Phaser.Math.Easing.Sine.InOut,
+        });
 
             this.isOpen = false;
   }

@@ -1,7 +1,7 @@
 import './Welcome.scss';
 
 export default function Welcome({username, join, create}) {
-    return(
+    return (
         <section className="welcome">
             <h1 className="welcome__title">
                 Welcome, <span className="welcome__user">{username}</span>
@@ -10,5 +10,5 @@ export default function Welcome({username, join, create}) {
             <button className="welcome__button" onClick={create}>Create Game</button>
             <button className="welcome__button">Load Game</button>
         </section>
-    )
+    );
 }

@@ -1,15 +1,15 @@
 import './Create.scss';
 
 export default function Create({wait}) {
-    const handleFormSubmit = e => {
+    const handleFormSubmit = (e) => {
         e.preventDefault();
         wait({
             roomname: e.target.roomname.value,
-            game: e.target.game.value || 'elfenland'
+            game: e.target.game.value || 'elfenland',
         });
-    }
+    };
 
-    return(
+    return (
         <section className="create">
             <h1 className="create__title">Create Game</h1>
             <form className="form" onSubmit={handleFormSubmit}>
@@ -25,8 +25,8 @@ export default function Create({wait}) {
                         <label htmlFor="Elfengold">Elfengold</label>
                     </div>
                 </div>
-                <button className="form__button form__button--create">Create</button> 
+                <button className="form__button form__button--create">Create</button>
             </form>
         </section>
-    )
+    );
 }

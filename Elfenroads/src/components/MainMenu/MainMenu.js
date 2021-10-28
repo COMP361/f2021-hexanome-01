@@ -1,10 +1,10 @@
 import './MainMenu.scss';
 import Scene from './Scene';
 import Modal from './Modal';
-import logo from '../../assets/img/elfenroads.png'
+import logo from '../../assets/img/elfenroads.png';
 
 export default function MainMenu({setGame}) {
-    return(
+    return (
         <div className="main-menu">
             <Scene />
             <div className="main-menu__content">

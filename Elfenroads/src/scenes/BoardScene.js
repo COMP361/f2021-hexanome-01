@@ -1,8 +1,8 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
-    super('boardscene')
+    super('boardscene');
   }
 
   create() {

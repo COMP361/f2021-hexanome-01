@@ -2,7 +2,7 @@ import './Wait.scss';
 
 export default function Wait({room, username, beginGame}) {
     console.log(room);
-    return(
+    return (
         <section className="wait">
             <p className="wait__game">{room.game.toUpperCase()}</p>
             <h1 className="wait__title">{room.roomname}</h1>
@@ -14,5 +14,5 @@ export default function Wait({room, username, beginGame}) {
                 <button className="wait__button" onClick={beginGame}>Start</button>
             </div>
         </section>
-    )
+    );
 }
