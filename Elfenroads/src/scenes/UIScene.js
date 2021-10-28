@@ -6,11 +6,10 @@ export default class UIScene extends Phaser.Scene {
   }
 
   create() {
-
     // All UI related scene are launched here:
     this.scene.launch('movebootscene');  // Launch MoveBootScene.js
     this.scene.launch('settingsscene')
-    
+
 
     const boot = this.add.sprite(
         this.cameras.main.width / 7, this.cameras.main.height / 5,
