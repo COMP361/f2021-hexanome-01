@@ -56,13 +56,8 @@ export default class BoardGame extends Phaser.Scene {
 
     /* move boot */
     // set initial position and relative size
-    const elfenboot = this.add
-                          .sprite(
-                              this.cameras.main.width * 0.65,
-                              this.cameras.main.height * 0.55, 'boot')
-                          .setInteractive();
-    elfenboot.setDisplaySize(
-        this.cameras.main.width * 0.04, this.cameras.main.height * 0.08);
+    const elfenboot = this.add.sprite(this.cameras.main.width * 0.65, this.cameras.main.height * 0.55, 'boot').setInteractive();
+    elfenboot.setDisplaySize(this.cameras.main.width * 0.04, this.cameras.main.height * 0.08);
 
     // make elfenboot draggable to any position
     this.input.setDraggable(elfenboot);
@@ -85,8 +80,7 @@ export default class BoardGame extends Phaser.Scene {
     this.input.on('dragend', function(pointer, gameObject, dropped) {
       gameObject.clearTint();
       // label.setText(gameObject.x + ":" + gameObject.y);
-      if (!dropped)  // otherwise the boot will be back to original position
-      {
+      if (!dropped) {  // otherwise the boot will be back to original position
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
       }
