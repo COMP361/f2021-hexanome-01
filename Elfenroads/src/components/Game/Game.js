@@ -10,6 +10,7 @@ import MainScene from '../../scenes/MainScene'
 import UIScene from '../../scenes/UIScene'
 import BoardScene from '../../scenes/BoardScene'
 import MoveBootScene from '../../scenes/MoveBootScene';
+import SettingsScene from '../../scenes/SettingsScene';
 
 // React/ion-phaser stuff
 import { IonPhaser } from '@ion-phaser/react';
@@ -23,7 +24,7 @@ const game = {
     plugins: {
 		global: [ NineSlicePlugin.DefaultCfg ]
 	},
-    scene: [Preloader, MainScene, UIScene, BoardScene, MoveBootScene]
+    scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene]
 }
 
 export default function Game () {
