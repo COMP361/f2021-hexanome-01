@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+
 import SettingsMenu from './SettingsMenu';
 
 export default class SettingsScene extends Phaser.Scene {

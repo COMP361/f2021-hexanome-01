@@ -15,9 +15,7 @@ export default class BoardScene extends Phaser.Scene {
     background.displayHeight = this.sys.canvas.height;
 
     // Create map
-    const map = this.add.image(
-        this.cameras.main.width / 2, this.cameras.main.height / 2, 'map');
-    map.setDisplaySize(
-        this.cameras.main.width * 0.6, this.cameras.main.height * 0.7);
+    const map = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'map');
+    map.setDisplaySize(this.cameras.main.width * 0.6, this.cameras.main.height * 0.7);
   }
 }

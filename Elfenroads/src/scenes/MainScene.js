@@ -10,7 +10,7 @@ export default class MainScene extends Phaser.Scene {
     // /////// MAIN SCENE WILL LAUNCH ALL OTHER SCENES //////////
     // //////////////////////////////////////////////////////////
 
-    this.scene.launch('boardscene'); // Launch BoardScene.js
-    this.scene.launch('uiscene'); // Launch UIScene.js
+    this.scene.launch('boardscene');  // Launch BoardScene.js
+    this.scene.launch('uiscene');     // Launch UIScene.js
   }
 }
