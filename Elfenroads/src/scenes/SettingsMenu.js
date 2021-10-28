@@ -33,16 +33,10 @@ export default class SettingsMenu {
     const toggleMusic = this.scene.add.image(-this.panel.width + 10, 8, 'grey-box').setOrigin(0, 0);
 
     // Create music icons elements
-    const musicOn = this.scene.add
-                        .image(
-                            toggleMusic.x + toggleMusic.height * 0.5,
-                            toggleMusic.y + toggleMusic.height * 0.5, 'music-on')
-                        .setScale(0.7);
+    const musicOn =
+        this.scene.add.image(toggleMusic.x + toggleMusic.height * 0.5, toggleMusic.y + toggleMusic.height * 0.5, 'music-on').setScale(0.7);
 
-    const musicOff = this.scene.add
-                         .image(
-                             toggleMusic.x + toggleMusic.height * 0.5,
-                             toggleMusic.y + toggleMusic.height * 0.5, 'music-off')
+    const musicOff = this.scene.add.image(toggleMusic.x + toggleMusic.height * 0.5, toggleMusic.y + toggleMusic.height * 0.5, 'music-off')
                          .setScale(0.7)
                          .setVisible(false);
 
@@ -79,11 +73,7 @@ export default class SettingsMenu {
     const toggleSave = this.scene.add.image(-this.panel.width + 50, 8, 'grey-box').setOrigin(0, 0);
 
     // Create save icon element
-    const saveIcon = this.scene.add
-                         .image(
-                             (toggleSave.x + toggleSave.height * 0.5) + 1,
-                             toggleSave.y + toggleSave.height * 0.5, 'save')
-                         .setScale(0.7);
+    const saveIcon = this.scene.add.image((toggleSave.x + toggleSave.height * 0.5) + 1, toggleSave.y + toggleSave.height * 0.5, 'save').setScale(0.7);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleSave);
@@ -110,11 +100,7 @@ export default class SettingsMenu {
     const toggleExit = this.scene.add.image(-this.panel.width + 90, 8, 'grey-box').setOrigin(0, 0);
 
     // Create exit icon element
-    const exitIcon = this.scene.add
-                         .image(
-                             (toggleExit.x + toggleExit.height * 0.5) + 1,
-                             toggleExit.y + toggleExit.height * 0.5, 'door')
-                         .setScale(0.7);
+    const exitIcon = this.scene.add.image((toggleExit.x + toggleExit.height * 0.5) + 1, toggleExit.y + toggleExit.height * 0.5, 'door').setScale(0.7);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleExit);

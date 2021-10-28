@@ -11,11 +11,8 @@ export default class UIScene extends Phaser.Scene {
     this.scene.launch('settingsscene');
 
 
-    const boot =
-        this.add.sprite(this.cameras.main.width / 7, this.cameras.main.height / 5, 'blue-actor');
-    const bootCards = this.add.sprite(
-        this.cameras.main.width / 7 + boot.displayWidth * .47, this.cameras.main.height / 5,
-        'blue-actorcards');
+    const boot = this.add.sprite(this.cameras.main.width / 7, this.cameras.main.height / 5, 'blue-actor');
+    const bootCards = this.add.sprite(this.cameras.main.width / 7 + boot.displayWidth * .47, this.cameras.main.height / 5, 'blue-actorcards');
 
     boot.setScale(0.3);
     bootCards.setScale(0.3);
