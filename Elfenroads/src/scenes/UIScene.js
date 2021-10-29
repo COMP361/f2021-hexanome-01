@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+
 import eventsCenter from './EventsCenter';
 
 export default class UIScene extends Phaser.Scene {
@@ -68,17 +69,17 @@ export default class UIScene extends Phaser.Scene {
 
     // Add interactivity
     townPieceButton.setInteractive()
-      .on('pointerdown',
-          function() {
-            this.setTint(0xd3d3d3);
-          })
-      .on('pointerout',
-          function() {
-            this.clearTint();
-          })
-      .on('pointerup', function() {
-        eventsCenter.emit('update-town-piece-vis', true);
-      });
+        .on('pointerdown',
+            function() {
+              this.setTint(0xd3d3d3);
+            })
+        .on('pointerout',
+            function() {
+              this.clearTint();
+            })
+        .on('pointerup', function() {
+          eventsCenter.emit('update-town-piece-vis', true);
+        });
   }
 
   updatePoints(points) {

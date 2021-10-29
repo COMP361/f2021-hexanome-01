@@ -1,28 +1,28 @@
 
 
 export class Town {
-    constructor(name, position) {
-        this.name = name;
-        this.position = position;
-        this.townPieces = [];
-        this.currentPlayers = [];
-        this.nextTowns = [];
-        this.townPieceHolder = [];
-    }
+  constructor(name, position) {
+    this.name = name;
+    this.position = position;
+    this.townPieces = [];
+    this.currentPlayers = [];
+    this.nextTowns = [];
+    this.townPieceHolder = [];
+  }
 
-    setTownPieceHolder(holder) {
-        this.townPieceHolder = holder;
-    }
+  setTownPieceHolder(holder) {
+    this.townPieceHolder = holder;
+  }
 
-    setTownPieces(townPieces) {
-        this.townPieces = townPieces;
-    }
+  setTownPieces(townPieces) {
+    this.townPieces = townPieces;
+  }
 
-    setCurrentPlayers(players) {
-        this.currentPlayers = players;
-    }
+  setCurrentPlayers(players) {
+    this.currentPlayers = players;
+  }
 
-    setNextTowns(towns) {
-        this.nextTowns = towns;
-    }
+  setNextTowns(towns) {
+    this.nextTowns = towns;
+  }
 }

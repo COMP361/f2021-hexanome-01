@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
-import {Town} from './Towns';
+
 import eventsCenter from './EventsCenter';
+import {Town} from './Towns';
 
 export const Towns = {
   elvenhold: new Town('elvenhold', [1050, 400]),
@@ -46,12 +47,18 @@ export default class BoardGame extends Phaser.Scene {
     // Initialize each town
     for (const town in Towns) {
       if (Towns[town].position) {
-        this.add.zone(Towns[town].position[0] / 1600 * this.cameras.main.width, Towns[town].position[1] / 750 * this.cameras.main.height, zoneWidth, zoneHeight)
-          .setRectangleDropZone(zoneWidth, zoneHeight);
-          Towns[town].setTownPieceHolder(this.add.circle(Towns[town].position[0] / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 15, 0x000000));
-        if (Towns[town].name !== 'elvenhold') {
-          Towns[town].setTownPieces(this.add.circle(Towns[town].position[0] / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 10, 0x007700));
+        this.add
+            .zone(
+                Towns[town].position[0] / 1600 * this.cameras.main.width, Towns[town].position[1] / 750 * this.cameras.main.height, zoneWidth,
+                zoneHeight)
+            .setRectangleDropZone(zoneWidth, zoneHeight);
+        if (Towns[town].name === 'elvenhold') {
+          continue;
         }
+        Towns[town].setTownPieceHolder(this.add.circle(
+            Towns[town].position[0] / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 15, 0x000000));
+        Towns[town].setTownPieces(this.add.circle(
+            Towns[town].position[0] / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 10, 0x007700));
       }
     }
     this.updateVis();
@@ -60,7 +67,11 @@ export default class BoardGame extends Phaser.Scene {
     eventsCenter.on('update-town-piece-vis', this.updateVis, this);
 
     /* move boot */
-    const elvenboot = this.add.sprite(Towns.elvenhold.position[0] / 1600 * this.cameras.main.width, Towns.elvenhold.position[1] / 750 * this.cameras.main.height, 'boot').setInteractive();
+    const elvenboot =
+        this.add
+            .sprite(
+                Towns.elvenhold.position[0] / 1600 * this.cameras.main.width, Towns.elvenhold.position[1] / 750 * this.cameras.main.height, 'boot')
+            .setInteractive();
 
     // set initial position and relative size
     elvenboot.setDisplaySize(this.cameras.main.width * 0.04, this.cameras.main.height * 0.08);
@@ -80,7 +91,8 @@ export default class BoardGame extends Phaser.Scene {
       for (const town in Towns) {
         if (Towns[town].position) {
           graphics.strokeRect(
-            (Towns[town].position[0] - 30) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 30) / 750 * this.cameras.main.height, zoneWidth, zoneHeight);
+              (Towns[town].position[0] - 30) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 30) / 750 * this.cameras.main.height,
+              zoneWidth, zoneHeight);
         }
       }
     });
@@ -88,7 +100,8 @@ export default class BoardGame extends Phaser.Scene {
     // if the boot is dragged to the drop zone, it will stay in it
     this.input.on('drop', function(pointer, gameObject, dropZone) {
       for (const town in Towns) {
-        if (Towns[town].position[0] / 1600 * this.cameras.main.width === dropZone.x && Towns[town].position[1] / 750 * this.cameras.main.height === dropZone.y) {
+        if (Towns[town].position[0] / 1600 * this.cameras.main.width === dropZone.x &&
+            Towns[town].position[1] / 750 * this.cameras.main.height === dropZone.y) {
           if (Towns[town].townPieces.active) {
             Towns[town].townPieces.destroy();
             Player.points++;
