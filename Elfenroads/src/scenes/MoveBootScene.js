@@ -12,13 +12,13 @@ export default class BoardGame extends Phaser.Scene {
     // elvenhold, feodor, lapphalya, rivinia, ergeren, beafa, strykhaven, virst, jxara, mahdavikia, grangor, kihrimah, dagamura, albaran, parundia,
     // usselen, wylhien, jaccaranda, throtmanni, tichih, yttar
     const townsCoor = [
-      [1050, 400], [835, 370], [840, 470], [1005, 315], [1190, 315], [1200, 490], [1090, 540], [915, 570], [655, 560],  [450, 555], [415, 455],
-      [550, 410],  [680, 435], [685, 335], [555, 285],  [400, 225],  [560, 160],  [725, 185],  [890, 250], [1060, 200], [390, 330]
+      [1050, 400], [835, 370], [840, 470], [1005, 315], [1190, 315], [1200, 490], [1090, 540], [915, 570], [655, 560], [450, 555], [415, 455],
+      [550, 410], [680, 435], [685, 335], [555, 285], [400, 225], [560, 160], [725, 185], [890, 250], [1060, 200], [390, 330],
     ];
     // create dropzone for each town
     for (let i = 0; i < townsCoor.length; i++) {
       this.add.zone(townsCoor[i][0] / 1600 * this.cameras.main.width, townsCoor[i][1] / 750 * this.cameras.main.height, zoneWidth, zoneHeight)
-          .setRectangleDropZone(zoneWidth, zoneHeight);
+        .setRectangleDropZone(zoneWidth, zoneHeight);
     }
 
     /* move boot */
@@ -40,7 +40,7 @@ export default class BoardGame extends Phaser.Scene {
       // highlight every draggable town
       for (let i = 0; i < townsCoor.length; i++) {
         graphics.strokeRect(
-            (townsCoor[i][0] - 30) / 1600 * this.cameras.main.width, (townsCoor[i][1] - 30) / 750 * this.cameras.main.height, zoneWidth, zoneHeight);
+          (townsCoor[i][0] - 30) / 1600 * this.cameras.main.width, (townsCoor[i][1] - 30) / 750 * this.cameras.main.height, zoneWidth, zoneHeight);
       }
     });
 
