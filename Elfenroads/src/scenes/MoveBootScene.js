@@ -6,19 +6,24 @@ export default class BoardGame extends Phaser.Scene {
   }
   create() {
     const graphics = this.add.graphics();
-    const zoneWidth = 60/1600 * this.cameras.main.width;
-    const zoneHeight = 60/750 * this.cameras.main.height;
+    const zoneWidth = 60 / 1600 * this.cameras.main.width;
+    const zoneHeight = 60 / 750 * this.cameras.main.height;
     // town coordinates on a 1600 x 750 screen
-    // elvenhold, feodor, lapphalya, rivinia, ergeren, beafa, strykhaven, virst, jxara, mahdavikia, grangor, kihrimah, dagamura, albaran, parundia, usselen, wylhien, jaccaranda, throtmanni, tichih, yttar
-    const townsCoor = [[1050, 400], [835, 370], [840, 470], [1005, 315], [1190, 315], [1200, 490], [1090, 540], [915, 570], [655, 560], [450, 555], [415, 455], [550, 410], [680, 435], [685, 335], [555, 285], [400, 225], [560, 160], [725, 185], [890, 250], [1060, 200], [390, 330]];
+    // elvenhold, feodor, lapphalya, rivinia, ergeren, beafa, strykhaven, virst, jxara, mahdavikia, grangor, kihrimah, dagamura, albaran, parundia,
+    // usselen, wylhien, jaccaranda, throtmanni, tichih, yttar
+    const townsCoor = [
+      [1050, 400], [835, 370], [840, 470], [1005, 315], [1190, 315], [1200, 490], [1090, 540], [915, 570], [655, 560],  [450, 555], [415, 455],
+      [550, 410],  [680, 435], [685, 335], [555, 285],  [400, 225],  [560, 160],  [725, 185],  [890, 250], [1060, 200], [390, 330]
+    ];
     // create dropzone for each town
     for (let i = 0; i < townsCoor.length; i++) {
-      this.add.zone(townsCoor[i][0]/1600 * this.cameras.main.width, townsCoor[i][1]/750 * this.cameras.main.height, zoneWidth, zoneHeight).setRectangleDropZone(zoneWidth, zoneHeight);
+      this.add.zone(townsCoor[i][0] / 1600 * this.cameras.main.width, townsCoor[i][1] / 750 * this.cameras.main.height, zoneWidth, zoneHeight)
+          .setRectangleDropZone(zoneWidth, zoneHeight);
     }
 
     /* move boot */
     // set initial position and relative size
-    const elfenboot = this.add.sprite(1050/1600 * this.cameras.main.width, 400/750 * this.cameras.main.height, 'boot').setInteractive();
+    const elfenboot = this.add.sprite(1050 / 1600 * this.cameras.main.width, 400 / 750 * this.cameras.main.height, 'boot').setInteractive();
     elfenboot.setDisplaySize(this.cameras.main.width * 0.04, this.cameras.main.height * 0.08);
 
     // make elfenboot draggable to any position
@@ -34,7 +39,8 @@ export default class BoardGame extends Phaser.Scene {
       graphics.lineStyle(2, 0xffff00, 1);
       // highlight every draggable town
       for (let i = 0; i < townsCoor.length; i++) {
-        graphics.strokeRect((townsCoor[i][0]-30)/1600 * this.cameras.main.width, (townsCoor[i][1]-30)/750 * this.cameras.main.height, zoneWidth, zoneHeight);
+        graphics.strokeRect(
+            (townsCoor[i][0] - 30) / 1600 * this.cameras.main.width, (townsCoor[i][1] - 30) / 750 * this.cameras.main.height, zoneWidth, zoneHeight);
       }
     });
 
