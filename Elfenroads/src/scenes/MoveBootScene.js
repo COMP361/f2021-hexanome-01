@@ -4,55 +4,21 @@ export default class BoardGame extends Phaser.Scene {
   constructor() {
     super('movebootscene');
   }
-
   create() {
-    /* hard code positions of towns */
-    // elvenhold
-    this.add.zone(1040, 420, 80, 80).setRectangleDropZone(80, 80);
-    // feodor
-    this.add.zone(840, 365, 60, 60).setRectangleDropZone(60, 60);
-    // lapphalya
-    this.add.zone(830, 480, 60, 60).setRectangleDropZone(60, 60);
-    // rivinia
-    this.add.zone(990, 310, 60, 60).setRectangleDropZone(60, 60);
-    // ergeren
-    this.add.zone(1175, 310, 60, 60).setRectangleDropZone(60, 60);
-    // beafa
-    this.add.zone(1200, 490, 60, 60).setRectangleDropZone(60, 60);
-    // strykhaven
-    this.add.zone(1080, 540, 60, 60).setRectangleDropZone(60, 60);
-    // virst
-    this.add.zone(900, 570, 60, 60).setRectangleDropZone(60, 60);
-    // jxara
-    this.add.zone(650, 560, 60, 60).setRectangleDropZone(60, 60);
-    // mahdavikia
-    this.add.zone(410, 570, 60, 60).setRectangleDropZone(60, 60);
-    // grangor
-    this.add.zone(400, 450, 60, 60).setRectangleDropZone(60, 60);
-    // kihrimah
-    this.add.zone(530, 400, 60, 60).setRectangleDropZone(60, 60);
-    // dagamura
-    this.add.zone(670, 435, 60, 60).setRectangleDropZone(60, 60);
-    // albaran
-    this.add.zone(680, 340, 60, 60).setRectangleDropZone(60, 60);
-    // parundia
-    this.add.zone(540, 285, 60, 60).setRectangleDropZone(60, 60);
-    // usselen
-    this.add.zone(400, 225, 60, 60).setRectangleDropZone(60, 60);
-    // wylhien
-    this.add.zone(550, 150, 60, 60).setRectangleDropZone(60, 60);
-    // jaccaranda
-    this.add.zone(715, 190, 60, 60).setRectangleDropZone(60, 60);
-    // throtmanni
-    this.add.zone(880, 255, 60, 60).setRectangleDropZone(60, 60);
-    // tichih
-    this.add.zone(1060, 200, 60, 60).setRectangleDropZone(60, 60);
-    // yttar
-    this.add.zone(380, 335, 60, 60).setRectangleDropZone(60, 60);
+    const graphics = this.add.graphics();
+    const zoneWidth = 60/1600 * this.cameras.main.width;
+    const zoneHeight = 60/750 * this.cameras.main.height;
+    // town coordinates on a 1600 x 750 screen
+    // elvenhold, feodor, lapphalya, rivinia, ergeren, beafa, strykhaven, virst, jxara, mahdavikia, grangor, kihrimah, dagamura, albaran, parundia, usselen, wylhien, jaccaranda, throtmanni, tichih, yttar
+    const townsCoor = [[1050, 400], [835, 370], [840, 470], [1005, 315], [1190, 315], [1200, 490], [1090, 540], [915, 570], [655, 560], [450, 555], [415, 455], [550, 410], [680, 435], [685, 335], [555, 285], [400, 225], [560, 160], [725, 185], [890, 250], [1060, 200], [390, 330]];
+    // create dropzone for each town
+    for (let i = 0; i < townsCoor.length; i++) {
+      this.add.zone(townsCoor[i][0]/1600 * this.cameras.main.width, townsCoor[i][1]/750 * this.cameras.main.height, zoneWidth, zoneHeight).setRectangleDropZone(zoneWidth, zoneHeight);
+    }
 
     /* move boot */
     // set initial position and relative size
-    const elfenboot = this.add.sprite(this.cameras.main.width * 0.65, this.cameras.main.height * 0.55, 'boot').setInteractive();
+    const elfenboot = this.add.sprite(1050/1600 * this.cameras.main.width, 400/750 * this.cameras.main.height, 'boot').setInteractive();
     elfenboot.setDisplaySize(this.cameras.main.width * 0.04, this.cameras.main.height * 0.08);
 
     // make elfenboot draggable to any position
@@ -65,6 +31,11 @@ export default class BoardGame extends Phaser.Scene {
     this.input.on('drag', function(pointer, gameObject, dragX, dragY) {
       gameObject.x = dragX;
       gameObject.y = dragY;
+      graphics.lineStyle(2, 0xffff00, 1);
+      // highlight every draggable town
+      for (let i = 0; i < townsCoor.length; i++) {
+        graphics.strokeRect((townsCoor[i][0]-30)/1600 * this.cameras.main.width, (townsCoor[i][1]-30)/750 * this.cameras.main.height, zoneWidth, zoneHeight);
+      }
     });
 
     // if the boot is dragged to the drop zone, it will stay in it
@@ -79,6 +50,8 @@ export default class BoardGame extends Phaser.Scene {
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
       }
+      // clear towns highlight
+      graphics.clear();
     });
   }
 }
