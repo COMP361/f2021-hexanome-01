@@ -52,7 +52,8 @@ export default class BoardGame extends Phaser.Scene {
 
     this.input.on('dragend', function(pointer, gameObject, dropped) {
       gameObject.clearTint();
-      if (!dropped) {  // otherwise the boot will be back to original position
+      // otherwise the boot will be back to original position
+      if (!dropped) {
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
       }
