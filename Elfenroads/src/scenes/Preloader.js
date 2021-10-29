@@ -13,6 +13,8 @@ export default class Preloader extends Phaser.Scene {
     // Assets for BoardScene.js
     this.load.image('brownBackground', 'assets/background/brown.jpg');
     this.load.image('map', 'assets/boardgame/map.png');
+
+    // Assets for UIScene.js/MoveBootScene.js
     this.load.image('boot', 'assets/boardgame/green_boot.png');
 
     // Assets for UIScene.js/SettingsScene.js
@@ -24,6 +26,10 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('save', 'assets/ui/iconpack/PNG/Black/1x/save.png');
     this.load.image('door', 'assets/ui/iconpack/PNG/Black/1x/door.png');
 
+    // Assets for UIScene.js/CheatSheetScene.js
+    this.load.image('question', 'assets/ui/iconpack/PNG/Black/1x/question.png');
+    this.load.image('grid', 'assets/boardgame/grid.png');
+
     // Assets for UIScene.js/
     this.load.image('blue-actor', 'assets/ui/uipack_fixed/PNG/blue_actor.png');
     this.load.image('blue-actorcards', 'assets/ui/uipack_fixed/PNG/blue_actor_cards.png');
@@ -32,6 +38,7 @@ export default class Preloader extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('mainscene');  // Starts MainScene.js
+    // Starts MainScene.js
+    this.scene.start('mainscene');
   }
 }
