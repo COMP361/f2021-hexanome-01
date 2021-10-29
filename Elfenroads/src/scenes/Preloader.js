@@ -25,6 +25,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('music-off', 'assets/ui/iconpack/PNG/Black/1x/musicOff.png');
     this.load.image('save', 'assets/ui/iconpack/PNG/Black/1x/save.png');
     this.load.image('door', 'assets/ui/iconpack/PNG/Black/1x/door.png');
+    this.load.image('information', 'assets/ui/iconpack/PNG/Black/1x/information.png');
 
     // Assets for UIScene.js/CheatSheetScene.js
     this.load.image('question', 'assets/ui/iconpack/PNG/Black/1x/question.png');
@@ -32,6 +33,7 @@ export default class Preloader extends Phaser.Scene {
 
     // Assets for UIScene.js/
     this.load.image('blue-actor', 'assets/ui/uipack_fixed/PNG/blue_actor.png');
+    this.load.image('green-actor', 'assets/ui/uipack_fixed/PNG/green_circle.png');
     this.load.image('blue-actorcards', 'assets/ui/uipack_fixed/PNG/blue_actor_cards.png');
 
     // Assests for ...
