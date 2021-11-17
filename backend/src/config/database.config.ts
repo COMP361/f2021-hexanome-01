@@ -1,14 +1,11 @@
-import dotenv from 'dotenv'
-
-dotenv.config();
 const database = {
     development:   {
       type: "postgres",
-      host: "localhost",
+      host: "elfenroads.westus3.cloudapp.azure.com",
       port: 5432,
-      username: "",
-      password: "",
-      database: "",
+      username: "postgres",
+      password: "jyang285",
+      database: "elfenroadd",
       entities: [
         "dist/**/*.model.js"
       ],
@@ -16,11 +13,11 @@ const database = {
     },
     test:  {
       type: "postgres",
-      host: "",
+      host: "elfenroads.westus3.cloudapp.azure.com",
       port: 5432,
-      username: process.env.POSTGRES_USER,
-      password: "",
-      database: process.env.POSTGRES_DB,
+      username: "postgres",
+      password: "jyang285",
+      database: "elfenroadt",
       entities: [
         "src/**/*.model.ts"
       ],
