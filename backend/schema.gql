@@ -1,0 +1,71 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type LSUser {
+  name: String!
+  preferredColour: String!
+  role: String!
+}
+
+type AuthInfo {
+  access_token: String!
+  token_type: String!
+  refresh_token: String!
+  expires_in: Float!
+  scope: String!
+  lsUser: LSUser!
+}
+
+type GS {
+  name: String!
+  displayname: String!
+}
+
+type GSDetail {
+  name: String!
+  displayname: String!
+  location: String!
+  maxSessionPlayers: String!
+  minSessionPlayers: String!
+  webSupport: Boolean!
+}
+
+type SaveGame {
+  game: GSDetail!
+  players: String!
+  savegameid: String!
+}
+
+type GameSession {
+  creator: String!
+  gameParameters: GSDetail!
+  launched: Boolean!
+  players: [LSUser!]!
+  savegameid: String!
+}
+
+type Query {
+  sayHello: String!
+  getOnline: String!
+  verifyLSUser(password: String!, username: String!, grand_type: String!): AuthInfo!
+  LSUser(access_token: String!): LSUser!
+  AllGameServices: [GS!]!
+  GameServiceDetail(name: String!): GSDetail!
+  SaveGames(access_token: String!, name: String!): [SaveGame!]!
+  SaveGame(access_token: String!, savegameid: String!, name: String!): SaveGame!
+  AllSessions: String!
+  Session(session_id: String!): GameSession!
+}
+
+type Mutation {
+  createLSUser(role: String!, preferredColour: String!, password: String!, name: String!): String!
+  modifyLSUserColor(colour: String!, access_token: String!, name: String!): String!
+  changeLSUserPassword(newPassword: String!, oldPassword: String!, access_token: String!, name: String!): String!
+  registerGameService(webSupport: String!, displayname: String!, name: String!, minSessionPlayers: String!, maxSessionPlayers: String!, location: String!): String!
+  deleteGameService(access_token: String!, name: String!): String!
+  registerSaveGame(players: String!, access_token: String!, savegameid: String!, name: String!): String!
+  createSession(savegame: String, game: String, creator: String, access_token: String!): String!
+  joinSession(access_token: String!, name: String!, session_id: String!): String!
+  exitSession(access_token: String!, name: String!, session_id: String!): String!
+}

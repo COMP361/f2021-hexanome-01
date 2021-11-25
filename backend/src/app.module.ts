@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppResolver } from './app.resolver';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { GameSessionModule } from './gamesession/gamesession.module';
+import { GameServiceModule } from './gs/gs.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,8 +25,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql'
     }),
+    AuthModule,
+    GameServiceModule,
+    UserModule,
+    GameSessionModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppResolver],
 })
 export class AppModule {}
