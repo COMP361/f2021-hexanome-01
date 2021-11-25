@@ -7,12 +7,10 @@ export class AppService {
   }
 
   getOnline(): Promise<string> {
-    return axios.get("http://elfenroads.westus3.cloudapp.azure.com:4242/api/online")
-      .then(response => {
+    return axios
+      .get('http://elfenroads.westus3.cloudapp.azure.com:4242/api/online')
+      .then((response) => {
         return response.data;
-      })
+      });
   }
-
-  
-
 }

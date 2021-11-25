@@ -1,24 +1,23 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { LSUser } from "src/user/user.model";
-
+import { Field, ObjectType } from '@nestjs/graphql';
+import { LSUser } from 'src/user/user.model';
 
 @ObjectType()
 export class AuthInfo {
-    @Field()
-    access_token: string;
+  @Field()
+  access_token: string;
 
-    @Field()
-    token_type: string;
+  @Field()
+  token_type: string;
 
-    @Field()
-    refresh_token: string;
+  @Field()
+  refresh_token: string;
 
-    @Field()
-    expires_in: number;
+  @Field()
+  expires_in: number;
 
-    @Field()
-    scope: string;
+  @Field()
+  scope: string;
 
-    @Field()
-    lsUser: LSUser;
+  @Field()
+  lsUser: LSUser;
 }

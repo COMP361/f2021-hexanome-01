@@ -1,4 +1,6 @@
 {
+  "extends": "./tsconfig-google.json",
+
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,

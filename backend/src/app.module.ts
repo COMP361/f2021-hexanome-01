@@ -11,24 +11,22 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: "mysql",
-      host: "elfenroads.westus3.cloudapp.azure.com",
+      type: 'mysql',
+      host: 'elfenroads.westus3.cloudapp.azure.com',
       port: 5432,
-      username: "comp361",
-      password: "elfenroad",
-      database: "elfenroad",
-      entities: [
-        "dist/**/*.model.js"
-      ],
-      synchronize: false
+      username: 'comp361',
+      password: 'elfenroad',
+      database: 'elfenroad',
+      entities: ['dist/**/*.model.js'],
+      synchronize: false,
     }),
     GraphQLModule.forRoot({
-      autoSchemaFile: 'schema.gql'
+      autoSchemaFile: 'schema.gql',
     }),
     AuthModule,
     GameServiceModule,
     UserModule,
-    GameSessionModule
+    GameSessionModule,
   ],
   providers: [AppService, AppResolver],
 })
