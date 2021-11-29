@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Game } from 'src/gs/gs.model';
+import { GameInstance } from 'src/gs/gs.model';
 import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
 import { Town } from 'src/town/town.model';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ColorType {
   Blue = "Blue",
@@ -38,8 +38,8 @@ export class GameUser {
   name: string;
 
   @Field()
-  @ManyToOne(() => Game, game => game.players)
-  game: Game;
+  @ManyToOne(() => GameInstance, game => game.players)
+  game: GameInstance;
 
   @Field()
   @Column()
@@ -49,16 +49,17 @@ export class GameUser {
   @Column()
   color: ColorType;
 
-  @Field()
-  @Column()
-  score : number;
+  @Field(() => [Town])
+  @ManyToMany(() => Town, town => town.visitedUsers)
+  visitedTowns : Town[];
 
-  @Field()
+  @Field(() => Town)
   @ManyToOne(() => Town, town => town.currentPlayers) 
   currentTown: Town;
 
-  @Field()
+  @Field(() => [OwnableUnit])
   @OneToMany(() => OwnableUnit, unit => unit.user)
   ownableUnits: OwnableUnit[]
+
 }
 

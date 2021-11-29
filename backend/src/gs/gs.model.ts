@@ -55,12 +55,12 @@ export class SaveGame {
 
 @ObjectType()
 @Entity()
-export class Game {
+export class GameInstance {
   @Field()
   @PrimaryColumn()
   name: string;
 
-  @Field()
+  @Field(() => [GameUser])
   @OneToMany(() => GameUser, gameUser => gameUser.game)
   players: GameUser[]
 
@@ -76,16 +76,16 @@ export class Game {
   @Column()
   numOfPlayers: number;
 
-  @Field()
+  @Field(() => GameUser)
   @OneToOne(() => GameUser)
   @JoinColumn()
   startingPlayer: GameUser;
 
-  @Field()
+  @Field(() => [OwnableUnit])
   @OneToMany(() => OwnableUnit, ownableunit => ownableunit.game)
   ownableUnits: OwnableUnit[];
 
-  @Field()
-  @OneToMany(() => Town, town => town.game)
+  @Field(() => [Town])
+  @OneToMany(() => Town, town => town.gameInstance)
   towns: Town[];
 }

@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Bid } from "src/action/action.models";
-import { Game } from "src/gs/gs.model";
+import { Bid } from "src/bid/bid.model";
+import { GameInstance } from "src/gs/gs.model";
 import { Edge } from "src/town/town.model";
 import { GameUser } from "src/user/user.model";
-import { ChildEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, TableInheritance } from "typeorm";
+import { ChildEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, TableInheritance } from "typeorm";
 
 export enum SpellType {
     DOUBLE = "Double",
@@ -34,23 +34,24 @@ export enum TravelCardType {
     RAFTS = "Rafts"
 }
 @ObjectType()
-export abstract class OwnableUnit {
+@Entity()
+@TableInheritance({ column: { type: "varchar", name: "type" } })export abstract class OwnableUnit {
     @Field()
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Field()
-    @ManyToOne(() => Game, game => game.ownableUnits)
-    game: Game;
+    @Field(() => GameInstance)
+    @ManyToOne(() => GameInstance, game => game.ownableUnits)
+    game: GameInstance;
 
-    @Field()
+    @Field(() => [GameUser])
     @ManyToOne(() => GameUser, user => user.ownableUnits)
     user: GameUser[];
 
 }
 
 @ObjectType()
-@Entity()
+@ChildEntity()
 @TableInheritance({ column: { type: "varchar", name: "type" } })
 export class ItemUnit extends OwnableUnit {
     @Field()

@@ -1,73 +1,74 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Game } from "src/gs/gs.model";
+import { GameInstance } from "src/gs/gs.model";
 import { GoldPiece, MagicSpell, Obstacle, TransporationCounter } from "src/ownableunit/ownableunit.model";
-import { ColorType, GameUser } from "src/user/user.model";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { GameUser } from "src/user/user.model";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 export enum EdgeType {
-
+    PLAIN ="plain",
+    WOOD = "wood",
+    DESERT = "desert",
+    MOUNTAIN = "mountain",
+    RIVER = "river",
+    LAKE = "lake"
 }
 
 @ObjectType()
 @Entity()
 export class Town {
-    @Field()
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-
-
-    @Field()
-    @ManyToOne(() => Game, game => game.ownableUnits)
-    game: Game;
+    @Field(() => GameInstance)
+    @ManyToOne(() => GameInstance, gameInstance => gameInstance.towns, {primary: true})
+    gameInstance: GameInstance;
 
     @Field()
-    @Column()
+    @PrimaryColumn()
     name: string;
 
     @Field()
     @Column()
     gold: number;
 
-    @Field()
-    @Column()
-    townPieces: ColorType[];
+    @Field(() => [GameUser])
+    @ManyToMany(() => GameUser, user => user.visitedTowns)
+    visitedUsers: GameUser[];
 
-    @Field()
+    @Field(() => [GameUser])
     @OneToMany(() => GameUser, gameuser => gameuser.currentTown)
     currentPlayers: GameUser[];
+
+    @Field(() => [Edge])
+    @OneToMany(() => Edge, edge => edge.town)
+    Edges: Edge[]
 
 }
 
 @ObjectType()
 @Entity()
 export class Edge {
-    @Field()
-    @PrimaryColumn()
-    startTown: Town;
 
     @Field()
-    @PrimaryColumn()
-    endTown: Town;
+    @ManyToOne(() => Town, town => town.Edges, {primary: true})
+    town: Town;
 
     @Field()
     @Column()
     edgeType: EdgeType;
 
-    @Field()
+    @Field(() => [MagicSpell])
     @OneToMany(() => MagicSpell, magicspell => magicspell.edge)
     spells: MagicSpell[];
 
-    @Field()
+    @Field(() => [TransporationCounter])
     @OneToOne(() => TransporationCounter, transporationCounter => transporationCounter.edge)
     @JoinColumn()
     counter: TransporationCounter;
 
-    @Field()
+    @Field(() => [GoldPiece])
     @OneToOne(() => GoldPiece, goldPiece => goldPiece.edge)
     @JoinColumn()
     goldPiece: GoldPiece;
 
-    @Field()
+    @Field(() => [Obstacle])
     @OneToOne(() => Obstacle, obstacle => obstacle.edge)
     @JoinColumn()
     obstacle: Obstacle;
