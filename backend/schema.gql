@@ -46,29 +46,10 @@ type GameUser {
   bids: [Bid!]
 }
 
-<<<<<<< HEAD
 type Bid {
   item: ItemUnit!
   bidAmount: Float!
   players: GameUser!
-=======
-type Town {
-  session_id: GameSession!
-  name: String!
-  gold: Float!
-  townPieces: [String!]!
-  currentPlayers: [GameUser!]!
-  Edges: [Edge!]!
-}
-
-type Edge {
-  town: Town!
-  edgeType: String!
-  spells: [MagicSpell!]!
-  counter: [TransporationCounter!]!
-  goldPiece: [GoldPiece!]!
-  obstacle: [Obstacle!]!
->>>>>>> 615a25c10f45af00ae0e7f171852007af452787d
 }
 
 type OwnableUnit {
