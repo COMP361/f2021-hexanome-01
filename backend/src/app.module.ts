@@ -13,8 +13,8 @@ import { TownModule } from './town/town.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'elfenroads.westus3.cloudapp.azure.com',
-      port: 5432,
+      host: 'localhost',
+      port: 3306,
       username: 'comp361',
       password: 'elfenroad',
       database: 'elfenroad',
