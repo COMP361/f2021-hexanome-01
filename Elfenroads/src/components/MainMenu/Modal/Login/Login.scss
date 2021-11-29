@@ -6,6 +6,7 @@
     display: flex;
 
     &__panel {
+        width: 18.125rem;
         &:first-child {
             padding-right: 2rem;
             border-right: 2px solid rgba(65, 40, 12, 0.15);
@@ -68,4 +69,10 @@
             outline: none;
         }
     }
+}
+
+.error {
+    color: rgb(199, 28, 28);
+    padding: .625rem 0;
+    font-weight: 500;
 }
