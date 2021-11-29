@@ -2,6 +2,7 @@ import './Login.scss';
 import {useLazyQuery, useMutation} from '@apollo/client';
 import {useState} from 'react';
 import {POST_USER, VERIFY_USER} from '../../../../utils/queryUtils';
+import {storeUser} from '../../../../utils/storageUtils';
 
 export default function Login({next}) {
      const [signupError, setSignupError] = useState('');
@@ -10,6 +11,7 @@ export default function Login({next}) {
      // Handle response data from login
      const handleLogin = (data) => {
           if (data.verifyLSUser) {
+               storeUser(data.verifyLSUser);
                next(data.verifyLSUser);
           } else {
                setLoginError('Incorrect username and/or password.');
