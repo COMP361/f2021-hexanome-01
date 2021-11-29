@@ -2,24 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Town {
-  gameInstance: GameInstance!
-  name: String!
-  gold: Float!
-  visitedUsers: [GameUser!]!
-  currentPlayers: [GameUser!]!
-  Edges: [Edge!]!
-}
-
-type Edge {
-  town: Town!
-  edgeType: String!
-  spells: [MagicSpell!]!
-  counter: [TransporationCounter!]!
-  goldPiece: [GoldPiece!]!
-  obstacle: [Obstacle!]!
-}
-
 type GS {
   name: String!
   displayname: String!
@@ -40,33 +22,40 @@ type SaveGame {
   savegameid: String!
 }
 
-type GameInstance {
+type Town {
+  session_id: GameSession!
   name: String!
-  players: [GameUser!]!
-  lobbyName: String!
-  currentPhase: String!
-  numOfPlayers: Float!
-  startingPlayer: GameUser!
-  ownableUnits: [OwnableUnit!]!
-  towns: [Town!]!
+  gold: Float!
+  townPieces: [String!]!
+  currentPlayers: [GameUser!]!
+  Edges: [Edge!]!
+}
+
+type Edge {
+  town: Town!
+  edgeType: String!
+  spells: [MagicSpell!]!
+  counter: [TransporationCounter!]!
+  goldPiece: [GoldPiece!]!
+  obstacle: [Obstacle!]!
 }
 
 type OwnableUnit {
   id: String!
-  game: GameInstance!
+  session_id: GameSession!
   user: [GameUser!]!
 }
 
 type ItemUnit {
   id: String!
-  game: GameInstance!
+  session_id: GameSession!
   user: [GameUser!]!
   bid: Bid!
 }
 
 type MagicSpell {
   id: String!
-  game: GameInstance!
+  session_id: GameSession!
   user: [GameUser!]!
   bid: Bid!
   spellType: String!
@@ -75,7 +64,7 @@ type MagicSpell {
 
 type TransporationCounter {
   id: String!
-  game: GameInstance!
+  session_id: GameSession!
   user: [GameUser!]!
   bid: Bid!
   counterType: String!
@@ -84,7 +73,7 @@ type TransporationCounter {
 
 type GoldPiece {
   id: String!
-  game: GameInstance!
+  session_id: GameSession!
   user: [GameUser!]!
   bid: Bid!
   amount: Float!
@@ -93,7 +82,7 @@ type GoldPiece {
 
 type Obstacle {
   id: String!
-  game: GameInstance!
+  session_id: GameSession!
   user: [GameUser!]!
   bid: Bid!
   obstacleType: String!
@@ -110,17 +99,26 @@ type LSUser {
   name: String!
   preferredColour: String!
   role: String!
+  gameSession: GameSession!
 }
 
 type GameUser {
   name: String!
-  game: GameInstance!
+  session_id: GameSession!
   coins: Float!
   color: String!
-  visitedTowns: [Town!]!
-  currentTown: Town!
-  ownableUnits: [OwnableUnit!]!
-  bids: [Bid!]!
+  score: Float!
+  currentTown: Town
+  ownableUnits: [OwnableUnit!]
+  bids: [Bid!]
+}
+
+type GameSession {
+  creator: String!
+  gameParameters: GSDetail!
+  launched: Boolean!
+  players: [LSUser!]!
+  savegameid: String!
 }
 
 type AuthInfo {
@@ -132,35 +130,35 @@ type AuthInfo {
   lsUser: LSUser!
 }
 
-type GameSession {
-  creator: String!
-  gameParameters: GSDetail!
-  launched: Boolean!
-  players: [LSUser!]!
-  savegameid: String!
-}
-
 type Query {
   sayHello: String!
   getOnline: String!
   verifyLSUser(password: String!, username: String!, grand_type: String!): AuthInfo!
   LSUser(access_token: String!): LSUser!
+  GameUser(session_id: String!, name: String!): GameUser!
+  AllGameUser(name: String!): [GameUser!]!
+  AllSessions: String!
+  Session(session_id: String!): GameSession!
   AllGameServices: [GS!]!
   GameServiceDetail(name: String!): GSDetail!
   SaveGames(access_token: String!, name: String!): [SaveGame!]!
   SaveGame(access_token: String!, savegameid: String!, name: String!): SaveGame!
-  AllSessions: String!
-  Session(session_id: String!): GameSession!
+  Town(name: String!, session_id: String!): Town!
+  AllTowns(session_id: String!): [Town!]!
 }
 
 type Mutation {
   createLSUser(role: String!, preferredColour: String!, password: String!, name: String!): String!
   modifyLSUserColor(colour: String!, access_token: String!, name: String!): String!
   changeLSUserPassword(newPassword: String!, oldPassword: String!, access_token: String!, name: String!): String!
-  registerGameService(webSupport: String!, displayname: String!, name: String!, minSessionPlayers: String!, maxSessionPlayers: String!, location: String!): String!
-  deleteGameService(access_token: String!, name: String!): String!
-  registerSaveGame(players: String!, access_token: String!, savegameid: String!, name: String!): String!
+  createGameUser(color: String!, session_id: String!, name: String!): GameUser!
+  deleteGameUser(session_id: String!, name: String!): String!
   createSession(savegame: String, game: String, creator: String, access_token: String!): String!
   joinSession(access_token: String!, name: String!, session_id: String!): String!
   exitSession(access_token: String!, name: String!, session_id: String!): String!
+  registerGameService(webSupport: String!, displayname: String!, name: String!, minSessionPlayers: String!, maxSessionPlayers: String!, location: String!): String!
+  deleteGameService(access_token: String!, name: String!): String!
+  registerSaveGame(players: String!, access_token: String!, savegameid: String!, name: String!): String!
+  createTowns(session_id: String!): [Town!]!
+  moveToNewTown(username: String!, new_town: String!, old_town: String!, session_id: String!): [Town!]!
 }

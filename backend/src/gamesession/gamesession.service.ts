@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { GSDetail } from 'src/gs/gs.model';
+import { GSDetail } from 'src/game/gamesvc.model';
 import { GameSession } from './gamesession.model';
 
 const instance = axios.create({
@@ -11,7 +11,7 @@ const instance = axios.create({
 export class GameSessionService {
   async getAllSessions(): Promise<string> {
     return instance.get('').then((response) => {
-      return JSON.stringify(response.data);
+      return JSON.stringify(response.data['sessions']);
     });
   }
 
@@ -42,7 +42,7 @@ export class GameSessionService {
   }
 
   async getSession(session_id: string): Promise<GameSession> {
-    return instance.get(session_id).then((response) => {
+    return await instance.get(session_id).then((response) => {
       const gameSession: GameSession = new GameSession();
       gameSession.creator = response.data['creator'];
       gameSession.gameParameters = response.data['creator'] as GSDetail;

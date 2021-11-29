@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { LSUser } from './user.model';
+import { Repository } from 'typeorm';
+import { GameUser, LSUser } from './user.model';
 
 const instance = axios.create({
   baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
 });
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectRepository(GameUser)
+    private userRepository: Repository<GameUser>,
+  ) {}
+
   async getLSUser(access_token: string): Promise<LSUser> {
     return await instance
       .get(
@@ -107,7 +114,7 @@ export class UserService {
   ) {
     return await instance
       .post(
-        encodeURI(`api/users/${name}/access_token=${access_token}`).replace(
+        encodeURI(`api/users/${user}/access_token=${access_token}`).replace(
           /\+/g,
           '%2B',
         ),
@@ -123,4 +130,40 @@ export class UserService {
         return JSON.stringify(error.response);
       });
   }
+
+  async getGameUser(name: string, session_id: string): Promise<GameUser> {
+    return await this.userRepository.findOne({
+      name: name,
+      session_id: session_id,
+    });
+  }
+
+  async getAllGameUsers(name: string): Promise<GameUser[]> {
+    return await this.userRepository.find({
+      name: name,
+    });
+  }
+
+  async createGameUser(
+    name: string,
+    session_id: string,
+    color: string,
+  ): Promise<GameUser> {
+    const gameUser: GameUser = new GameUser();
+    gameUser.name = name;
+    (gameUser.session_id = session_id), (gameUser.color = color);
+    return await this.userRepository.save(gameUser);
+  }
+
+  async removeGameUser(name: string, session_id: string): Promise<string> {
+    return await this.userRepository
+      .delete({
+        name: name,
+        session_id: session_id,
+      })
+      .then((response) => {
+        return response as unknown as string;
+      });
+  }
+
 }

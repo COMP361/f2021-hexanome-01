@@ -1,18 +1,18 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Bid } from 'src/bid/bid.model';
-import { GameInstance } from 'src/gs/gs.model';
+import { GameSession } from 'src/gamesession/gamesession.model';
 import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
 import { Town } from 'src/town/town.model';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-
-export enum ColorType {
-  Blue = "Blue",
-  Yellow = "Yellow",
-  Red = "Red",
-  Green = "Green",
-  Black = "Black",
-  Purple = "Purple"
-}
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 @ObjectType()
 export class LSUser {
@@ -29,37 +29,35 @@ export class LSUser {
 @ObjectType()
 @Entity()
 export class GameUser {
-
   @Field()
   @PrimaryColumn()
   name: string;
 
-  @Field()
-  @ManyToOne(() => GameInstance, game => game.players, {primary: true})
-  game: GameInstance;
+  @Field(() => GameSession)
+  @PrimaryColumn()
+  session_id: string;
 
-  @Field()
-  @Column()
+  @Field({defaultValue: 0})
+  @Column({default: 0})
   coins: number;
 
   @Field()
   @Column()
-  color: ColorType;
+  color: string;
 
-  @Field(() => [Town])
-  @ManyToMany(() => Town, town => town.visitedUsers)
-  visitedTowns : Town[];
+  @Field({defaultValue: 0})
+  @Column({default: 0})
+  score: number;
 
-  @Field(() => Town)
-  @ManyToOne(() => Town, town => town.currentPlayers) 
+  @Field(() => Town, {nullable: true})
+  @ManyToOne(() => Town, (town) => town.currentPlayers, {nullable: true})
   currentTown: Town;
 
-  @Field(() => [OwnableUnit])
-  @OneToMany(() => OwnableUnit, unit => unit.user)
-  ownableUnits: OwnableUnit[]
+  @Field(() => [OwnableUnit], {nullable: true})
+  @OneToMany(() => OwnableUnit, (unit) => unit.user, {nullable: true})
+  ownableUnits: OwnableUnit[];
 
-  @Field(() => [Bid])
-  @ManyToMany(() => Bid, bid => bid.players)
-  bids: Bid[]
+  @Field(() => [Bid], {nullable: true})
+  @ManyToMany(() => Bid, (bid) => bid.players, {nullable: true})
+  bids: Bid[];
 }
-
