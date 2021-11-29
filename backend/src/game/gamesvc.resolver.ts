@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { GS, GSDetail, SaveGame } from './gs.model';
-import { GSService } from './gs.service';
+import { GS, GSDetail, SaveGame } from './gamesvc.model';
+import { GameService } from './gamesvc.service';
 @Resolver()
-export class GSResolver {
-  constructor(@Inject(GSService) private gsService: GSService) {}
+export class GameResolver {
+  constructor(@Inject(GameService) private gsService: GameService) {}
 
   @Query(() => [GS])
   async AllGameServices(): Promise<GS[]> {
