@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { GameSessionModule } from './gamesession/gamesession.module';
 import { GameModule } from './game/gamesvc.module';
 import { UserModule } from './user/user.module';
+import { TownModule } from './town/town.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserModule } from './user/user.module';
     GameModule,
     UserModule,
     GameSessionModule,
+    TownModule
   ],
   providers: [AppService, AppResolver],
 })

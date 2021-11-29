@@ -6,9 +6,11 @@ import { Town } from 'src/town/town.model';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 
@@ -35,27 +37,27 @@ export class GameUser {
   @PrimaryColumn()
   session_id: string;
 
-  @Field()
-  @Column()
+  @Field({defaultValue: 0})
+  @Column({default: 0})
   coins: number;
 
   @Field()
   @Column()
   color: string;
 
-  @Field(() => [Town])
-  @ManyToMany(() => Town, (town) => town.visitedUsers)
-  visitedTowns: Town[];
+  @Field({defaultValue: 0})
+  @Column({default: 0})
+  score: number;
 
-  @Field(() => Town)
-  @ManyToOne(() => Town, (town) => town.currentPlayers)
+  @Field(() => Town, {nullable: true})
+  @ManyToOne(() => Town, (town) => town.currentPlayers, {nullable: true})
   currentTown: Town;
 
-  @Field(() => [OwnableUnit])
-  @OneToMany(() => OwnableUnit, (unit) => unit.user)
+  @Field(() => [OwnableUnit], {nullable: true})
+  @OneToMany(() => OwnableUnit, (unit) => unit.user, {nullable: true})
   ownableUnits: OwnableUnit[];
 
-  @Field(() => [Bid])
-  @ManyToMany(() => Bid, (bid) => bid.players)
+  @Field(() => [Bid], {nullable: true})
+  @ManyToMany(() => Bid, (bid) => bid.players, {nullable: true})
   bids: Bid[];
 }

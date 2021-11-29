@@ -11,7 +11,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -42,9 +41,8 @@ export class Town {
   @Column()
   gold: number;
 
-  @Field(() => [GameUser])
-  @ManyToMany(() => GameUser, (user) => user.visitedTowns)
-  visitedUsers: GameUser[];
+  @Field(() => [String])
+  townPieces: string[];
 
   @Field(() => [GameUser])
   @OneToMany(() => GameUser, (gameuser) => gameuser.currentTown)
