@@ -7,7 +7,7 @@ export class GameSession {
   @Field()
   creator: string;
 
-  @Field()
+  @Field(() => [GSDetail])
   gameParameters: GSDetail;
 
   @Field()
