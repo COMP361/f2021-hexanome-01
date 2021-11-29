@@ -1,7 +1,6 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { GS, GSDetail, SaveGame } from './gs.model';
 import axios from 'axios';
-
-import {GS, GSDetail, SaveGame} from './gs.model';
 
 const instance = axios.create({
   baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
@@ -15,23 +14,24 @@ export class GSService {
   }
 
   async getGameServiceDetail(name: string): Promise<GSDetail> {
-    return instance.get(name)
-        .then((response) => {
-          return response.data as GSDetail;
-        })
-        .catch(() => {
-          return new GSDetail();
-        });
+    return instance
+      .get(name)
+      .then((response) => {
+        return response.data as GSDetail;
+      })
+      .catch(() => {
+        return new GSDetail();
+      });
   }
 
   async registerGameService(
-      location: string,
-      maxSessionPlayers: string,
-      minSessionPlayers: string,
-      name: string,
-      displayname: string,
-      webSupport: string,
-      ): Promise<string> {
+    location: string,
+    maxSessionPlayers: string,
+    minSessionPlayers: string,
+    name: string,
+    displayname: string,
+    webSupport: string,
+  ): Promise<string> {
     const data = {
       location: location,
       maxSessionPlayers: maxSessionPlayers,
@@ -51,111 +51,106 @@ export class GSService {
     };
 
     await instance
-        .post(
-            'oauth/token?grant_type=password&username=maex&password=abc123_ABC123',
-            {},
-            config,
-            )
-        .then((response) => {
-          access_token = response.data['access_token'];
-        });
+      .post(
+        'oauth/token?grant_type=password&username=maex&password=abc123_ABC123',
+        {},
+        config,
+      )
+      .then((response) => {
+        access_token = response.data['access_token'];
+      });
 
     return await instance
-        .put(
-            encodeURI(
-                `api/gameservices/${name}?access_token=${access_token}`,
-                )
-                .replace(/\+/g, '%2B'),
-            data,
-            )
-        .then((response) => {
-          return response.data as string;
-        });
+      .put(
+        encodeURI(
+          `api/gameservices/${name}?access_token=${access_token}`,
+        ).replace(/\+/g, '%2B'),
+        data,
+      )
+      .then((response) => {
+        return response.data as string;
+      });
   }
 
   async deleteGameService(name: string, access_token: string): Promise<string> {
     return await instance
-        .delete(
-            encodeURI(
-                `api/gameservices/${name}?access_token=${access_token}`,
-                )
-                .replace(/\+/g, '%2B'),
-            )
-        .then((response) => {
-          return response.data as string;
-        });
+      .delete(
+        encodeURI(
+          `api/gameservices/${name}?access_token=${access_token}`,
+        ).replace(/\+/g, '%2B'),
+      )
+      .then((response) => {
+        return response.data as string;
+      });
   }
 
   async getAllSaveGames(
-      name: string,
-      access_token: string,
-      ): Promise<SaveGame[]> {
+    name: string,
+    access_token: string,
+  ): Promise<SaveGame[]> {
     const savegamelist: SaveGame[] = [];
     return await instance
-        .get(
-            encodeURI(
-                `api/gameservices/${name}?access_token=${access_token}`,
-                )
-                .replace(/\+/g, '%2B'),
-            )
-        .then(async (response) => {
-          const game = await this.getGameServiceDetail(name);
-          response.data.array.forEach((element) => {
-            const savegame: SaveGame = new SaveGame();
-            savegame.game = game;
-            savegame.players = element['players'] as string;
-            savegame.savegameid = element['savegameid'];
+      .get(
+        encodeURI(
+          `api/gameservices/${name}?access_token=${access_token}`,
+        ).replace(/\+/g, '%2B'),
+      )
+      .then(async (response) => {
+        const game = await this.getGameServiceDetail(name);
+        response.data.array.forEach((element) => {
+          const savegame: SaveGame = new SaveGame();
+          savegame.game = game;
+          savegame.players = element['players'] as string;
+          savegame.savegameid = element['savegameid'];
 
-            savegamelist.push(savegame);
-          });
-          return savegamelist;
+          savegamelist.push(savegame);
         });
+        return savegamelist;
+      });
   }
 
   async getSaveGame(
-      name: string,
-      savgameid: string,
-      access_token: string,
-      ): Promise<SaveGame> {
+    name: string,
+    savgameid: string,
+    access_token: string,
+  ): Promise<SaveGame> {
     const game = await this.getGameServiceDetail(name);
     return await instance
-        .get(
-            encodeURI(
-                `api/gameservices/${name}/savegames/${savgameid}?access_token=${access_token}`,
-                )
-                .replace(/\+/g, '%2B'),
-            )
-        .then(async (response) => {
-          const savegame: SaveGame = new SaveGame();
-          savegame.game = game;
-          savegame.players = response.data['players'] as string;
-          savegame.savegameid = response.data['savegameid'];
+      .get(
+        encodeURI(
+          `api/gameservices/${name}/savegames/${savgameid}?access_token=${access_token}`,
+        ).replace(/\+/g, '%2B'),
+      )
+      .then(async (response) => {
+        const savegame: SaveGame = new SaveGame();
+        savegame.game = game;
+        savegame.players = response.data['players'] as string;
+        savegame.savegameid = response.data['savegameid'];
 
-          return savegame;
-        });
+        return savegame;
+      });
   }
 
   async registerSaveGame(
-      name: string,
-      savegameid: string,
-      access_token: string,
-      players: string,
-      ): Promise<string> {
+    name: string,
+    savegameid: string,
+    access_token: string,
+    players: string,
+  ): Promise<string> {
     const game = await this.getGameServiceDetail(name);
     return await instance
-        .put(
-            encodeURI(
-                `api/gameservices/${name}/savegames/${savegameid}?access_token=${access_token}`,
-                )
-                .replace(/\+/g, '%2B'),
-            {
-              gamename: game,
-              players: players,
-              savegameid: savegameid,
-            },
-            )
-        .then((response) => {
-          return response.data as string;
-        });
+      .put(
+        encodeURI(
+          `api/gameservices/${name}/savegames/${savegameid}?access_token=${access_token}`,
+        ).replace(/\+/g, '%2B'),
+        {
+          gamename: game,
+          players: players,
+          savegameid: savegameid,
+        },
+      )
+      .then((response) => {
+        return response.data as string;
+      });
   }
 }
