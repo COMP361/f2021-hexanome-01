@@ -1,7 +1,7 @@
-import {useMutation, useLazyQuery} from '@apollo/client';
+import './Login.scss';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import {useState} from 'react';
 import {POST_USER, VERIFY_USER} from '../../../../utils/queryUtils';
-import './Login.scss';
 
 export default function Login({next}) {
      const [signupError, setSignupError] = useState('');
@@ -47,7 +47,7 @@ export default function Login({next}) {
 
      // Check input validity and request user creation
      const attemptSignup = (e) => {
-          e.preventDefault();
+           e.preventDefault();
 
           const username = e.target.signupUsername.value;
           const password = e.target.signupPassword.value;
@@ -63,25 +63,26 @@ export default function Login({next}) {
      };
 
      return (
-     <section className='login'>
-          <div className='login__panel'>
-               <h1 className='login__title'>Login</h1>
-               <form className='form' onSubmit={attemptLogin}>
-                    <input className='form__input' name='loginUsername' id='loginUsername' placeholder='Username' autoComplete='off' />
-                    <input className='form__input' name='loginPassword' id='loginPassword' type='password' placeholder='Password' />
-                    {loginError && <p className='error'>{loginError}</p>}
-                    <button className='form__button'>Login</button>
-               </form>
-          </div>
-          <div className='login__panel'>
-               <h1 className='login__title'>Sign Up</h1>
-               <form className='form' onSubmit={attemptSignup}>
-                    <input className='form__input' name='signupUsername' id='signupUsername' placeholder='Username' autoComplete='off' />
-                    <input className='form__input' name='signupPassword' id='signupPassword' type='password' placeholder='Password' />
-                    <input className='form__input' name='signupConfirmPassword' id='signupConfirmPassword' type='password' placeholder='Confirm Password' />
-                    {signupError && <p className='error'>{signupError}</p>}
-                    <button className='form__button'>Sign Up</button>
-               </form>
-          </div>
-     </section>);
+          <section className='login'>
+               <div className='login__panel'>
+                    <h1 className='login__title'>Login</h1>
+                    <form className='form' onSubmit={attemptLogin}>
+                         <input className='form__input' name='loginUsername' id='loginUsername' placeholder='Username' autoComplete='off' />
+                         <input className='form__input' name='loginPassword' id='loginPassword' placeholder='Password' type='password' />
+                         {loginError && <p className='error'>{loginError}</p>}
+                         <button className='form__button'>Login</button>
+                    </form>
+               </div>
+               <div className='login__panel'>
+                    <h1 className='login__title'>SignUp</h1>
+                    <form className='form' onSubmit={attemptSignup}>
+                         <input className='form__input' name='signupUsername' id='signupUsername' placeholder='Username' autoComplete='off' />
+                         <input className='form__input' name='signupPassword' id='signupPassword' placeholder='Password' type='password' />
+                         <input className='form__input' name='signupConfirmPassword' id='signupConfirmPassword' placeholder='Confirm Password' type='password' />
+                         {signupError && <p className='error'>{signupError}</p>}
+                         <button className='form__button'>Sign Up</button>
+                    </form>
+               </div>
+          </section>
+     );
 }

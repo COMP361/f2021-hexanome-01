@@ -1,6 +1,7 @@
 import './MainMenu.scss';
 
 import logo from '../../assets/img/elfenroads.png';
+
 import Modal from './Modal';
 import Scene from './Scene';
 
