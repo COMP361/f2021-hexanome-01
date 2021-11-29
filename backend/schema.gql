@@ -2,19 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type LSUser {
+type Town {
+  gameInstance: GameInstance!
   name: String!
-  preferredColour: String!
-  role: String!
+  gold: Float!
+  visitedUsers: [GameUser!]!
+  currentPlayers: [GameUser!]!
+  Edges: [Edge!]!
 }
 
-type AuthInfo {
-  access_token: String!
-  token_type: String!
-  refresh_token: String!
-  expires_in: Float!
-  scope: String!
-  lsUser: LSUser!
+type Edge {
+  town: Town!
+  edgeType: String!
+  spells: [MagicSpell!]!
+  counter: [TransporationCounter!]!
+  goldPiece: [GoldPiece!]!
+  obstacle: [Obstacle!]!
 }
 
 type GS {
@@ -35,6 +38,98 @@ type SaveGame {
   game: GSDetail!
   players: String!
   savegameid: String!
+}
+
+type GameInstance {
+  name: String!
+  players: [GameUser!]!
+  lobbyName: String!
+  currentPhase: String!
+  numOfPlayers: Float!
+  startingPlayer: GameUser!
+  ownableUnits: [OwnableUnit!]!
+  towns: [Town!]!
+}
+
+type OwnableUnit {
+  id: String!
+  game: GameInstance!
+  user: [GameUser!]!
+}
+
+type ItemUnit {
+  id: String!
+  game: GameInstance!
+  user: [GameUser!]!
+  bid: Bid!
+}
+
+type MagicSpell {
+  id: String!
+  game: GameInstance!
+  user: [GameUser!]!
+  bid: Bid!
+  spellType: String!
+  edge: Edge!
+}
+
+type TransporationCounter {
+  id: String!
+  game: GameInstance!
+  user: [GameUser!]!
+  bid: Bid!
+  counterType: String!
+  edge: Edge!
+}
+
+type GoldPiece {
+  id: String!
+  game: GameInstance!
+  user: [GameUser!]!
+  bid: Bid!
+  amount: Float!
+  edge: Edge!
+}
+
+type Obstacle {
+  id: String!
+  game: GameInstance!
+  user: [GameUser!]!
+  bid: Bid!
+  obstacleType: String!
+  edge: Edge!
+}
+
+type Bid {
+  item: ItemUnit!
+  bidAmount: Float!
+  players: GameUser!
+}
+
+type LSUser {
+  name: String!
+  preferredColour: String!
+  role: String!
+}
+
+type GameUser {
+  name: String!
+  game: GameInstance!
+  coins: Float!
+  color: String!
+  visitedTowns: [Town!]!
+  currentTown: Town!
+  ownableUnits: [OwnableUnit!]!
+  bids: [Bid!]!
+}
+
+type AuthInfo {
+  access_token: String!
+  token_type: String!
+  refresh_token: String!
+  expires_in: Float!
+  scope: String!
+  lsUser: LSUser!
 }
 
 type GameSession {
