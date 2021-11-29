@@ -1,7 +1,6 @@
 import './Wait.scss';
 
 export default function Wait({room, username, beginGame}) {
-  console.log(room);
     return (
         <section className='wait'>
             <p className='wait__game'>{room.game.toUpperCase()}</p>

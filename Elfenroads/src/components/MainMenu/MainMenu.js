@@ -11,8 +11,7 @@ export default function MainMenu({setGame}) {
             <Scene />
             <div className='main-menu__content'>
                 <img className='main-menu__logo' src={logo} alt='Elfenroads' height='80' />
-                <Modal setGame={
-    setGame} />
+                <Modal setGame={setGame} />
             </div>
         </div>
     );
