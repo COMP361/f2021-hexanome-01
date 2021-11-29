@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import axios from 'axios';
-import { GSDetail } from 'src/gs/gs.model';
-import { GameSession } from './gamesession.model';
+import {GSDetail} from 'src/gs/gs.model';
+
+import {GameSession} from './gamesession.model';
 
 const instance = axios.create({
   baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/api/sessions/',
@@ -16,11 +17,11 @@ export class GameSessionService {
   }
 
   async createSession(
-    access_token: string,
-    creator?: string,
-    game?: string,
-    savegame?: string,
-  ): Promise<string> {
+      access_token: string,
+      creator?: string,
+      game?: string,
+      savegame?: string,
+      ): Promise<string> {
     let data = null;
 
     if (creator && game && savegame) {
@@ -32,13 +33,13 @@ export class GameSessionService {
     }
 
     return instance
-      .post(
-        encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'),
-        data,
-      )
-      .then((response) => {
-        return response.data as string;
-      });
+        .post(
+            encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'),
+            data,
+            )
+        .then((response) => {
+          return response.data as string;
+        });
   }
 
   async getSession(session_id: string): Promise<GameSession> {
@@ -55,34 +56,36 @@ export class GameSessionService {
   }
 
   async joinSession(
-    session_id: string,
-    name: string,
-    access_token: string,
-  ): Promise<string> {
+      session_id: string,
+      name: string,
+      access_token: string,
+      ): Promise<string> {
     return instance
-      .put(
-        encodeURI(
-          `${session_id}/players/${name}?access_token=${access_token}`,
-        ).replace(/\+/g, '%2B'),
-      )
-      .then((response) => {
-        return response.data as string;
-      });
+        .put(
+            encodeURI(
+                `${session_id}/players/${name}?access_token=${access_token}`,
+                )
+                .replace(/\+/g, '%2B'),
+            )
+        .then((response) => {
+          return response.data as string;
+        });
   }
 
   async exitSession(
-    session_id: string,
-    name: string,
-    access_token: string,
-  ): Promise<string> {
+      session_id: string,
+      name: string,
+      access_token: string,
+      ): Promise<string> {
     return instance
-      .delete(
-        encodeURI(
-          `${session_id}/players/${name}?access_token=${access_token}`,
-        ).replace(/\+/g, '%2B'),
-      )
-      .then((response) => {
-        return response.data as string;
-      });
+        .delete(
+            encodeURI(
+                `${session_id}/players/${name}?access_token=${access_token}`,
+                )
+                .replace(/\+/g, '%2B'),
+            )
+        .then((response) => {
+          return response.data as string;
+        });
   }
 }

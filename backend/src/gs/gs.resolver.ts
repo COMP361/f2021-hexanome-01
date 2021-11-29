@@ -1,7 +1,9 @@
-import { Inject } from '@nestjs/common';
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { GS, GSDetail, SaveGame } from './gs.model';
-import { GSService } from './gs.service';
+import {Inject} from '@nestjs/common';
+import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
+
+import {GS, GSDetail, SaveGame} from './gs.model';
+import {GSService} from './gs.service';
+
 @Resolver()
 export class GSResolver {
   constructor(@Inject(GSService) private gsService: GSService) {}
@@ -18,60 +20,60 @@ export class GSResolver {
 
   @Mutation(() => String)
   async registerGameService(
-    @Args('location') location: string,
-    @Args('maxSessionPlayers') maxSessionPlayers: string,
-    @Args('minSessionPlayers') minSessionPlayers: string,
-    @Args('name') name: string,
-    @Args('displayname') displayName: string,
-    @Args('webSupport') webSupport: string,
-  ): Promise<string> {
+      @Args('location') location: string,
+      @Args('maxSessionPlayers') maxSessionPlayers: string,
+      @Args('minSessionPlayers') minSessionPlayers: string,
+      @Args('name') name: string,
+      @Args('displayname') displayName: string,
+      @Args('webSupport') webSupport: string,
+      ): Promise<string> {
     return this.gsService.registerGameService(
-      location,
-      maxSessionPlayers,
-      minSessionPlayers,
-      name,
-      displayName,
-      webSupport,
+        location,
+        maxSessionPlayers,
+        minSessionPlayers,
+        name,
+        displayName,
+        webSupport,
     );
   }
 
   @Mutation(() => String)
   async deleteGameService(
-    @Args('name') name: string,
-    @Args('access_token') access_token: string,
-  ): Promise<string> {
+      @Args('name') name: string,
+      @Args('access_token') access_token: string,
+      ): Promise<string> {
     return this.gsService.deleteGameService(name, access_token);
   }
 
   @Query(() => [SaveGame])
   async SaveGames(
-    @Args('name') name: string,
-    @Args('access_token') access_token: string,
-  ): Promise<SaveGame[]> {
+      @Args('name') name: string,
+      @Args('access_token') access_token: string,
+      ): Promise<SaveGame[]> {
     return this.gsService.getAllSaveGames(name, access_token);
   }
 
   @Query(() => SaveGame)
   async SaveGame(
-    @Args('name') name: string,
-    @Args('savegameid') savegameid: string,
-    @Args('access_token') access_token: string,
-  ): Promise<SaveGame> {
+      @Args('name') name: string,
+      @Args('savegameid') savegameid: string,
+      @Args('access_token') access_token: string,
+      ): Promise<SaveGame> {
     return this.gsService.getSaveGame(name, savegameid, access_token);
   }
 
   @Mutation(() => String)
   async registerSaveGame(
-    @Args('name') name: string,
-    @Args('savegameid') savegameid: string,
-    @Args('access_token') access_token: string,
-    @Args('players') players: string,
-  ): Promise<string> {
+      @Args('name') name: string,
+      @Args('savegameid') savegameid: string,
+      @Args('access_token') access_token: string,
+      @Args('players') players: string,
+      ): Promise<string> {
     return this.gsService.registerSaveGame(
-      name,
-      savegameid,
-      access_token,
-      players,
+        name,
+        savegameid,
+        access_token,
+        players,
     );
   }
 }

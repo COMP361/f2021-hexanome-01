@@ -1,21 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { GSDetail } from 'src/gs/gs.model';
-import { LSUser } from 'src/user/user.model';
+import {Field, ObjectType} from '@nestjs/graphql';
+import {GSDetail} from 'src/gs/gs.model';
+import {LSUser} from 'src/user/user.model';
 
 @ObjectType()
 export class GameSession {
-  @Field()
-  creator: string;
+  @Field() creator: string;
 
-  @Field()
-  gameParameters: GSDetail;
+  @Field() gameParameters: GSDetail;
 
-  @Field()
-  launched: boolean;
+  @Field() launched: boolean;
 
-  @Field(() => [LSUser])
-  players: LSUser[];
+  @Field(() => [LSUser]) players: LSUser[];
 
-  @Field()
-  savegameid: string;
+  @Field() savegameid: string;
 }
