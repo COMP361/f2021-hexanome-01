@@ -2,27 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-<<<<<<< HEAD
-=======
-type Town {
-  gameInstance: GameInstance!
-  name: String!
-  gold: Float!
-  visitedUsers: [GameUser!]!
-  currentPlayers: [GameUser!]!
-  Edges: [Edge!]!
-}
-
-type Edge {
-  town: Town!
-  edgeType: String!
-  spells: [MagicSpell!]!
-  counter: [TransporationCounter!]!
-  goldPiece: [GoldPiece!]!
-  obstacle: [Obstacle!]!
-}
-
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
 type GS {
   name: String!
   displayname: String!
@@ -43,7 +22,6 @@ type SaveGame {
   savegameid: String!
 }
 
-<<<<<<< HEAD
 type Town {
   session_id: GameSession!
   name: String!
@@ -60,47 +38,24 @@ type Edge {
   counter: [TransporationCounter!]!
   goldPiece: [GoldPiece!]!
   obstacle: [Obstacle!]!
-=======
-type GameInstance {
-  name: String!
-  players: [GameUser!]!
-  lobbyName: String!
-  currentPhase: String!
-  numOfPlayers: Float!
-  startingPlayer: GameUser!
-  ownableUnits: [OwnableUnit!]!
-  towns: [Town!]!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
 }
 
 type OwnableUnit {
   id: String!
-<<<<<<< HEAD
   session_id: GameSession!
-=======
-  game: GameInstance!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
   user: [GameUser!]!
 }
 
 type ItemUnit {
   id: String!
-<<<<<<< HEAD
   session_id: GameSession!
-=======
-  game: GameInstance!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
   user: [GameUser!]!
   bid: Bid!
 }
 
 type MagicSpell {
   id: String!
-<<<<<<< HEAD
   session_id: GameSession!
-=======
-  game: GameInstance!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
   user: [GameUser!]!
   bid: Bid!
   spellType: String!
@@ -109,11 +64,7 @@ type MagicSpell {
 
 type TransporationCounter {
   id: String!
-<<<<<<< HEAD
   session_id: GameSession!
-=======
-  game: GameInstance!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
   user: [GameUser!]!
   bid: Bid!
   counterType: String!
@@ -122,11 +73,7 @@ type TransporationCounter {
 
 type GoldPiece {
   id: String!
-<<<<<<< HEAD
   session_id: GameSession!
-=======
-  game: GameInstance!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
   user: [GameUser!]!
   bid: Bid!
   amount: Float!
@@ -135,11 +82,7 @@ type GoldPiece {
 
 type Obstacle {
   id: String!
-<<<<<<< HEAD
   session_id: GameSession!
-=======
-  game: GameInstance!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
   user: [GameUser!]!
   bid: Bid!
   obstacleType: String!
@@ -156,15 +99,11 @@ type LSUser {
   name: String!
   preferredColour: String!
   role: String!
-<<<<<<< HEAD
   gameSession: GameSession!
-=======
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
 }
 
 type GameUser {
   name: String!
-<<<<<<< HEAD
   session_id: GameSession!
   coins: Float!
   color: String!
@@ -172,24 +111,6 @@ type GameUser {
   currentTown: Town
   ownableUnits: [OwnableUnit!]
   bids: [Bid!]
-=======
-  game: GameInstance!
-  coins: Float!
-  color: String!
-  visitedTowns: [Town!]!
-  currentTown: Town!
-  ownableUnits: [OwnableUnit!]!
-  bids: [Bid!]!
-}
-
-type AuthInfo {
-  access_token: String!
-  token_type: String!
-  refresh_token: String!
-  expires_in: Float!
-  scope: String!
-  lsUser: LSUser!
->>>>>>> 5483422a31938f9dfcfaa6b3919216e2ab1fbd71
 }
 
 type GameSession {
