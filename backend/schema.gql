@@ -2,23 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type GS {
-  name: String!
-  displayname: String!
-}
-
-type GSDetail {
-  name: String!
-  displayname: String!
-  location: String!
-  maxSessionPlayers: String!
-  minSessionPlayers: String!
-  webSupport: Boolean!
-}
-
-type SaveGame {
-  game: GSDetail!
-  players: String!
+type GameSession {
+  creator: String!
+  gameParameters: [GSDetail!]!
+  launched: Boolean!
+  players: [LSUser!]!
   savegameid: String!
 }
 
@@ -38,6 +26,30 @@ type Edge {
   counter: [TransporationCounter!]!
   goldPiece: [GoldPiece!]!
   obstacle: [Obstacle!]!
+}
+
+type LSUser {
+  name: String!
+  preferredColour: String!
+  role: String!
+  gameSession: GameSession!
+}
+
+type GameUser {
+  name: String!
+  session_id: GameSession!
+  coins: Float!
+  color: String!
+  score: Float!
+  currentTown: Town
+  ownableUnits: [OwnableUnit!]
+  bids: [Bid!]
+}
+
+type Bid {
+  item: ItemUnit!
+  bidAmount: Float!
+  players: GameUser!
 }
 
 type OwnableUnit {
@@ -89,35 +101,23 @@ type Obstacle {
   edge: Edge!
 }
 
-type Bid {
-  item: ItemUnit!
-  bidAmount: Float!
-  players: GameUser!
-}
-
-type LSUser {
+type GS {
   name: String!
-  preferredColour: String!
-  role: String!
-  gameSession: GameSession!
+  displayname: String!
 }
 
-type GameUser {
+type GSDetail {
   name: String!
-  session_id: GameSession!
-  coins: Float!
-  color: String!
-  score: Float!
-  currentTown: Town
-  ownableUnits: [OwnableUnit!]
-  bids: [Bid!]
+  displayname: String!
+  location: String!
+  maxSessionPlayers: String!
+  minSessionPlayers: String!
+  webSupport: Boolean!
 }
 
-type GameSession {
-  creator: String!
-  gameParameters: GSDetail!
-  launched: Boolean!
-  players: [LSUser!]!
+type SaveGame {
+  game: GSDetail!
+  players: String!
   savegameid: String!
 }
 
