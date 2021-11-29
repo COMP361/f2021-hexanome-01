@@ -46,10 +46,29 @@ type GameUser {
   bids: [Bid!]
 }
 
+<<<<<<< HEAD
 type Bid {
   item: ItemUnit!
   bidAmount: Float!
   players: GameUser!
+=======
+type Town {
+  session_id: GameSession!
+  name: String!
+  gold: Float!
+  townPieces: [String!]!
+  currentPlayers: [GameUser!]!
+  Edges: [Edge!]!
+}
+
+type Edge {
+  town: Town!
+  edgeType: String!
+  spells: [MagicSpell!]!
+  counter: [TransporationCounter!]!
+  goldPiece: [GoldPiece!]!
+  obstacle: [Obstacle!]!
+>>>>>>> 615a25c10f45af00ae0e7f171852007af452787d
 }
 
 type OwnableUnit {
@@ -108,6 +127,7 @@ type GS {
 
 type GSDetail {
   name: String!
+<<<<<<< HEAD
   displayname: String!
   location: String!
   maxSessionPlayers: String!
@@ -118,6 +138,29 @@ type GSDetail {
 type SaveGame {
   game: GSDetail!
   players: String!
+=======
+  preferredColour: String!
+  role: String!
+  gameSession: GameSession!
+}
+
+type GameUser {
+  name: String!
+  session_id: GameSession!
+  coins: Float!
+  color: String!
+  score: Float!
+  currentTown: Town
+  ownableUnits: [OwnableUnit!]
+  bids: [Bid!]
+}
+
+type GameSession {
+  creator: String!
+  gameParameters: GSDetail!
+  launched: Boolean!
+  players: [LSUser!]!
+>>>>>>> 615a25c10f45af00ae0e7f171852007af452787d
   savegameid: String!
 }
 
