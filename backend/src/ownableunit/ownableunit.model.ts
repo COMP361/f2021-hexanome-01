@@ -54,9 +54,8 @@ export enum TravelCardType {
 @ChildEntity()
 @TableInheritance({ column: { type: "varchar", name: "type" } })
 export class ItemUnit extends OwnableUnit {
-    @Field()
+    @Field(() => Bid)
     @OneToOne(() => Bid, bid => bid.item)
-    @JoinColumn()
     bid: Bid
 }
 

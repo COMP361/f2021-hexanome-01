@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Bid {
-  id: String!
-  item: ItemUnit!
-  bidAmount: Float!
-}
-
 type Town {
   gameInstance: GameInstance!
   name: String!
@@ -24,6 +18,37 @@ type Edge {
   counter: [TransporationCounter!]!
   goldPiece: [GoldPiece!]!
   obstacle: [Obstacle!]!
+}
+
+type GS {
+  name: String!
+  displayname: String!
+}
+
+type GSDetail {
+  name: String!
+  displayname: String!
+  location: String!
+  maxSessionPlayers: String!
+  minSessionPlayers: String!
+  webSupport: Boolean!
+}
+
+type SaveGame {
+  game: GSDetail!
+  players: String!
+  savegameid: String!
+}
+
+type GameInstance {
+  name: String!
+  players: [GameUser!]!
+  lobbyName: String!
+  currentPhase: String!
+  numOfPlayers: Float!
+  startingPlayer: GameUser!
+  ownableUnits: [OwnableUnit!]!
+  towns: [Town!]!
 }
 
 type OwnableUnit {
@@ -75,35 +100,10 @@ type Obstacle {
   edge: Edge!
 }
 
-type GS {
-  name: String!
-  displayname: String!
-}
-
-type GSDetail {
-  name: String!
-  displayname: String!
-  location: String!
-  maxSessionPlayers: String!
-  minSessionPlayers: String!
-  webSupport: Boolean!
-}
-
-type SaveGame {
-  game: GSDetail!
-  players: String!
-  savegameid: String!
-}
-
-type GameInstance {
-  name: String!
-  players: [GameUser!]!
-  lobbyName: String!
-  currentPhase: String!
-  numOfPlayers: Float!
-  startingPlayer: GameUser!
-  ownableUnits: [OwnableUnit!]!
-  towns: [Town!]!
+type Bid {
+  item: ItemUnit!
+  bidAmount: Float!
+  players: GameUser!
 }
 
 type LSUser {
@@ -113,7 +113,6 @@ type LSUser {
 }
 
 type GameUser {
-  id: String!
   name: String!
   game: GameInstance!
   coins: Float!
@@ -121,6 +120,7 @@ type GameUser {
   visitedTowns: [Town!]!
   currentTown: Town!
   ownableUnits: [OwnableUnit!]!
+  bids: [Bid!]!
 }
 
 type AuthInfo {

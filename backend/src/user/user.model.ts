@@ -1,8 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Bid } from 'src/bid/bid.model';
 import { GameInstance } from 'src/gs/gs.model';
 import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
 import { Town } from 'src/town/town.model';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 
 export enum ColorType {
   Blue = "Blue",
@@ -30,15 +31,11 @@ export class LSUser {
 export class GameUser {
 
   @Field()
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Field()
-  @Column()
+  @PrimaryColumn()
   name: string;
 
   @Field()
-  @ManyToOne(() => GameInstance, game => game.players)
+  @ManyToOne(() => GameInstance, game => game.players, {primary: true})
   game: GameInstance;
 
   @Field()
@@ -61,5 +58,8 @@ export class GameUser {
   @OneToMany(() => OwnableUnit, unit => unit.user)
   ownableUnits: OwnableUnit[]
 
+  @Field(() => [Bid])
+  @ManyToMany(() => Bid, bid => bid.players)
+  bids: Bid[]
 }
 
