@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  uri: 'http://elfenroads.westus3.cloudapp.azure.com:3454/graphql',
   cache: new InMemoryCache(),
 });
 
