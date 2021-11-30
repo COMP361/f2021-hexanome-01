@@ -1,26 +1,8 @@
-FROM node:lts-alpine AS BUILD_IMAGE
-
-ENV NODE_ENV build
-
-USER node
-WORKDIR /home/node
-
-COPY . /home/node
-
-RUN npm install \
-    && npm run build \
-    && npm prune --production
-
-
-FROM node:lts-alpine
-
-ENV NODE_ENV production
-
-USER node
-WORKDIR /home/node
-
-COPY --from=builder /home/node/package*.json /home/node/
-COPY --from=builder /home/node/node_modules/ /home/node/node_modules/
-COPY --from=builder /home/node/dist/ /home/node/dist/
-
-CMD ["node", "dist/server.js"]
+FROM node:14.18.1-alpine AS BUILDER
+WORKDIR /app
+ADD package.json /app/package.json
+RUN npm config set registry http://registry.npmjs.org
+RUN npm install
+ADD . /app
+EXPOSE 3000
+CMD ["npm", "run", "start"]

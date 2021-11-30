@@ -1,29 +1,26 @@
-version: '3.8'
+version: '3.3'
 
 services:
-  db:
-    container_name: backend-db
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'elfenroad'
-      MYSQL_USER: 'comp361'
-      MYSQL_PASSWORD: 'elfenroad'
-      MYSQL_ROOT_PASSWORD: 'elfenroads'
-    expose:
-      - '3306' 
-    volumes:
-      - db-data:/var/lib/mysql/data
+  # db:
+    # container_name: backend-db
+    # image: mysql:5.7
+    # restart: always
+    # environment:
+    #   MYSQL_DATABASE: 'elfenroad'
+    #   MYSQL_USER: 'comp361'
+    #   MYSQL_PASSWORD: 'elfenroad'
+    #   MYSQL_ROOT_PASSWORD: 'elfenroads'
+    # ports:
+    #   - '3306:3306'
+    # command: [--explicit_defaults_for_timestamp,--ignore-db-dir=lost+found] 
   
   backend:
     container_name: backend-api
     build:
       context: .
-      dockerfile: Dockerfile-ls-nest
+      dockerfile: Dockerfile-ls-nest 
     ports:
-      - "3453:3000"
+      - "3454:3000"
     depends_on:
       - db
-volumes:
-  db-data:
-
+    restart: unless-stopped
