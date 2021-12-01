@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { AuthInfo } from './auth.model';
+import { AuthInfo } from './authmodel';
 const instance = axios.create({
   baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
 });

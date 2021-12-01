@@ -5,9 +5,10 @@ import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { GameSessionModule } from './gamesession/gamesession.module';
-import { GameModule } from './game/gamesvc.module';
+// import { GameModule } from './game/gamesvc.module';
 import { UserModule } from './user/user.module';
 import { TownModule } from './town/town.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -19,16 +20,20 @@ import { TownModule } from './town/town.module';
       password: 'elfenroad',
       database: 'elfenroad',
       entities: ['dist/**/*.model.js'],
-      synchronize: false,
+      synchronize: true,
+      "migrations": ["dist/migrations/*{.ts,.js}"],
+      "migrationsTableName": "migrations_typeorm",
+      "migrationsRun": true
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
     }),
     AuthModule,
-    GameModule,
+    // GameModule,
     UserModule,
     GameSessionModule,
-    TownModule
+    TownModule,
+    SocketModule
   ],
   providers: [AppService, AppResolver],
 })

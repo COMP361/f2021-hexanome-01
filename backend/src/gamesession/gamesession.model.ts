@@ -1,21 +1,62 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { GSDetail } from 'src/game/gamesvc.model';
-import { LSUser } from 'src/user/user.model';
+// import { GSDetail } from 'src/game/gamesvc.model';
+import { Town } from 'src/town/town.model';
+import { GameUser } from 'src/user/user.model';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+// @ObjectType()
+// export class GameSession {
+//   @Field()
+//   creator: string;
+
+//   @Field(() => [GSDetail])
+//   gameParameters: GSDetail;
+
+//   @Field()
+//   launched: boolean;
+
+//   @Field(() => [LSUser])
+//   players: LSUser[];
+
+//   @Field()
+//   savegameid: string;
+// }
+
 
 @ObjectType()
+@Entity()
 export class GameSession {
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  session_id: string;
+
+  @Column()
+  @Field()
+  displayName: string;
+  @Column()
   @Field()
   creator: string;
 
-  @Field(() => [GSDetail])
-  gameParameters: GSDetail;
-
-  @Field()
+  @Column()
+  @Field({defaultValue: false})
   launched: boolean;
 
-  @Field(() => [LSUser])
-  players: LSUser[];
+  @Field(() => [GameUser], {nullable: true})
+  @OneToMany(() => GameUser, (user) => user.session_id, {nullable: true})
+  players: GameUser[];
 
   @Field()
-  savegameid: string;
+  @Column()
+  minSessionPlayers: number;
+
+  @Field()
+  @Column()
+  maxSessionPlayers: number;
+
+  @Field(() => [Town])
+  @OneToMany(() => Town, town => town.session_id)
+  towns: Town[]
+
+
+
 }

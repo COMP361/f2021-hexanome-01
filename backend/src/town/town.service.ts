@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import e from "cors";
 import { GameUser } from "src/user/user.model";
 import { Repository } from "typeorm";
 import { Town } from "./town.model";
@@ -97,7 +96,8 @@ export class TownService {
 
         new_town.currentPlayers.push(player);
         previous_town.currentPlayers.splice(previous_town.currentPlayers.indexOf(player), 1);
-
+        await this.townRepository.save(previous_town);
+        await this.townRepository.save(new_town);
         return [previous_town, new_town];
     }
 

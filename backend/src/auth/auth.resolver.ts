@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { Args, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
 import { LSUser } from 'src/user/user.model';
 import { UserService } from 'src/user/user.service';
-import { AuthInfo } from './auth.model';
+import { AuthInfo } from './authmodel';
 import { AuthService } from './auth.service';
 
 @Resolver(() => AuthInfo)
