@@ -2,7 +2,7 @@ import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from
 import { Server, Socket } from "socket.io";
 import { joinLobbyDto } from "./socket";
 
-@WebSocketGateway(4243, {
+@WebSocketGateway(3001, {
     cors: {
         origin: "*",
     }

@@ -63,11 +63,39 @@ export class GameSessionResolver {
     return await this.gameSessionService.getSession(session_id);
   }
 
-  // @Mutation(() => GameSession)
-  // async LaunchSession(@Args('session_id') session_id: string): Promise<GameSession> {
-  //   return await this.gameSessionService.launchSession(session_id);
-  // }
+  @Mutation(() => String)
+  async LaunchSession(@Args('session_id') session_id: string,
+    @Args('access_token') access_token: string
+  ): Promise<String> {
+    return await this.gameSessionService.launchSession(session_id, access_token);
+  }
 
+  @Mutation(() => String)
+  async joinSession(
+    @Args('session_id') session_id: string,
+    @Args('name') name: string,
+    @Args('access_token') access_token: string,
+  ) {
+    return await this.gameSessionService.joinSession(
+      session_id,
+      name,
+      access_token,
+    );
+  }
 
-
+  @Mutation(() => String)
+  async exitSession(
+    @Args('session_id') session_id: string,
+    @Args('name') name: string,
+    @Args('access_token') access_token: string,
+  ) {
+    return await this.gameSessionService.exitSession(
+      session_id,
+      name,
+      access_token,
+    );
+  }
 }
+
+
+

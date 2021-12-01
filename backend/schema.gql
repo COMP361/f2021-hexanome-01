@@ -85,6 +85,9 @@ type Mutation {
   createGameUser(color: String!, session_id: String!, name: String!): GameUser!
   deleteGameUser(session_id: String!, name: String!): String!
   createSession(savegame: String, game: String, creator: String, access_token: String!): String!
+  LaunchSession(access_token: String!, session_id: String!): String!
+  joinSession(access_token: String!, name: String!, session_id: String!): String!
+  exitSession(access_token: String!, name: String!, session_id: String!): String!
   registerGameService(displayname: String!, name: String!, minSessionPlayers: String!, maxSessionPlayers: String!, location: String!): String!
   deleteGameService(access_token: String!, name: String!): String!
   registerSaveGame(players: String!, access_token: String!, savegameid: String!, name: String!): String!

@@ -68,12 +68,21 @@ export class GameSessionService {
       });
   }
 
+  async launchSession(
+    session_id:string,
+    access_token: string
+  ): Promise<string> {
+    return await instance.post(encodeURI(`${session_id}?access_token${access_token}`).replace(/\+/g, '%2B')).then((response) => {
+      return response.data as string;
+    });
+  }
+
   async joinSession(
     session_id: string,
     name: string,
     access_token: string,
   ): Promise<string> {
-    return instance
+    return await instance
       .put(
         encodeURI(
           `${session_id}/players/${name}?access_token=${access_token}`,
