@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { GS, GSDetail, SaveGame } from './gs.model';
+import { GS, GSDetail, SaveGame } from './gamesvc.model';
 import axios from 'axios';
 
 const instance = axios.create({
   baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
 });
 @Injectable()
-export class GSService {
+export class GameService {
+  constructor() {}
+
   async getAllGameService(): Promise<GS[]> {
     return instance.get('api/gameservices').then((response) => {
       return response.data as GS[];
@@ -14,14 +16,9 @@ export class GSService {
   }
 
   async getGameServiceDetail(name: string): Promise<GSDetail> {
-    return instance
-      .get(name)
-      .then((response) => {
-        return response.data as GSDetail;
-      })
-      .catch(() => {
-        return new GSDetail();
-      });
+    return instance.get(name).then((response) => {
+      return response.data as GSDetail;
+    });
   }
 
   async registerGameService(

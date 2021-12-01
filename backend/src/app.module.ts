@@ -5,8 +5,9 @@ import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { GameSessionModule } from './gamesession/gamesession.module';
-import { GameServiceModule } from './gs/gs.module';
+import { GameModule } from './game/gamesvc.module';
 import { UserModule } from './user/user.module';
+import { TownModule } from './town/town.module';
 
 @Module({
   imports: [
@@ -24,9 +25,10 @@ import { UserModule } from './user/user.module';
       autoSchemaFile: 'schema.gql',
     }),
     AuthModule,
-    GameServiceModule,
+    GameModule,
     UserModule,
     GameSessionModule,
+    TownModule
   ],
   providers: [AppService, AppResolver],
 })

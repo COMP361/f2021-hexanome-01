@@ -1,4 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
+import { Town } from 'src/town/town.model';
+import { GameUser } from 'src/user/user.model';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+
+export enum GamePhase {
+  ReadyToJoin = "ReadyToJoin",
+  Rounds = "Rounds",
+  Completed = "Completed"
+}
 
 @ObjectType()
 export class GS {
