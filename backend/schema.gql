@@ -2,10 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type GS {
+  name: String!
+  displayName: String!
+}
+
+type GSDetail {
+  name: String!
+  displayname: String!
+  location: String!
+  maxSessionPlayers: String!
+  minSessionPlayers: String!
+  webSupport: Boolean!
+}
+
+type SaveGame {
+  game: GSDetail!
+  players: String!
+  savegameid: String!
+}
+
 type LSUser {
   name: String!
   preferredColour: String!
-  role: String!
   gameSession: GameSession!
 }
 
@@ -26,14 +45,11 @@ type Town {
 }
 
 type GameSession {
-  session_id: String!
-  displayName: String!
   creator: String!
+  gameParameters: [GSDetail!]!
   launched: Boolean!
-  players: [GameUser!]
-  minSessionPlayers: Float!
-  maxSessionPlayers: Float!
-  towns: [Town!]!
+  players: [LSUser!]!
+  savegameid: String!
 }
 
 type AuthInfo {
@@ -52,8 +68,12 @@ type Query {
   LSUser(access_token: String!): LSUser!
   GameUser(session_id: String!, name: String!): GameUser!
   AllGameUser(name: String!): [GameUser!]!
-  AllSessions: [GameSession!]!
+  AllSessions: String!
   Session(session_id: String!): GameSession!
+  AllGameServices: [GS!]!
+  GameServiceDetail(name: String!): GSDetail!
+  SaveGames(access_token: String!, name: String!): [SaveGame!]!
+  SaveGame(access_token: String!, savegameid: String!, name: String!): SaveGame!
   Town(name: String!, session_id: String!): Town!
   AllTowns(session_id: String!): [Town!]!
 }
@@ -64,8 +84,10 @@ type Mutation {
   changeLSUserPassword(newPassword: String!, oldPassword: String!, access_token: String!, name: String!): String!
   createGameUser(color: String!, session_id: String!, name: String!): GameUser!
   deleteGameUser(session_id: String!, name: String!): String!
-  createSession(displayName: String!, maxSessionPlayer: Float!, minSessionPlayer: Float!, creator: String!): GameSession!
-  LaunchSession(session_id: String!): GameSession!
+  createSession(savegame: String, game: String, creator: String, access_token: String!): String!
+  registerGameService(webSupport: String!, displayname: String!, name: String!, minSessionPlayers: String!, maxSessionPlayers: String!, location: String!): String!
+  deleteGameService(access_token: String!, name: String!): String!
+  registerSaveGame(players: String!, access_token: String!, savegameid: String!, name: String!): String!
   createTowns(session_id: String!): [Town!]!
   moveToNewTown(username: String!, new_town: String!, old_town: String!, session_id: String!): [Town!]!
 }

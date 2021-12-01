@@ -31,7 +31,7 @@ import {
 export class Town {
 
   @Field()
-  @ManyToOne(() => GameSession, session => session.towns, {primary: true})
+  @PrimaryColumn({unique:false})
   session_id: string;
 
   @Field()

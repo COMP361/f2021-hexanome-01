@@ -22,8 +22,6 @@ export class LSUser {
   @Field()
   preferredColour: string;
 
-  @Field()
-  role: string;
 }
 
 @ObjectType()
@@ -34,7 +32,7 @@ export class GameUser {
   name: string;
 
   @Field(() => GameSession)
-  @ManyToOne(() => GameSession, session => session.players, {primary: true})
+  @PrimaryColumn({unique:false})
   session_id: string;
 
   @Field({defaultValue: 0})

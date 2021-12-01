@@ -5,10 +5,11 @@ import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { GameSessionModule } from './gamesession/gamesession.module';
-// import { GameModule } from './game/gamesvc.module';
+import { GameModule } from './game/gamesvc.module';
 import { UserModule } from './user/user.module';
 import { TownModule } from './town/town.module';
 import { SocketModule } from './socket/socket.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -29,12 +30,13 @@ import { SocketModule } from './socket/socket.module';
       autoSchemaFile: 'schema.gql',
     }),
     AuthModule,
-    // GameModule,
+    GameModule,
     UserModule,
     GameSessionModule,
     TownModule,
     SocketModule
   ],
   providers: [AppService, AppResolver],
+  controllers: [AppController]
 })
 export class AppModule {}
