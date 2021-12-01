@@ -27,12 +27,11 @@ export class GameService {
     minSessionPlayers: string,
     name: string,
     displayname: string,
-    webSupport: string,
   ): Promise<string> {
     const data = {
       location: location,
-      maxSessionPlayers: 5,
-      minSessionPlayers: 5,
+      maxSessionPlayers: maxSessionPlayers,
+      minSessionPlayers: minSessionPlayers,
       name: name,
       displayName: displayname,
       webSupport: false,

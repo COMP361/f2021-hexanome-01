@@ -23,7 +23,6 @@ export class GameResolver {
     @Args('minSessionPlayers') minSessionPlayers: string,
     @Args('name') name: string,
     @Args('displayname') displayName: string,
-    @Args('webSupport') webSupport: string,
   ): Promise<string> {
     return this.gsService.registerGameService(
       location,
@@ -31,7 +30,6 @@ export class GameResolver {
       minSessionPlayers,
       name,
       displayName,
-      webSupport,
     );
   }
 
