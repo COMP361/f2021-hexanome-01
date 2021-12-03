@@ -12,8 +12,10 @@ export default function Join({wait}) {
         .then((res) => res.data.data)
         .then((data) => {
             const gamesObj = JSON.parse(data.AllSessions);
+            console.log(gamesObj);
             setGames(Object.keys(gamesObj).map((game, ind) => {
                 game = gamesObj[game];
+                console.log(game);
                 if (!game.launched) {
                     const gameObj = game;
                     gameObj['session_id'] = Object.keys(gamesObj)[ind];
@@ -41,7 +43,7 @@ export default function Join({wait}) {
             </table>
             <div className='join__table-wrapper'>
                 { games.length ? <table className='join__table'>
-                    {games.map((game) => (
+                    {games.map((game) => game && game.players.length < game.gameParameters.maxSessionPlayers && (
                         <tr className='join__row' key={game.session_id}>
                             <td className='join__td'>{game.gameParameters.displayName}</td>
                             <td className='join__td'>{game.creator}</td>
@@ -49,7 +51,7 @@ export default function Join({wait}) {
                             <td className='join__td'><button onClick={() => attemptJoin(game.session_id)} className='join__button'>Join Game</button></td>
                         </tr>
                     ))}
-                </table> : <p>No games available.</p>}
+                </table> : <i>No games available.</i>}
             </div>
         </section>
     );
