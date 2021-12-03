@@ -192,3 +192,71 @@ export const launchSession = (accessToken, sessionId) => axios.post(URL, {
         'Content-Type': 'application/json',
     },
 });
+
+export const createTowns = (sessionId) => axios.post(URL, {
+    query: `
+    mutation createTowns($session_id: String!) {
+        createTowns(
+            session_id: $session_id
+        ) {
+            name
+        }
+    }
+    `,
+    variables: {
+        session_id: sessionId,
+    },
+}, {
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+export const allTowns = (sessionId) => axios.post(URL, {
+    query: `
+    query AllTowns($session_id: String!) {
+        AllTowns(
+            session_id: $session_id
+        ) {
+            name
+            townPieces
+            currentPlayers {
+                name
+                color
+            }
+        }
+    }
+    `,
+    variables: {
+        session_id: sessionId,
+    },
+}, {
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+export const moveToNewTown = (username, newTown, oldTown, sessionId) => axios.post(URL, {
+    query: `
+    mutation moveToNewTown($username: String!, $new_town: String!, $old_town: String!, $session_id: String!) {
+        moveToNewTown(
+            username: $username
+            new_town: $new_town
+            old_town: $old_town
+            session_id: $session_id
+        ) {
+            name
+        }
+    }
+    `,
+    variables: {
+        username: username,
+        new_town: newTown,
+        old_town: oldTown,
+        session_id: sessionId,
+    },
+}, {
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});

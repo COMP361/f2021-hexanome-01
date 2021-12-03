@@ -10,3 +10,5 @@ export const storeSessionId = (id, cb) => {
     localStorage.setItem('sessionId', id);
     if (cb) cb();
 };
+
+export const colors = ['green', 'blue', 'purple', 'red', 'yellow', 'black'];
