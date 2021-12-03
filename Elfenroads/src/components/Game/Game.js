@@ -24,7 +24,8 @@ const game = {
   scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene],
 };
 
-export default function Game() {
+export default function Game({socket}) {
+  console.log(socket);
   const gameRef = useRef(null);
   const [initialize] = useState(true);
     return (

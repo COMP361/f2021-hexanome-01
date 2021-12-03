@@ -1,24 +1,26 @@
 import './Login.scss';
-import {useLazyQuery, useMutation} from '@apollo/client';
 import {useState} from 'react';
-import {POST_USER, VERIFY_USER} from '../../../../utils/queryUtils';
+import {newLSUser, verifyUser} from '../../../../utils/queryUtils';
 import {storeUser} from '../../../../utils/storageUtils';
 
 export default function Login({next}) {
      const [signupError, setSignupError] = useState('');
      const [loginError, setLoginError] = useState('');
 
-     // Handle response data from login
-     const handleLogin = (data) => {
-          if (data.verifyLSUser) {
-               storeUser(data.verifyLSUser);
-               next(data.verifyLSUser);
-          } else {
-               setLoginError('Incorrect username and/or password.');
-          }
+     // Verify a user given some password and username
+     const attemptVerify = (password, username) => {
+          verifyUser(password, username)
+          .then((res) => res.data.data)
+          .then((data) => {
+               if (data?.verifyLSUser) {
+                    storeUser(data.verifyLSUser);
+                    next(data.verifyLSUser);
+               } else {
+                    setLoginError('Incorrect username and/or password.');
+               }
+          })
+          .catch(console.log);
      };
-
-     const [getLoginResponse] = useLazyQuery(VERIFY_USER, {onCompleted: handleLogin, onError: handleLogin});
 
      // Check input validity and request user verification
      const attemptLogin = (e) => {
@@ -29,25 +31,11 @@ export default function Login({next}) {
           if (!username || !password) {
                setLoginError('Please fill in all fields.');
           } else {
-               getLoginResponse({variables: {password: password, username: username}});
+               attemptVerify(password, username);
           }
      };
 
-     // Handle response data from signup, automatically validate if successful
-     const handleSignup = (data) => {
-          const username = document.querySelector('#signupUsername').value;
-          const password = document.querySelector('#signupPassword').value;
-
-          if (data.createLSUser === 'Player added.') {
-               getLoginResponse({variables: {password: password, username: username}});
-          } else {
-               setSignupError(data.createLSUser);
-          }
-     };
-
-     const [getSignupResponse] = useMutation(POST_USER, {onCompleted: handleSignup});
-
-     // Check input validity and request user creation
+     // Check input validity and request user creation, then verify if successful
      const attemptSignup = (e) => {
            e.preventDefault();
 
@@ -60,7 +48,16 @@ export default function Login({next}) {
           } else if (password !== confirm) {
                setSignupError('Passwords do not match.');
           } else {
-               getSignupResponse({variables: {password: password, name: username}});
+               newLSUser(password, username)
+               .then((res) => res.data.data)
+               .then((data) => {
+                    if (data.createLSUser === 'Player added.') {
+                         attemptVerify(password, username);
+                    } else {
+                         setSignupError(data.createLSUser);
+                    }
+               })
+               .catch(console.log);
           }
      };
 

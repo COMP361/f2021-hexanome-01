@@ -3,19 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
-
-const client = new ApolloClient({
-  uri: 'http://elfenroads.westus3.cloudapp.azure.com:3454/graphql',
-  cache: new InMemoryCache(),
-});
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </ApolloProvider>,
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
   document.getElementById('root'),
 );
 

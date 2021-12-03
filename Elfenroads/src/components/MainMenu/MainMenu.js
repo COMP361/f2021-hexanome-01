@@ -5,13 +5,13 @@ import logo from '../../assets/img/elfenroads.png';
 import Modal from './Modal';
 import Scene from './Scene';
 
-export default function MainMenu({setGame}) {
+export default function MainMenu({setSocket}) {
     return (
         <div className='main-menu'>
             <Scene />
             <div className='main-menu__content'>
                 <img className='main-menu__logo' src={logo} alt='Elfenroads' height='80' />
-                <Modal setGame={setGame} />
+                <Modal setSocket={setSocket} />
             </div>
         </div>
     );

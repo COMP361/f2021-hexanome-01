@@ -1,10 +1,12 @@
+import {getUser} from '../../../../utils/storageUtils';
 import './Welcome.scss';
 
-export default function Welcome({user, create}) {
+export default function Welcome({create, join}) {
+  const {name} = getUser();
   return (
     <section className = 'welcome'>
-      <h1 className = 'welcome__title'>Welcome, <span className = 'welcome__user'>{user.lsUser.name}</span></h1>
-      <button className = 'welcome__button'>Join Game</button>
+      <h1 className = 'welcome__title'>Welcome, <span className = 'welcome__user'>{name}</span></h1>
+      <button className = 'welcome__button' onClick={join}>Join Game</button>
       <button className="welcome__button" onClick={create}>Create Game</button>
       <button className = 'welcome__button'>Load Game</button>
     </section>

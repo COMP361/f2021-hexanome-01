@@ -1,12 +1,25 @@
+import {registerGameService, createSession} from '../../../../utils/queryUtils';
+import {v4 as uuidv4} from 'uuid';
 import './Create.scss';
+import {getUser, storeSessionId} from '../../../../utils/storageUtils';
 
 export default function Create({wait}) {
+  const id = uuidv4();
+  const {accessToken, name} = getUser();
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    wait({
-      roomname: e.target.roomname.value,
-      game: e.target.game.value || 'elfenland',
-    });
+    const displayname = e.target.roomname.value;
+    const min = e.target.min.value;
+    const max = e.target.max.value;
+
+    if (displayname && min && max) {
+      registerGameService(displayname, id, `${min}`, `${max}`)
+      .then(() => createSession(id, name, accessToken))
+      .then((res) => res.data.data)
+      .then((data) => storeSessionId(data.createSession, wait))
+      .catch(console.log);
+    }
   };
 
   return (
@@ -22,6 +35,11 @@ export default function Create({wait}) {
           <div className = 'form__input form__input--radio'>
             <input type = 'radio' id = 'Elfengold' name = 'game' value = 'elfengold' />
             <label htmlFor = 'Elfengold'>Elfengold</label>
+          </div>
+          <div className=''>
+            <input className='form__input form__input--number' id='min' name='min' type='number' min="2" max="6" />-
+            <input className='form__input form__input--number' id='max' name='max' type='number' min="2" max="6" />
+            <label htmlFor='min'>players</label>
           </div>
         </div>
         <button className="form__button form__button--create">Create</button>

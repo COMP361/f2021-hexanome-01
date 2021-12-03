@@ -30,11 +30,16 @@
         &--radio {
             border: none !important;
             background-color: transparent !important;
+            width: 10rem !important;
             & > * {
                 &:first-child {
                     margin-right: 1rem;
                 }
             }
+        }
+        &--number {
+            max-width: 3rem;
+            margin: 0.5rem 0.5rem !important;
         }
     }
     &__group {
@@ -42,7 +47,7 @@
     }
     &__button {
         &--create {
-            margin: 1rem auto 0 auto;
+            margin: 1rem auto 0 auto !important;
         }
     }
     label {
