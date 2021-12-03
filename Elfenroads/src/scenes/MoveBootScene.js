@@ -52,6 +52,29 @@ export default class BoardGame extends Phaser.Scene {
     //   points: 0,
     // };
 
+    // adjacency list
+    Towns.elvenhold.setNextTowns([Towns.ergeren, Towns.strykhaven, Towns.virst, Towns.lapphalya, Towns.rivinia, Towns.beafa]);
+    Towns.feodor.setNextTowns([Towns.lapphalya, Towns.rivinia, Towns.throtmanni, Towns.albaran, Towns.dagamura]);
+    Towns.lapphalya.setNextTowns([Towns.dagamura, Towns.jxara, Towns.virst, Towns.feodor, Towns.rivinia, Towns.elvenhold]);
+    Towns.rivinia.setNextTowns([Towns.lapphalya, Towns.elvenhold, Towns.tichih, Towns.throtmanni, Towns.feodor]);
+    Towns.ergeren.setNextTowns([Towns.elvenhold, Towns.tichih]);
+    Towns.beafa.setNextTowns([Towns.elvenhold, Towns.strykhaven]);
+    Towns.strykhaven.setNextTowns([Towns.elvenhold, Towns.beafa, Towns.virst]);
+    Towns.virst.setNextTowns([Towns.elvenhold, Towns.strykhaven, Towns.lapphalyam, Towns.jxara]);
+    Towns.jxara.setNextTowns([Towns.mahdavikia, Towns.dagamura, Towns.lapphalyam, Towns.virst]);
+    Towns.mahdavikia.setNextTowns([Towns.jxara, Towns.grangor, Towns.dagamura]);
+    Towns.grangor.setNextTowns([Towns.mahdavikia, Towns.yttar, Towns.parundia]);
+    Towns.kihrimah.setNextTowns([Towns.dagamura]);
+    Towns.dagamura.setNextTowns([Towns.kihrimah, Towns.mahdavikia, Towns.jxara, Towns.lapphalya, Towns.feodor, Towns.albaran]);
+    Towns.albaran.setNextTowns([Towns.dagamura, Towns.feodor, Towns.parundia, Towns.wylhien, Towns.throtmanni]);
+    Towns.parundia.setNextTowns([Towns.albaran, Towns.wylhien, Towns.usselen, Towns.yttar, Towns.grangor]);
+    Towns.usselen.setNextTowns([Towns.parundia, Towns.yttar, Towns.wylhien]);
+    Towns.wylhien.setNextTowns([Towns.albaran, Towns.parundia, Towns.usselen, Towns.jaccaranda]);
+    Towns.jaccaranda.setNextTowns([Towns.throtmanni, Towns.tichih, Towns.wylhien]);
+    Towns.throtmanni.setNextTowns([Towns.tichih, Towns.rivinia, Towns.feodor, Towns.albaran, Towns.jaccaranda]);
+    Towns.tichih.setNextTowns([Towns.jaccaranda, Towns.throtmanni, Towns.rivinia, Towns.ergeren]);
+    Towns.yttar.setNextTowns([Towns.parundia, Towns.usselen, Towns.grangor]);
+
     let playerList = [];
 
     await new Promise((res) => singleSession(getSessionId())
@@ -87,9 +110,13 @@ export default class BoardGame extends Phaser.Scene {
           continue;
         }
         Towns[town].setTownPieceHolder(this.add.circle(
-            Towns[town].position[0] / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 15, 0x000000));
+            (Towns[town].position[0] -20) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 15, 0x000000));
         Towns[town].setTownPieces(this.add.circle(
-            Towns[town].position[0] / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 10, 0x007700));
+            (Towns[town].position[0] -20) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 10, 0x007700));
+        Towns[town].townPieceHolder2 = this.add.circle(
+            (Towns[town].position[0] + 20) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 15, 0x000000);
+        Towns[town].townPieces2 = this.add.circle(
+            (Towns[town].position[0] + 20) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 40) / 750 * this.cameras.main.height, 10, 0x0000BB);
       }
     }
     this.updateVis();
@@ -111,7 +138,6 @@ export default class BoardGame extends Phaser.Scene {
             Towns.elvenhold.position[0] / 1600 * this.cameras.main.width + ind * 10, Towns.elvenhold.position[1] / 750 * this.cameras.main.height, `boot-${this.players[player].color}`,
           )
           .setInteractive();
-
         this.elvenboots[player].setDisplaySize(this.cameras.main.width * 0.04, this.cameras.main.height * 0.08);
       } else {
         this.elvenboots[player] = this.add
@@ -138,7 +164,7 @@ export default class BoardGame extends Phaser.Scene {
       graphics.lineStyle(2, 0xffff00, 1);
       // highlight every draggable town
       for (const town in Towns) {
-        if (Towns[town].position) {
+        if (Towns[town].position && this.players[me].currentTown.nextTowns.indexOf(Towns[town]) != -1) {
           graphics.strokeRect(
               (Towns[town].position[0] - 30) / 1600 * this.cameras.main.width, (Towns[town].position[1] - 30) / 750 * this.cameras.main.height,
               zoneWidth, zoneHeight);
@@ -151,12 +177,7 @@ export default class BoardGame extends Phaser.Scene {
       for (const town in Towns) {
         if (Towns[town].position[0] / 1600 * this.cameras.main.width === dropZone.x &&
             Towns[town].position[1] / 750 * this.cameras.main.height === dropZone.y) {
-          if (Towns[town].townPieces.active) {
-            Towns[town].townPieces.destroy();
-            this.players[me].points++;
-            eventsCenter.emit('update-points', this.players[me].points);
-          }
-          moveToNewTown(me, Towns[town].name, this.players[me].currentTown.name, sessionId);
+          console.log(moveToNewTown(me, Towns[town].name, this.players[me].currentTown.name, sessionId));
           this.players[me].currentTown = Towns[town];
         }
       }
@@ -196,6 +217,21 @@ export default class BoardGame extends Phaser.Scene {
         const town = Towns[this.players[p].currentTown.name];
         const posX = town.position[0] / 1600 * this.cameras.main.width + this.players[p].indent;
         const posY = town.position[1] / 750 * this.cameras.main.height;
+        // console.log(this.players[p]);
+
+        if (this.players[p].color == 'green') {
+          if (Towns[this.players[p].currentTown.name].townPieces.active) {
+            Towns[this.players[p].currentTown.name].townPieces.destroy();
+            this.players[p].points++;
+            eventsCenter.emit('update-points', this.players[p].points);
+          }
+        } else {
+          if (Towns[this.players[p].currentTown.name].townPieces2.active) {
+            Towns[this.players[p].currentTown.name].townPieces2.destroy();
+            this.players[p].points++;
+            eventsCenter.emit('update-points', this.players[p].points);
+          }
+        }
 
         // if boot moved on the server, move the boot to the new town
         if (this.elvenboots[p].x !== posX || this.elvenboots[p].y !== posY) {
@@ -211,8 +247,14 @@ export default class BoardGame extends Phaser.Scene {
         if (Towns[town].townPieces.active) {
           Towns[town].townPieces.setVisible(!Towns[town].townPieces.visible);
         }
+        if (Towns[town].townPieces2.active) {
+          Towns[town].townPieces2.setVisible(!Towns[town].townPieces2.visible);
+        }
         if (Towns[town].townPieceHolder.active) {
           Towns[town].townPieceHolder.setVisible(!Towns[town].townPieceHolder.visible);
+        }
+        if (Towns[town].townPieceHolder2.active) {
+          Towns[town].townPieceHolder2.setVisible(!Towns[town].townPieceHolder2.visible);
         }
       }
     }

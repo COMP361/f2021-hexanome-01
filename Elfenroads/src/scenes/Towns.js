@@ -8,6 +8,8 @@ export class Town {
     this.currentPlayers = [];
     this.nextTowns = [];
     this.townPieceHolder = [];
+    this.townPieces2 = [];
+    this.townPieceHolder2 = [];
   }
 
   setTownPieceHolder(holder) {
