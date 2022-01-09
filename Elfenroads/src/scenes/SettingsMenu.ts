@@ -1,36 +1,33 @@
 import Phaser from 'phaser';
 
 export default class SettingsMenu {
-  /**
-   * @param {Phaser.Scene} scene
-   */
-  constructor(scene) {
-    // Initialize scene from input
+  scene: Phaser.Scene;
+  container: Phaser.GameObjects.Container
+  isOpen: boolean;
+
+  constructor(scene: Phaser.Scene) {
     this.scene = scene;
+    // Initialize container to group elements
+    const {width} = scene.scale;
+    this.container = scene.add.container(width + 300, 60);
 
     // Initialize/make settings menu hidden
-    const isOpen = false;
-    this.isOpen = isOpen;
-
-    // Initialize container to group elements
-    const {width} = this.scene.scale;
-    const container = this.scene.add.container(width + 300, 60);
-    this.container = container;
+    this.isOpen = false;
 
     // Create grey ui panel element
-    const panel = this.scene.add.nineslice(0, 0, 137, 50, 'grey-panel', 24).setOrigin(1, 0);
-    this.panel = panel;
-    this.container.add(this.panel);
+    const panel = scene.add.nineslice(0, 0, 137, 50, 'grey-panel', 24).setOrigin(1, 0);
 
-    this.createMusicButton();
-    this.createSaveButton();
-    this.createExitButton();
+    this.container.add(panel);
+
+    this.createMusicButton(panel);
+    this.createSaveButton(panel);
+    this.createExitButton(panel);
   }
 
   // Create toggle music button to be added to panel / container
-  createMusicButton() {
+  createMusicButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleMusic = this.scene.add.image(-this.panel.width + 10, 8, 'grey-box').setOrigin(0, 0);
+    const toggleMusic = this.scene.add.image(-panel.width + 10, 8, 'grey-box').setOrigin(0, 0);
 
     // Create music icons elements
     const musicOn =
@@ -48,15 +45,15 @@ export default class SettingsMenu {
     // interactive pointer options for toggleMusic button
     toggleMusic.setInteractive()
         .on('pointerdown',
-            function() {
-              this.setTint(0xd3d3d3);
+            () => {
+              toggleMusic.setTint(0xd3d3d3);
             })
         .on('pointerout',
             function() {
-              this.clearTint();
+              toggleMusic.clearTint();
             })
-        .on('pointerup', function() {
-          this.clearTint();
+        .on('pointerup', () => {
+          toggleMusic.clearTint();
 
           let isMute = !musicOn.visible;
           isMute = !isMute;
@@ -68,9 +65,9 @@ export default class SettingsMenu {
   }
 
   // Create toggle save button to be added to panel / container
-  createSaveButton() {
+  createSaveButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleSave = this.scene.add.image(-this.panel.width + 50, 8, 'grey-box').setOrigin(0, 0);
+    const toggleSave = this.scene.add.image(-panel.width + 50, 8, 'grey-box').setOrigin(0, 0);
 
     // Create save icon element
     const saveIcon = this.scene.add.image((toggleSave.x + toggleSave.height * 0.5) + 1, toggleSave.y + toggleSave.height * 0.5, 'save').setScale(0.7);
@@ -83,21 +80,21 @@ export default class SettingsMenu {
     toggleSave.setInteractive()
         .on('pointerdown',
             function() {
-              this.setTint(0xd3d3d3);
+              toggleSave.setTint(0xd3d3d3);
             })
         .on('pointerout',
             function() {
-              this.clearTint();
+              toggleSave.clearTint();
             })
         .on('pointerup', function() {
-          this.clearTint();
+          toggleSave.clearTint();
         });
   }
 
   // Create toggle exit button to be added to panel / container
-  createExitButton() {
+  createExitButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleExit = this.scene.add.image(-this.panel.width + 90, 8, 'grey-box').setOrigin(0, 0);
+    const toggleExit = this.scene.add.image(-panel.width + 90, 8, 'grey-box').setOrigin(0, 0);
 
     // Create exit icon element
     const exitIcon = this.scene.add.image((toggleExit.x + toggleExit.height * 0.5) + 1, toggleExit.y + toggleExit.height * 0.5, 'door').setScale(0.7);
@@ -110,14 +107,14 @@ export default class SettingsMenu {
     toggleExit.setInteractive()
         .on('pointerdown',
             function() {
-              this.setTint(0xd3d3d3);
+              toggleExit.setTint(0xd3d3d3);
             })
         .on('pointerout',
             function() {
-              this.clearTint();
+              toggleExit.clearTint();
             })
         .on('pointerup', function() {
-          this.clearTint();
+          toggleExit.clearTint();
         });
   }
 
@@ -129,12 +126,7 @@ export default class SettingsMenu {
 
     const {width} = this.scene.scale;
 
-    this.scene.tweens.add({
-      targets: this.container,
-      x: width - 10,
-      duration: 300,
-      ease: Phaser.Math.Easing.Sine.InOut,
-    });
+    this.scene.tweens.add({targets: this.container, x: width - 10, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
 
     this.isOpen = true;
   }
@@ -146,12 +138,7 @@ export default class SettingsMenu {
     }
     const {width} = this.scene.scale;
 
-    this.scene.tweens.add({
-      targets: this.container,
-      x: width + 300,
-      duration: 300,
-      ease: Phaser.Math.Easing.Sine.InOut,
-    });
+    this.scene.tweens.add({targets: this.container, x: width + 300, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
 
     this.isOpen = false;
   }
