@@ -11,7 +11,6 @@ export default class UIScene extends Phaser.Scene {
     // All UI related scene are launched here:
     this.scene.launch('movebootscene');
     this.scene.launch('settingsscene');
-    this.scene.launch('counterscene');
 
     // Show our dude
     const p = this.add.sprite(this.cameras.main.width / 7, this.cameras.main.height / 6, 'green-actor');

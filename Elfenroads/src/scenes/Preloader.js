@@ -36,14 +36,6 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('green-actor', 'assets/ui/uipack_fixed/PNG/green_circle.png');
     this.load.image('blue-actorcards', 'assets/ui/uipack_fixed/PNG/blue_actor_cards.png');
 
-    // Assets for CounterScene.js
-    this.load.image('giant-pig-counter', 'assets/boardgame/M01.png');
-    this.load.image('elfcycle', 'assets/boardgame/M02.png');
-    this.load.image('magic-cloud', 'assets/boardgame/M03.png');
-    this.load.image('unicorn', 'assets/boardgame/M04.png');
-    this.load.image('troll-wagon', 'assets/boardgame/M05.png');
-    this.load.image('dragon', 'assets/boardgame/M06.png');
-
     // Assests for ...
   }
 
