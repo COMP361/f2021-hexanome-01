@@ -33,7 +33,7 @@ export class TownResolver {
     @Mutation(() => [Town])
     async createTowns(
         @Args('session_id') session_id: string,
-    ): Promise<Town[]> {
+    ): Promise<Promise<Town>[]> {
         return await this.townService.createTowns(session_id);
     }
 

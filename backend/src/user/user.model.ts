@@ -47,8 +47,8 @@ export class GameUser {
   @Column({default: 0})
   score: number;
 
-  @Field(() => Town, {nullable: true})
-  @ManyToOne(() => Town, (town) => town.currentPlayers, {nullable: true})
+  @ManyToOne(() => Town, (town) => town.currentPlayers, {eager:false})
+  @JoinColumn()
   currentTown: Town;
 
   // @Field(() => [OwnableUnit], {nullable: true})

@@ -22,7 +22,7 @@ export class GSDetail {
   name: string;
 
   @Field()
-  displayname: string;
+  displayName: string;
 
   @Field()
   location: string;

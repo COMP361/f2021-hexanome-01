@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GameUser } from "src/user/user.model";
 import { Repository } from "typeorm";
@@ -26,7 +26,7 @@ export class TownService {
         });
     }
 
-    async createTowns(session_id: string): Promise<Town[]> {
+    async createTowns(session_id: string): Promise<Promise<Town>[]> {
         const names: string[] = ['elvenhold', 'feodor', 'lapphalya',
             'rivinia',
             'ergeren',
@@ -51,25 +51,35 @@ export class TownService {
         const players = await this.userRepository.find({
             session_id: session_id
         });
-        const colors: string[] = players.map(player => player.color);
+        let colors: string = ''
+        players.forEach(player => {
+            colors += player.color + ',';
+        });
 
-        const towns: Town[] = [];
+        colors = colors.slice(0,colors.lastIndexOf(','));
 
-        names.forEach(async name => {
-            const town = new Town();
+        return names.map(async name => {
+            const town = this.townRepository.create();
             town.name = name;
             town.session_id = session_id;
             town.townPieces = colors;
             if (name == 'elvenhold') {
                 town.currentPlayers = players;
+                players.forEach(async player => {
+                    player.currentTown = town;
+                    player = await this.userRepository.save(player);
+                })
+
+                town.townPieces = '';
             }
             else {
                 town.currentPlayers = [];
             }
-            towns.push(await this.townRepository.save(town));
+            return await this.townRepository.save(town);
         });
 
-        return towns;
+        
+
     }
 
     async moveToTown(session_id: string, previous_name: string, new_name: string, player_name: string): Promise<Town[]> {
@@ -83,21 +93,29 @@ export class TownService {
             name: new_name
         });
 
-        const player = await this.userRepository.findOne({
+        let player = await this.userRepository.findOne({
             session_id: session_id,
             name: player_name
         })
 
-        const index = new_town.townPieces.indexOf(player.color);
-        if (index > -1) {
-            player.score ++;
-            new_town.townPieces.splice(index, 1);
+        Logger.log(new_town.currentPlayers.length)
+        Logger.log(previous_town.currentPlayers.findIndex(player => player.name === player_name))
+        if (new_town.currentPlayers.findIndex(player => player.name === player_name) == -1 && previous_town.currentPlayers.findIndex(player => player.name === player_name) > -1) {
+            const colorIndex = new_town.townPieces.indexOf(player.color);
+            if (colorIndex > -1) {
+                await player.score ++;
+                await this.userRepository.save(player);
+                new_town.townPieces = new_town.townPieces.replace(','+player.color, '');
+    
+            }
+
+            new_town.currentPlayers.push(player);
+            previous_town.currentPlayers.splice(previous_town.currentPlayers.indexOf(player), 1);
+            await this.townRepository.save(previous_town);
+            await this.townRepository.save(new_town);
+            return [previous_town, new_town];
         }
 
-        new_town.currentPlayers.push(player);
-        previous_town.currentPlayers.splice(previous_town.currentPlayers.indexOf(player), 1);
-        await this.townRepository.save(previous_town);
-        await this.townRepository.save(new_town);
         return [previous_town, new_town];
     }
 

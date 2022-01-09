@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
+import { LSUser } from 'src/user/user.model';
 import { GameSession } from './gamesession.model';
 import { GameSessionService } from './gamesession.service';
 

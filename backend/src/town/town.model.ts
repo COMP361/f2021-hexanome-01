@@ -42,11 +42,12 @@ export class Town {
   // @Column()
   // gold: number;
 
-  @Field(() => [String])
-  townPieces: string[];
+  @Field(() => String, {nullable:true})
+  @Column({nullable:true})
+  townPieces: string;
 
-  @Field(() => [GameUser])
-  @OneToMany(() => GameUser, (gameuser) => gameuser.currentTown)
+  @Field(() => [GameUser], {nullable:true})
+  @OneToMany(() => GameUser, (gameuser) => gameuser.currentTown, {cascade: true,eager:true})
   currentPlayers: GameUser[];
 
   // @Field(() => [Edge])

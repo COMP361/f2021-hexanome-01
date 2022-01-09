@@ -9,7 +9,7 @@ type GS {
 
 type GSDetail {
   name: String!
-  displayname: String!
+  displayName: String!
   location: String!
   maxSessionPlayers: String!
   minSessionPlayers: String!
@@ -34,21 +34,20 @@ type GameUser {
   coins: Float!
   color: String!
   score: Float!
-  currentTown: Town
 }
 
 type Town {
   session_id: String!
   name: String!
-  townPieces: [String!]!
-  currentPlayers: [GameUser!]!
+  townPieces: String
+  currentPlayers: [GameUser!]
 }
 
 type GameSession {
   creator: String!
-  gameParameters: [GSDetail!]!
+  gameParameters: GSDetail!
   launched: Boolean!
-  players: [LSUser!]!
+  players: [String!]!
   savegameid: String!
 }
 

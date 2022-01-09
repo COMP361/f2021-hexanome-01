@@ -24,7 +24,7 @@ export class GameSessionService {
     return await instance.get(session_id).then((response) => {
       const gameSession: GameSession = new GameSession();
       gameSession.creator = response.data['creator'];
-      gameSession.gameParameters = response.data['creator'] as GSDetail;
+      gameSession.gameParameters = response.data['gameParameters'];
       gameSession.launched = response.data['launched'];
       gameSession.players = response.data['players'];
       gameSession.savegameid = response.data['savegameid'];
@@ -72,7 +72,7 @@ export class GameSessionService {
     session_id:string,
     access_token: string
   ): Promise<string> {
-    return await instance.post(encodeURI(`${session_id}?access_token${access_token}`).replace(/\+/g, '%2B')).then((response) => {
+    return await instance.post(encodeURI(`${session_id}?access_token=${access_token}`).replace(/\+/g, '%2B')).then((response) => {
       return response.data as string;
     });
   }

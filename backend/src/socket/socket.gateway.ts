@@ -15,7 +15,7 @@ export class SocketGateway {
     @SubscribeMessage('joinLobby')
     async joinLobby(
         client: Socket,
-        @MessageBody() data: joinLobbyDto
+        @MessageBody() data
     ): Promise<void> {
             client.join(data.session_id);
             this.server.to(data.session_id).emit('joinLobby', {
