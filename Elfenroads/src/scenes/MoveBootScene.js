@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
-import eventsCenter from './EventsCenter';
-import {Town} from './Towns';
+import eventsCenter from '../classes/EventsCenter';
+import {Town} from '../classes/Towns';
 
 export const Towns = {
   elvenhold: new Town('elvenhold', [1050, 400]),
