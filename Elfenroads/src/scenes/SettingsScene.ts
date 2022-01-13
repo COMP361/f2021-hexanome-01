@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-import SettingsMenu from './SettingsMenu';
+import SettingsMenu from '../classes/SettingsMenu';
 
 export default class SettingsScene extends Phaser.Scene {
   constructor() {
@@ -20,14 +20,14 @@ export default class SettingsScene extends Phaser.Scene {
     settingsButton.setInteractive()
         .on('pointerdown',
             function() {
-              this.setTint(0xd3d3d3);
+              settingsButton.setTint(0xd3d3d3);
             })
         .on('pointerout',
             function() {
-              this.clearTint();
+              settingsButton.clearTint();
             })
         .on('pointerup', function() {
-          this.clearTint();
+          settingsButton.clearTint();
           if (settingsMenu.isOpen) {
             settingsMenu.hide();
           } else {
