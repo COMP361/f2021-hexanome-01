@@ -15,6 +15,7 @@ import Preloader from '../../scenes/Preloader';
 import SettingsScene from '../../scenes/SettingsScene';
 import UIScene from '../../scenes/UIScene';
 import CheatSheetScene from '../../scenes/CheatSheetScene';
+import TownPieceScene from '../../scenes/TownPieceScene';
 
 // Phaser Game config
 const game = {
@@ -22,7 +23,7 @@ const game = {
   width: '100%',
   height: '100%',
   plugins: {global: [NineSlicePlugin.DefaultCfg]},
-  scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene, CheatSheetScene],
+  scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene, CheatSheetScene, TownPieceScene],
 };
 
 export default function Game() {

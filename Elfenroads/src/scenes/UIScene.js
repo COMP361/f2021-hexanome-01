@@ -12,8 +12,7 @@ export default class UIScene extends Phaser.Scene {
     this.scene.launch('movebootscene');
     this.scene.launch('settingsscene');
     this.scene.launch('cheatsheetscene');
-
-    const {width} = this.scale;
+    this.scene.launch('townpiecescene');
 
     // Show our dude
     const p = this.add.sprite(this.cameras.main.width / 7, this.cameras.main.height / 6, 'green-actor');
@@ -41,24 +40,6 @@ export default class UIScene extends Phaser.Scene {
     bootCards.setInteractive().on('pointerdown', function() {
       bootCards.setVisible(false);
     });
-
-    /* toggles town piece visibility */
-    const townPieceButton = this.add.sprite(width - 130, 30, 'grey-box');
-    this.add.image(townPieceButton.x, townPieceButton.y, 'information').setScale(0.7);
-
-    // Add interactivity
-    townPieceButton.setInteractive()
-        .on('pointerdown',
-            function() {
-              this.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              this.clearTint();
-            })
-        .on('pointerup', function() {
-          eventsCenter.emit('update-town-piece-vis', true);
-        });
   }
 
   updatePoints(points) {
