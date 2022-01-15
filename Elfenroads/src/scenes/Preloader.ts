@@ -17,18 +17,15 @@ export default class Preloader extends Phaser.Scene {
     // Assets for UIScene.js/MoveBootScene.js
     this.load.image('boot', 'assets/boardgame/green_boot.png');
 
-    // Assets for UIScene.js/SettingsScene.js
+    // Assets for UIScene.js/UpperUIScene
     this.load.image('gear', 'assets/ui/iconpack/PNG/White/1x/gear.png');
     this.load.image('brown-box', 'assets/ui/rpgpack/PNG/buttonSquare_brown_pressed.png');
     this.load.image('brown-panel', 'assets/ui/rpgpack/PNG/buttonLong_brown_pressed.png');
-
     this.load.image('music-on', 'assets/ui/iconpack/PNG/White/1x/musicOn.png');
     this.load.image('music-off', 'assets/ui/iconpack/PNG/White/1x/musicOff.png');
     this.load.image('save', 'assets/ui/iconpack/PNG/White/1x/save.png');
     this.load.image('door', 'assets/ui/iconpack/PNG/White/1x/door.png');
     this.load.image('information', 'assets/ui/iconpack/PNG/White/1x/information.png');
-
-    // Assets for UIScene.js/CheatSheetScene.js
     this.load.image('question', 'assets/ui/iconpack/PNG/White/1x/question.png');
     this.load.image('grid', 'assets/boardgame/grid.png');
 
@@ -41,6 +38,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('cloud-counter', 'assets/boardgame/M03.png');
 
     // Assests for CardScene.js
+    this.load.image('open-box', 'assets/ui/iconpack/PNG/White/1x/video.png');
     this.load.image('giant-pig-card', 'assets/boardgame/T01.png');
     this.load.image('elf-cycle-card', 'assets/boardgame/T02.png');
     this.load.image('magic-cloud-card', 'assets/boardgame/T03.png');
@@ -49,6 +47,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('dragon-card', 'assets/boardgame/T06.png');
     this.load.image('raft-card', 'assets/boardgame/T07.png');
     this.load.image('witch-card', 'assets/boardgame/witch.png');
+    this.load.image('gold-card', 'assets/boardgame/Gold.png');
   }
 
   create() {
