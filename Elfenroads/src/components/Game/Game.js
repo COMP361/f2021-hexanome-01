@@ -12,9 +12,8 @@ import BoardScene from '../../scenes/BoardScene';
 import MainScene from '../../scenes/MainScene';
 import MoveBootScene from '../../scenes/MoveBootScene';
 import Preloader from '../../scenes/Preloader';
-import SettingsScene from '../../scenes/SettingsScene';
+import UpperUIScene from '../../scenes/UpperUIScene';
 import UIScene from '../../scenes/UIScene';
-import CheatSheetScene from '../../scenes/CheatSheetScene';
 import TownPieceScene from '../../scenes/TownPieceScene';
 import CardScene from '../../scenes/CardScene';
 
@@ -24,7 +23,7 @@ const game = {
   width: '100%',
   height: '100%',
   plugins: {global: [NineSlicePlugin.DefaultCfg]},
-  scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene, CheatSheetScene, TownPieceScene, CardScene],
+  scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, UpperUIScene, TownPieceScene, CardScene],
 };
 
 export default function Game() {

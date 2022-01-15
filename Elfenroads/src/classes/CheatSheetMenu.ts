@@ -16,13 +16,17 @@ export default class CheatSheetMenu {
     this.isOpen = false;
 
     // Create grey ui panel element
-
-    // const cheatSheet = this.add.image(width - 150, 260, 'grid');
-    const panel = scene.add.nineslice(0, 0, 137, 50, 'grey-panel', 24).setOrigin(1, 0);
+    const panel = scene.add.nineslice(0, 0, 200, 300, 'grey-panel', 24).setOrigin(1, 0);
 
     this.container.add(panel);
+    this.createSheet(panel);
   }
 
+  createSheet(panel: Phaser.GameObjects.RenderTexture) {
+    const cheatSheet = this.scene.add.image(panel.width - 300, 150, 'grid').setScale(0.4);
+
+    this.container.add(cheatSheet);
+  }
   // Show entire settings menu
   show() {
     if (this.isOpen) {
@@ -48,3 +52,4 @@ export default class CheatSheetMenu {
     this.isOpen = false;
   }
 }
+
