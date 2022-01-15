@@ -10,7 +10,7 @@ export default class TownPieceScene extends Phaser.Scene {
   create() {
     const {width} = this.scale;
     /* toggles town piece visibility */
-    const townPieceButton = this.add.sprite(width - 130, 30, 'grey-box');
+    const townPieceButton = this.add.sprite(width - 130, 30, 'brown-box');
     this.add.image(townPieceButton.x, townPieceButton.y, 'information').setScale(0.7);
 
     // Add interactivity

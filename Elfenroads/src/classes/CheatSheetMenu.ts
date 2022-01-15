@@ -16,7 +16,7 @@ export default class CheatSheetMenu {
     this.isOpen = false;
 
     // Create grey ui panel element
-    const panel = scene.add.nineslice(0, 0, 200, 300, 'grey-panel', 24).setOrigin(1, 0);
+    const panel = scene.add.nineslice(0, 0, 200, 300, 'brown-panel', 24).setOrigin(1, 0);
 
     this.container.add(panel);
     this.createSheet(panel);
@@ -52,4 +52,3 @@ export default class CheatSheetMenu {
     this.isOpen = false;
   }
 }
-
