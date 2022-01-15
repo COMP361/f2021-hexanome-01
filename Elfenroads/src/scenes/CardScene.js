@@ -6,62 +6,65 @@ export default class CardScene extends Phaser.Scene {
   }
 
   create() {
+    // position
     const {width, height} = this.scale;
+    const CARD_UP = height/1.12;
+    const CARD_SIZE = 0.2;
 
-    const dragonCard = this.add.sprite(width / 2, height / 4, 'dragon-card');
+    const dragonCard = this.add.sprite(width / 4.3, CARD_UP, 'dragon-card');
     dragonCard
         .setData({
           name: 'dragonCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const giantPigCard = this.add.sprite(width / 2, height / 4, 'giant-pig-card');
+    const giantPigCard = this.add.sprite(width / 3.9, CARD_UP, 'giant-pig-card');
     giantPigCard
         .setData({
           name: 'giantPigCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const elfCycleCard = this.add.sprite(width / 2, height / 4, 'elf-cycle-card');
+    const elfCycleCard = this.add.sprite(width / 3.5, CARD_UP, 'elf-cycle-card');
     elfCycleCard
         .setData({
           name: 'elfCycleCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const magicCloudCard = this.add.sprite(width / 2, height / 4, 'magic-cloud-card');
+    const magicCloudCard = this.add.sprite(width / 3.2, CARD_UP, 'magic-cloud-card');
     magicCloudCard
         .setData({
           name: 'magicCloudCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const unicornCard = this.add.sprite(width / 2, height / 4, 'unicorn-card');
+    const unicornCard = this.add.sprite(width / 2.95, CARD_UP, 'unicorn-card');
     unicornCard
         .setData({
           name: 'unicornCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const trollWagonCard = this.add.sprite(width / 2, height / 4, 'troll-wagon-card');
+    const trollWagonCard = this.add.sprite(width / 2.7, CARD_UP, 'troll-wagon-card');
     trollWagonCard
         .setData({
           name: 'trollWagonCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const raftCard = this.add.sprite(width / 2, height / 4, 'raft-card');
+    const raftCard = this.add.sprite(width / 2.5, CARD_UP, 'raft-card');
     raftCard
         .setData({
           name: 'raftCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
 
-    const witchCard = this.add.sprite(width / 2, height / 4, 'witch-card');
+    const witchCard = this.add.sprite(width / 2.3, CARD_UP, 'witch-card');
     witchCard
         .setData({
           name: 'witchCard',
         })
-        .setScale(0.2);
+        .setScale(CARD_SIZE);
   }
 }
