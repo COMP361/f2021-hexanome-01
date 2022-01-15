@@ -12,7 +12,7 @@ export default class Preloader extends Phaser.Scene {
 
     // Assets for BoardScene.js
     this.load.image('brownBackground', 'assets/background/brown.jpg');
-    this.load.image('map', 'assets/boardgame/map.png');
+    this.load.image('map', 'assets/boardgame/mapNEW.png');
 
     // Assets for UIScene.js/MoveBootScene.js
     this.load.image('boot', 'assets/boardgame/green_boot.png');
@@ -21,6 +21,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('gear', 'assets/ui/iconpack/PNG/White/1x/gear.png');
     this.load.image('brown-box', 'assets/ui/rpgpack/PNG/buttonSquare_brown_pressed.png');
     this.load.image('brown-panel', 'assets/ui/rpgpack/PNG/buttonLong_brown_pressed.png');
+
     this.load.image('music-on', 'assets/ui/iconpack/PNG/White/1x/musicOn.png');
     this.load.image('music-off', 'assets/ui/iconpack/PNG/White/1x/musicOff.png');
     this.load.image('save', 'assets/ui/iconpack/PNG/White/1x/save.png');
@@ -31,12 +32,14 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('question', 'assets/ui/iconpack/PNG/White/1x/question.png');
     this.load.image('grid', 'assets/boardgame/grid.png');
 
-    // Assets for UIScene.js/
+    // Assests for PlayerTokenScene.ts
     this.load.image('blue-actor', 'assets/ui/uipack_fixed/PNG/blue_actor.png');
-    this.load.image('green-actor', 'assets/ui/uipack_fixed/PNG/green_circle.png');
-    this.load.image('blue-actorcards', 'assets/ui/uipack_fixed/PNG/blue_actor_cards.png');
+    this.load.image('green-circle', 'assets/ui/uipack_fixed/PNG/green_circle.png');
+    this.load.image('blue-panel', 'assets/ui/uipack_fixed/PNG/blue_panel.png');
+    this.load.image('unknown-counter', 'assets/boardgame/M00.png');
+    this.load.image('pig-counter', 'assets/boardgame/M01.png');
+    this.load.image('cloud-counter', 'assets/boardgame/M03.png');
 
-    // Assests for ...
     // Assests for CardScene.js
     this.load.image('giant-pig-card', 'assets/boardgame/T01.png');
     this.load.image('elf-cycle-card', 'assets/boardgame/T02.png');
