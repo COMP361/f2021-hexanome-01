@@ -37,6 +37,15 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('blue-actorcards', 'assets/ui/uipack_fixed/PNG/blue_actor_cards.png');
 
     // Assests for ...
+    // Assests for CardScene.js
+    this.load.image('giant-pig-card', 'assets/boardgame/T01.png');
+    this.load.image('elf-cycle-card', 'assets/boardgame/T02.png');
+    this.load.image('magic-cloud-card', 'assets/boardgame/T03.png');
+    this.load.image('unicorn-card', 'assets/boardgame/T04.png');
+    this.load.image('troll-wagon-card', 'assets/boardgame/T05.png');
+    this.load.image('dragon-card', 'assets/boardgame/T06.png');
+    this.load.image('raft-card', 'assets/boardgame/T07.png');
+    this.load.image('witch-card', 'assets/boardgame/witch.png');
   }
 
   create() {
