@@ -7,13 +7,14 @@ import Phaser from 'phaser';
 import {Plugin as NineSlicePlugin} from 'phaser3-nineslice';
 import {useRef, useState} from 'react';
 
+// All of our scenes in Phaser Game
 import BoardScene from '../../scenes/BoardScene';
 import MainScene from '../../scenes/MainScene';
 import MoveBootScene from '../../scenes/MoveBootScene';
-// All of our scenes in Phaser Game
 import Preloader from '../../scenes/Preloader';
 import SettingsScene from '../../scenes/SettingsScene';
 import UIScene from '../../scenes/UIScene';
+import CheatSheetScene from '../../scenes/CheatSheetScene';
 
 // Phaser Game config
 const game = {
@@ -21,7 +22,7 @@ const game = {
   width: '100%',
   height: '100%',
   plugins: {global: [NineSlicePlugin.DefaultCfg]},
-  scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene],
+  scene: [Preloader, MainScene, BoardScene, UIScene, MoveBootScene, SettingsScene, CheatSheetScene],
 };
 
 export default function Game() {

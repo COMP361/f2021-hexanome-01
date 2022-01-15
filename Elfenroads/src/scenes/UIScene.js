@@ -11,6 +11,9 @@ export default class UIScene extends Phaser.Scene {
     // All UI related scene are launched here:
     this.scene.launch('movebootscene');
     this.scene.launch('settingsscene');
+    this.scene.launch('cheatsheetscene');
+
+    const {width} = this.scale;
 
     // Show our dude
     const p = this.add.sprite(this.cameras.main.width / 7, this.cameras.main.height / 6, 'green-actor');
@@ -38,30 +41,6 @@ export default class UIScene extends Phaser.Scene {
     bootCards.setInteractive().on('pointerdown', function() {
       bootCards.setVisible(false);
     });
-
-    /* toggles cheat sheet */
-    const {width} = this.scale;
-    // Create cheatsheetButton (gear icon)
-    const cheatsheetButton = this.add.sprite(width - 80, 30, 'grey-box');
-    this.add.image(cheatsheetButton.x, cheatsheetButton.y, 'question').setScale(0.7);
-    // add image
-    const cheatSheet = this.add.image(width - 150, 260, 'grid');
-    cheatSheet.setScale(0.6);
-    cheatSheet.setVisible(false);
-
-    // Add interactivity (display image when hover over) for cheatsheetButton
-    cheatsheetButton.setInteractive()
-        .on('pointerdown',
-            function() {
-              this.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              this.clearTint();
-            })
-        .on('pointerup', function() {
-          cheatSheet.setVisible(!cheatSheet.visible);
-        });
 
     /* toggles town piece visibility */
     const townPieceButton = this.add.sprite(width - 130, 30, 'grey-box');
