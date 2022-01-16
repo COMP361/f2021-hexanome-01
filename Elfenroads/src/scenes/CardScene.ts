@@ -36,10 +36,5 @@ export default class CardScene extends Phaser.Scene {
             hand.show();
           }
         });
-    
-    // add cards
-    hand.addCard('dragonCard');
-    hand.addCard('dragonCard');
-    hand.addCard('giantPigCard');
   }
 }

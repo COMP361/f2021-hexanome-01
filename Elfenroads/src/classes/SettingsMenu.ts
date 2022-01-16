@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 export default class SettingsMenu {
   scene: Phaser.Scene;
-  container: Phaser.GameObjects.Container;
+  container: Phaser.GameObjects.Container
   isOpen: boolean;
 
   constructor(scene: Phaser.Scene) {
