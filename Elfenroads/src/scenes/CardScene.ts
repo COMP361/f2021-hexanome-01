@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+
 import Hand from '../classes/Hand';
 
 export default class CardScene extends Phaser.Scene {
@@ -36,7 +37,6 @@ export default class CardScene extends Phaser.Scene {
             hand.show();
           }
         });
-    
     // add cards
     hand.addCard('dragonCard');
     hand.addCard('dragonCard');
