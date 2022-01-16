@@ -25,7 +25,7 @@ export default class Hand {
     this.scene = scene;
     this.numCards = 0;
 
-    // Define all variables required
+    // Get height and width to determing card placement
     const {height} = this.scene.scale;
     const {width} = this.scene.scale;
 
@@ -39,14 +39,14 @@ export default class Hand {
     this.isOpen = true;
   }
 
-  // Method to add a card from Map of cards to Phaser Container.
+  // Method to render a card from Map of cards, and it to this Phaser Container.
   addCard(cardName: string) {
     const CARD_SIZE = 0.2;
     const img = this.store.get(cardName);  // Get card
 
     // If card is in map add it to Phaser container
     if (img !== undefined) {
-      // Add sprite to container and offset based on the other cards
+      // Render sprite to this Phaser Scene and offset based on the other cards
       const card = this.scene.add.sprite(this.numCards * 30, 0, img);
       card.setData({
             name: cardName,
