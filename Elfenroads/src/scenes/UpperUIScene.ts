@@ -4,6 +4,7 @@ import CheatSheetMenu from '../classes/CheatSheetMenu';
 import SettingsMenu from '../classes/SettingsMenu';
 
 export default class UpperUI extends Phaser.Scene {
+  // Global array to store buttons in this scene
   buttons: any[] = [];
 
   constructor() {
@@ -15,6 +16,7 @@ export default class UpperUI extends Phaser.Scene {
     this.createCheatSheet();
   }
 
+  // Method to create Settings menu
   createSettings() {
     // Create menu that will slide out after clicking settingsButton
     const settingsMenu = new SettingsMenu(this);
@@ -50,6 +52,7 @@ export default class UpperUI extends Phaser.Scene {
         });
   }
 
+  // Method to create elfenroads cheat sheet card/menu
   createCheatSheet() {
     const {width} = this.scale;
     // Create menu that will slide out after clicking question mark button

@@ -124,10 +124,9 @@ export default class SettingsMenu {
       return;
     }
 
+    // Horizontal animation
     const {width} = this.scene.scale;
-
     this.scene.tweens.add({targets: this.container, x: width - 10, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
-
     this.isOpen = true;
   }
 
@@ -136,10 +135,10 @@ export default class SettingsMenu {
     if (!this.isOpen) {
       return;
     }
+
+    // Horizontal animation
     const {width} = this.scene.scale;
-
     this.scene.tweens.add({targets: this.container, x: width + 300, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
-
     this.isOpen = false;
   }
 }

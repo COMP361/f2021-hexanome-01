@@ -5,6 +5,9 @@ export default class Hand {
   container: Phaser.GameObjects.Container
   isOpen: boolean;
   numCards: number;
+
+  // Map to store reference to the Preloaded card sprites in Preloader.ts
+  // Key is just a string...(might need to change that)
   store: Map<string, string> = new Map([
     ['dragonCard', 'dragon-card'],
     ['giantPigCard', 'giant-pig-card'],
@@ -18,12 +21,15 @@ export default class Hand {
   ]);
 
   constructor(scene: Phaser.Scene) {
+    // Initialize hand
     this.scene = scene;
     this.numCards = 0;
 
     // Define all variables required
     const {height} = this.scene.scale;
     const {width} = this.scene.scale;
+
+    // Size of card when faced up
     const CARD_UP = height / 1.12;
 
     // Initialize container to group elements
@@ -33,21 +39,27 @@ export default class Hand {
     this.isOpen = true;
   }
 
+  // Method to add a card from Map of cards to Phaser Container.
   addCard(cardName: string) {
     const CARD_SIZE = 0.2;
-    const img = this.store.get(cardName);
+    const img = this.store.get(cardName);  // Get card
 
+    // If card is in map add it to Phaser container
     if (img !== undefined) {
+      // Add sprite to container and offset based on the other cards
       const card = this.scene.add.sprite(this.numCards * 30, 0, img);
       card.setData({
             name: cardName,
           })
           .setScale(CARD_SIZE);
+
+      // Add card sprite to Phaser container so that it do the hide/show group animation
       this.container.add(card);
       this.numCards++;
     }
   }
 
+  // Not finished yet
   removeCard(cardName: string) {
     const children = this.scene.children;
     const child = children.getByName(cardName);
@@ -62,6 +74,8 @@ export default class Hand {
     if (this.isOpen) {
       return;
     }
+
+    // Vertical animation
     const {height} = this.scene.scale;
     const CARD_UP = height / 1.12;
     this.scene.tweens.add({targets: this.container, y: CARD_UP, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
@@ -73,6 +87,8 @@ export default class Hand {
     if (!this.isOpen) {
       return;
     }
+
+    // Vertical animation
     const {height} = this.scene.scale;
     this.scene.tweens.add({targets: this.container, y: height + 100, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
     this.isOpen = false;
