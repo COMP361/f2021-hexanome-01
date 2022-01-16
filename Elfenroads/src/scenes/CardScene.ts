@@ -17,9 +17,11 @@ export default class CardScene extends Phaser.Scene {
 
     const {height} = this.scale;
 
+    // Create button at bottom left corner to toggle card hand.
     const handButton = this.add.sprite(30, height - 30, 'brown-box');
     this.add.image(handButton.x, handButton.y, 'open-box').setScale(0.7);
 
+    // Make button interactive.
     handButton.setInteractive()
         .on('pointerdown',
             function() {
@@ -37,7 +39,8 @@ export default class CardScene extends Phaser.Scene {
             hand.show();
           }
         });
-    // add cards
+
+    // Add cards to hand container in hand.ts
     hand.addCard('dragonCard');
     hand.addCard('dragonCard');
     hand.addCard('giantPigCard');
