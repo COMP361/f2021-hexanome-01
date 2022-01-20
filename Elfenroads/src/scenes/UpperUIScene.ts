@@ -25,7 +25,7 @@ export default class UpperUI extends Phaser.Scene {
     this.buttons.push(settingsMenu);
 
     // Create settingsButton (gear icon)
-    const {width} = this.scale;
+    const width = this.cameras.main.width;
     const settingsButton = this.add.sprite(width - 30, 30, 'brown-box');
     this.add.image(settingsButton.x, settingsButton.y, 'gear').setScale(0.7);
 
@@ -54,7 +54,7 @@ export default class UpperUI extends Phaser.Scene {
 
   // Method to create elfenroads cheat sheet card/menu
   createCheatSheet() {
-    const {width} = this.scale;
+    const width = this.cameras.main.width;
     // Create menu that will slide out after clicking question mark button
     const cheatSheetMenu = new CheatSheetMenu(this);
 
