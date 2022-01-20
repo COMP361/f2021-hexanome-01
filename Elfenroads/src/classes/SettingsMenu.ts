@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 export default class SettingsMenu {
   scene: Phaser.Scene;
-  container: Phaser.GameObjects.Container
+  container: Phaser.GameObjects.Container;
   isOpen: boolean;
 
   constructor(scene: Phaser.Scene) {
@@ -15,7 +15,7 @@ export default class SettingsMenu {
     this.isOpen = false;
 
     // Create grey ui panel element
-    const panel = scene.add.nineslice(0, 0, 137, 50, 'grey-panel', 24).setOrigin(1, 0);
+    const panel = scene.add.nineslice(0, 0, 170, 61, 'brown-panel', 24).setOrigin(1, 0);
 
     this.container.add(panel);
 
@@ -27,7 +27,7 @@ export default class SettingsMenu {
   // Create toggle music button to be added to panel / container
   createMusicButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleMusic = this.scene.add.image(-panel.width + 10, 8, 'grey-box').setOrigin(0, 0);
+    const toggleMusic = this.scene.add.image(-panel.width + 10, 8, 'brown-box').setOrigin(0, 0);
 
     // Create music icons elements
     const musicOn =
@@ -67,7 +67,7 @@ export default class SettingsMenu {
   // Create toggle save button to be added to panel / container
   createSaveButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleSave = this.scene.add.image(-panel.width + 50, 8, 'grey-box').setOrigin(0, 0);
+    const toggleSave = this.scene.add.image(-panel.width + 63, 8, 'brown-box').setOrigin(0, 0);
 
     // Create save icon element
     const saveIcon = this.scene.add.image((toggleSave.x + toggleSave.height * 0.5) + 1, toggleSave.y + toggleSave.height * 0.5, 'save').setScale(0.7);
@@ -94,7 +94,7 @@ export default class SettingsMenu {
   // Create toggle exit button to be added to panel / container
   createExitButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleExit = this.scene.add.image(-panel.width + 90, 8, 'grey-box').setOrigin(0, 0);
+    const toggleExit = this.scene.add.image(-panel.width + 115, 8, 'brown-box').setOrigin(0, 0);
 
     // Create exit icon element
     const exitIcon = this.scene.add.image((toggleExit.x + toggleExit.height * 0.5) + 1, toggleExit.y + toggleExit.height * 0.5, 'door').setScale(0.7);
@@ -124,10 +124,9 @@ export default class SettingsMenu {
       return;
     }
 
+    // Horizontal animation
     const {width} = this.scene.scale;
-
     this.scene.tweens.add({targets: this.container, x: width - 10, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
-
     this.isOpen = true;
   }
 
@@ -136,10 +135,10 @@ export default class SettingsMenu {
     if (!this.isOpen) {
       return;
     }
+
+    // Horizontal animation
     const {width} = this.scene.scale;
-
     this.scene.tweens.add({targets: this.container, x: width + 300, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
-
     this.isOpen = false;
   }
 }
