@@ -17,7 +17,7 @@ const SpellType = {
 };
 
 const CounterType = {
-    giantPigCounter: 'pig-counter',
+    giantPig: 'pig-counter',
     elfcycle: 'elfcycle-counter',
     magicCloud: 'cloud-counter',
     unicorn: 'unicorn-counter',
@@ -38,6 +38,15 @@ const EdgeType = {
     river: 'river',
     lake: 'lake',
 };
+
+const Counters = [
+    new Counter(CounterType.giantPig, [EdgeType.plain, EdgeType.wood]),
+    new Counter(CounterType.elfcycle, [EdgeType.plain, EdgeType.wood, EdgeType.mountain]),
+    new Counter(CounterType.magicCloud, [EdgeType.plain, EdgeType.wood, EdgeType.mountain]),
+    new Counter(CounterType.unicorn, [EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
+    new Counter(CounterType.trollWagon, [EdgeType.plain, EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
+    new Counter(CounterType.dragon, [EdgeType.plain, EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
+];
 
 export const Edges = [
     // Usselen - wylhien
@@ -155,22 +164,20 @@ export default class CounterScene extends Phaser.Scene {
             zone.setData(edge);
         });
         let counterX = 750 / 1600 * this.cameras.main.width;
-        for (const counter in CounterType) {
+        Counters.forEach((counter) => {
             const counterSprite =
             this.add
                 .sprite(
-                    counterX / 1600 * this.cameras.main.width, 670 / 750 * this.cameras.main.height, CounterType[counter])
+                    counterX / 1600 * this.cameras.main.width, 670 / 750 * this.cameras.main.height, counter.counterType)
                 .setInteractive();
-            // set sprite name
-            counterSprite.setName('item');
             // set sprite data
-            counterSprite.setData({type: UnitType.counter, value: counter});
+            counterSprite.setData(counter);
             // set initial position and relative size
             counterSprite.setScale(0.25);
             // make counter draggable to any position
             this.input.setDraggable(counterSprite);
             counterX += 50 / 1600 * this.cameras.main.width;
-        }
+        });
 
         this.input.on('dragstart', function(pointer, gameObject) {
             gameObject.setTint(0x808080);
@@ -182,22 +189,22 @@ export default class CounterScene extends Phaser.Scene {
             graphics.lineStyle(8, 0x8A6440, 0.7);
             // highlight every draggable counter
             Edges.forEach((edge) => {
-                graphics.strokeCircle(
-                    edge.position[0] / 1600 * this.cameras.main.width, edge.position[1] / 750 * this.cameras.main.height, zoneRadius);
+                if (gameObject.data.list.allowedEdges.includes(edge.edgeType)) {
+                    graphics.strokeCircle(
+                        edge.position[0] / 1600 * this.cameras.main.width, edge.position[1] / 750 * this.cameras.main.height, zoneRadius);
+                }
             });
         });
 
         // if the counter is dragged to the drop zone, it will stay in it
         this.input.on('drop', function(pointer, gameObject, dropZone) {
-            if (gameObject.data.list.type === UnitType.counter &&
-                // counter drag will be cancel if it is dropped over water
-                dropZone.data.list.edgeType === EdgeType.lake || dropZone.data.list.edgeType === EdgeType.river) {
-                gameObject.x = gameObject.input.dragStartX;
-                gameObject.y = gameObject.input.dragStartY;                
+            if (gameObject.data.list.allowedEdges.includes(dropZone.data.list.edgeType)) {
+                gameObject.x = dropZone.x;
+                gameObject.y = dropZone.y;        
             }
             else {
-            gameObject.x = dropZone.x;
-            gameObject.y = dropZone.y;
+                gameObject.x = gameObject.input.dragStartX;
+                gameObject.y = gameObject.input.dragStartY;  
             }
         });
 
