@@ -9,7 +9,7 @@ export const Towns = {
   lapphalya: new Town('lapphalya', [840, 470]),
   rivinia: new Town('rivinia', [1005, 315]),
   ergeren: new Town('ergeren', [1190, 315]),
-  beafa: new Town('beafa', [1200, 490]),
+  beata: new Town('beafa', [1200, 490]),
   strykhaven: new Town('strykhaven', [1090, 540]),
   virst: new Town('virst', [915, 570]),
   jxara: new Town('jxara', [655, 560]),
