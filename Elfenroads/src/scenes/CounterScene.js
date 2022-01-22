@@ -4,13 +4,6 @@ import { Edge } from '../classes/Edge';
 import {Towns} from './MoveBootScene';
 import {ItemUnit, Spell, Counter, GoldPiece, Obstacle} from '../classes/ItemUnit';
 
-const UnitType = {
-    spell: 'spell',
-    counter: 'counter',
-    goldPiece: 'goldPiece',
-    obstacle: 'obstacle',
-}
-
 const SpellType = {
     double: 'double',
     exchange: 'exchange',
@@ -46,6 +39,11 @@ const Counters = [
     new Counter(CounterType.unicorn, [EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
     new Counter(CounterType.trollWagon, [EdgeType.plain, EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
     new Counter(CounterType.dragon, [EdgeType.plain, EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
+];
+
+const Obstacles = [
+    new Obstacle(ObstacleType.tree, [EdgeType.plain, EdgeType.wood, EdgeType.desert, EdgeType.mountain]),
+    new Obstacle(ObstacleType.seaMonster, [EdgeType.lake, EdgeType.river]),
 ];
 
 export const Edges = [
@@ -153,7 +151,7 @@ export default class CounterScene extends Phaser.Scene {
     }
     create() {
         const graphics = this.add.graphics();
-        const zoneRadius = 10 / 1600 * this.cameras.main.width;
+        const zoneRadius = 30 / 1600 * this.cameras.main.width;
         // creating all the dropzones for counters
         Edges.forEach((edge) => {
             const zone = this.add
@@ -178,6 +176,20 @@ export default class CounterScene extends Phaser.Scene {
             this.input.setDraggable(counterSprite);
             counterX += 50 / 1600 * this.cameras.main.width;
         });
+        Obstacles.forEach((obstacle) => {
+            const obstacleSprite =
+            this.add
+                .sprite(
+                    counterX / 1600 * this.cameras.main.width, 670 / 750 * this.cameras.main.height, obstacle.obstacleType)
+                .setInteractive();
+            // set sprite data
+            obstacleSprite.setData(obstacle);
+            // set initial position and relative size
+            obstacleSprite.setScale(0.25);
+            // make counter draggable to any position
+            this.input.setDraggable(obstacleSprite);
+            counterX += 50 / 1600 * this.cameras.main.width;
+        });
 
         this.input.on('dragstart', function(pointer, gameObject) {
             gameObject.setTint(0x808080);
@@ -191,16 +203,23 @@ export default class CounterScene extends Phaser.Scene {
             Edges.forEach((edge) => {
                 if (gameObject.data.list.allowedEdges.includes(edge.edgeType)) {
                     graphics.strokeCircle(
-                        edge.position[0] / 1600 * this.cameras.main.width, edge.position[1] / 750 * this.cameras.main.height, zoneRadius);
+                        edge.position[0] / 1600 * this.cameras.main.width, edge.position[1] / 750 * this.cameras.main.height, zoneRadius/3);
                 }
             });
         });
 
         // if the counter is dragged to the drop zone, it will stay in it
         this.input.on('drop', function(pointer, gameObject, dropZone) {
-            if (gameObject.data.list.allowedEdges.includes(dropZone.data.list.edgeType)) {
+            console.log(dropZone.data.values);
+            if (gameObject.data.values.allowedEdges.includes(dropZone.data.values.edgeType) && dropZone.data.values.items.length == 0 && gameObject.data.values.obstacleType !== ObstacleType.tree) {
                 gameObject.x = dropZone.x;
-                gameObject.y = dropZone.y;        
+                gameObject.y = dropZone.y;
+                dropZone.data.values.items.push(gameObject.data.values);
+            }
+            else if (gameObject.data.values.obstacleType === ObstacleType.tree && dropZone.data.values.items.length == 1) {
+                gameObject.x = dropZone.x - 30;
+                gameObject.y = dropZone.y;
+                dropZone.data.values.items.push(gameObject.data.values);
             }
             else {
                 gameObject.x = gameObject.input.dragStartX;

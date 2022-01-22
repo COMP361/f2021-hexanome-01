@@ -15,7 +15,7 @@ export const Towns = {
   jxara: new Town('jxara', [655, 560]),
   mahdavikia: new Town('mahdavikia', [450, 555]),
   grangor: new Town('grangor', [415, 455]),
-  kihrimah: new Town('kihrimah', [550, 410]),
+  kihromah: new Town('kihrimah', [550, 410]),
   dagamura: new Town('dagamura', [680, 435]),
   albaran: new Town('albaran', [685, 335]),
   parundia: new Town('parundia', [555, 285]),
