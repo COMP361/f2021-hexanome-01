@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable quotes */
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +24,7 @@ import { AppController } from './app.controller';
       database: 'elfenroad',
       entities: ['dist/**/*.model.js'],
       synchronize: true,
+      dropSchema: true,
       "migrations": ["dist/migrations/*{.ts,.js}"],
       "migrationsTableName": "migrations_typeorm",
       "migrationsRun": true

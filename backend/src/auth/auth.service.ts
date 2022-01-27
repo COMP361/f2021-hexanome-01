@@ -9,11 +9,7 @@ const instance = axios.create({
 export class AuthService {
   constructor() {}
 
-  async verifyUser(
-    grant_type: string,
-    username: string,
-    password: string,
-  ): Promise<AuthInfo> {
+  async verifyUser(username: string, password: string): Promise<AuthInfo> {
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -25,7 +21,7 @@ export class AuthService {
     await instance
       .post(
         encodeURI(
-          `oauth/token?grant_type=${grant_type}&username=${username}&password=${password}`,
+          `oauth/token?grant_type=password&username=${username}&password=${password}`,
         ).replace(/\+/g, '%2B'),
         {},
         config,

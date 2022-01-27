@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { GS, GSDetail } from 'src/game/gamesvc.model';
+import { GSDetail } from 'src/game/gamesvc.model';
 import { Town } from 'src/town/town.model';
 import { GameUser, LSUser } from 'src/user/user.model';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -21,7 +21,6 @@ export class GameSession {
   @Field()
   savegameid: string;
 }
-
 
 // @ObjectType()
 // @Entity()
@@ -56,7 +55,5 @@ export class GameSession {
 //   @Field(() => [Town])
 //   @OneToMany(() => Town, town => town.session_id)
 //   towns: Town[]
-
-
 
 // }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GS, GSDetail, SaveGame } from './gamesvc.model';
+import { GSDetail, SaveGame } from './gamesvc.model';
 import axios from 'axios';
 
 const instance = axios.create({
@@ -9,80 +9,10 @@ const instance = axios.create({
 export class GameService {
   constructor() {}
 
-  async getAllGameService(): Promise<GS[]> {
-    return instance.get('api/gameservices').then((response) => {
-      return response.data as GS[];
-    });
-  }
-
   async getGameServiceDetail(name: string): Promise<GSDetail> {
     return instance.get(name).then((response) => {
       return response.data as GSDetail;
     });
-  }
-
-  async registerGameService(
-    location: string,
-    maxSessionPlayers: string,
-    minSessionPlayers: string,
-    name: string,
-    displayname: string,
-  ): Promise<string> {
-    const data = {
-      location: location,
-      maxSessionPlayers: maxSessionPlayers,
-      minSessionPlayers: minSessionPlayers,
-      name: name,
-      displayName: displayname,
-      webSupport: false,
-    };
-
-    let access_token = '';
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: 'Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=',
-      },
-    };
-
-    await instance
-      .post(
-        'oauth/token?grant_type=password&username=elfenroad&password=abc123_ABC123',
-        {},
-        config,
-      )
-      .then((response) => {
-        access_token = response.data['access_token'];
-      });
-
-    return await instance
-      .put(
-        encodeURI(
-          `api/gameservices/${name}?access_token=${access_token}`,
-        ).replace(/\+/g, '%2B'),
-        data,
-        {
-          headers:{
-            'Content-Type':'application/json'
-          }
-        }
-      )
-      .then((response) => {
-        return response.data as string;
-      });
-  }
-
-  async deleteGameService(name: string, access_token: string): Promise<string> {
-    return await instance
-      .delete(
-        encodeURI(
-          `api/gameservices/${name}?access_token=${access_token}`,
-        ).replace(/\+/g, '%2B'),
-      )
-      .then((response) => {
-        return response.data as string;
-      });
   }
 
   async getAllSaveGames(
@@ -154,5 +84,4 @@ export class GameService {
         return response.data as string;
       });
   }
-
 }

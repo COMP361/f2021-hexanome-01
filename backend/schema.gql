@@ -2,17 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type GS {
-  name: String!
-  displayName: String!
-}
-
 type GSDetail {
   name: String!
   displayName: String!
   location: String!
-  maxSessionPlayers: String!
-  minSessionPlayers: String!
+  maxSessionPlayers: Float!
+  minSessionPlayers: Float!
   webSupport: Boolean!
 }
 
@@ -63,13 +58,12 @@ type AuthInfo {
 type Query {
   sayHello: String!
   getOnline: String!
-  verifyLSUser(password: String!, username: String!, grand_type: String!): AuthInfo!
+  verifyLSUser(password: String!, username: String!): AuthInfo!
   LSUser(access_token: String!): LSUser!
   GameUser(session_id: String!, name: String!): GameUser!
   AllGameUser(name: String!): [GameUser!]!
   AllSessions: String!
   Session(session_id: String!): GameSession!
-  AllGameServices: [GS!]!
   GameServiceDetail(name: String!): GSDetail!
   SaveGames(access_token: String!, name: String!): [SaveGame!]!
   SaveGame(access_token: String!, savegameid: String!, name: String!): SaveGame!
@@ -87,8 +81,6 @@ type Mutation {
   LaunchSession(access_token: String!, session_id: String!): String!
   joinSession(access_token: String!, name: String!, session_id: String!): String!
   exitSession(access_token: String!, name: String!, session_id: String!): String!
-  registerGameService(displayname: String!, name: String!, minSessionPlayers: String!, maxSessionPlayers: String!, location: String!): String!
-  deleteGameService(access_token: String!, name: String!): String!
   registerSaveGame(players: String!, access_token: String!, savegameid: String!, name: String!): String!
   createTowns(session_id: String!): [Town!]!
   moveToNewTown(username: String!, new_town: String!, old_town: String!, session_id: String!): [Town!]!
