@@ -21,6 +21,7 @@ services:
       dockerfile: Dockerfile-ls-nest 
     ports:
       - "3454:3000"
-      - "4243:3001"
-
+      - "3455:3001"
+    depends_on:
+      - db
     restart: unless-stopped
