@@ -18,7 +18,9 @@ export default class PlayerToken {
 
     /* add player token */
     const token = this.scene.add.sprite(xpos, ypos, img);
-    const panel = this.scene.add.nineslice(0, 0, 120, 60, 'blue-panel', 24).setOrigin(0, 0);
+    const panel = this.scene.add
+      .nineslice(0, 0, 120, 60, 'blue-panel', 24)
+      .setOrigin(0, 0);
     this.panel = panel;
 
     token.setScale(0.3);
@@ -28,19 +30,18 @@ export default class PlayerToken {
     aContainer.add(panel);
     aContainer.setVisible(false);
 
-    token.setInteractive()
-        .on('pointerdown',
-            function() {
-              token.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              token.clearTint();
-            })
-        .on('pointerup', function() {
-          token.clearTint();
-          aContainer.setVisible(!aContainer.visible);
-        });
+    token
+      .setInteractive()
+      .on('pointerdown', () => {
+        token.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        token.clearTint();
+      })
+      .on('pointerup', () => {
+        token.clearTint();
+        aContainer.setVisible(!aContainer.visible);
+      });
 
     // Show player current score
     const circle = this.scene.add.sprite(xpos - 70, ypos, 'green-circle');
@@ -49,11 +50,17 @@ export default class PlayerToken {
     score.setFontSize(32);
     circle.setScale(2);
 
-    eventsCenter.on('update-points', (points: number) => score.text = `${points}`, this);
+    eventsCenter.on(
+      'update-points',
+      (points: number) => (score.text = `${points}`),
+      this
+    );
   }
 
   addCounter(img: string) {
-    const counter = this.scene.add.sprite(5 + this.numCounter * 60, 5, img).setOrigin(0, 0);
+    const counter = this.scene.add
+      .sprite(5 + this.numCounter * 60, 5, img)
+      .setOrigin(0, 0);
     counter.setScale(0.3);
     this.numCounter++;
     this.panel.setSize(60 * this.numCounter, 60);

@@ -2,9 +2,8 @@ import Phaser from 'phaser';
 
 export default class CheatSheetMenu {
   scene: Phaser.Scene;
-  container: Phaser.GameObjects.Container
+  container: Phaser.GameObjects.Container;
   isOpen: boolean;
-
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -16,7 +15,9 @@ export default class CheatSheetMenu {
     this.isOpen = false;
 
     // Create grey brown panel element
-    const panel = scene.add.nineslice(0, 0, 200, 300, 'brown-panel', 24).setOrigin(1, 0);
+    const panel = scene.add
+      .nineslice(0, 0, 200, 300, 'brown-panel', 24)
+      .setOrigin(1, 0);
 
     this.container.add(panel);
     this.createSheet(panel);
@@ -24,7 +25,9 @@ export default class CheatSheetMenu {
 
   // Add the elfenroads cheat sheet on top of brown panel
   createSheet(panel: Phaser.GameObjects.RenderTexture) {
-    const cheatSheet = this.scene.add.image(panel.width - 300, 150, 'grid').setScale(0.4);
+    const cheatSheet = this.scene.add
+      .image(panel.width - 300, 150, 'grid')
+      .setScale(0.4);
     this.container.add(cheatSheet);
   }
 
@@ -36,7 +39,12 @@ export default class CheatSheetMenu {
 
     // Horizontal animation
     const {width} = this.scene.scale;
-    this.scene.tweens.add({targets: this.container, x: width - 10, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
+    this.scene.tweens.add({
+      targets: this.container,
+      x: width - 10,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
     this.isOpen = true;
   }
 
@@ -48,7 +56,12 @@ export default class CheatSheetMenu {
 
     // Horizontal animation
     const {width} = this.scene.scale;
-    this.scene.tweens.add({targets: this.container, x: width + 300, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
+    this.scene.tweens.add({
+      targets: this.container,
+      x: width + 300,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
     this.isOpen = false;
   }
 }

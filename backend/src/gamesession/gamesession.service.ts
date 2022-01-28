@@ -9,43 +9,19 @@ const instance = axios.create({
 
 @Injectable()
 export class GameSessionService {
+  constructor() {}
+
   async getAllSessions(): Promise<string> {
     return instance.get('').then((response) => {
       return JSON.stringify(response.data['sessions']);
     });
   }
 
-  async createSession(
-    access_token: string,
-    creator?: string,
-    game?: string,
-    savegame?: string,
-  ): Promise<string> {
-    let data = null;
-
-    if (creator && game && savegame) {
-      data = {
-        creator: creator,
-        game: game,
-        savegame: savegame,
-      };
-    }
-
-    return instance
-      .post(
-        encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'),
-        data,
-      )
-      .then((response) => {
-        return response.data as string;
-      });
-  }
-
   async getSession(session_id: string): Promise<GameSession> {
     return await instance.get(session_id).then((response) => {
       const gameSession: GameSession = new GameSession();
       gameSession.creator = response.data['creator'];
-      gameSession.gameParameters = response.data['creator'] as GSDetail;
+      gameSession.gameParameters = response.data['gameParameters'] as GSDetail;
       gameSession.launched = response.data['launched'];
       gameSession.players = response.data['players'];
       gameSession.savegameid = response.data['savegameid'];
@@ -54,12 +30,61 @@ export class GameSessionService {
     });
   }
 
+  async createSession(
+    access_token: string,
+    creator: string,
+    game: string,
+    savegame?: string,
+  ): Promise<string> {
+    let data = null;
+
+    data = {
+      creator: creator,
+      game: game,
+      savegame: '',
+    };
+
+    if (savegame) {
+      data.savegame = savegame;
+    }
+
+    return instance
+      .post(
+        encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'),
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then((response) => {
+        return response.data as string;
+      });
+  }
+
+  async launchSession(
+    session_id: string,
+    access_token: string,
+  ): Promise<string> {
+    return await instance
+      .post(
+        encodeURI(`${session_id}?access_token=${access_token}`).replace(
+          /\+/g,
+          '%2B',
+        ),
+      )
+      .then((response) => {
+        return response.data as string;
+      });
+  }
+
   async joinSession(
     session_id: string,
     name: string,
     access_token: string,
   ): Promise<string> {
-    return instance
+    return await instance
       .put(
         encodeURI(
           `${session_id}/players/${name}?access_token=${access_token}`,

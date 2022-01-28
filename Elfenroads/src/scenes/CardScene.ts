@@ -22,23 +22,22 @@ export default class CardScene extends Phaser.Scene {
     this.add.image(handButton.x, handButton.y, 'open-box').setScale(0.7);
 
     // Make button interactive.
-    handButton.setInteractive()
-        .on('pointerdown',
-            function() {
-              handButton.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              handButton.clearTint();
-            })
-        .on('pointerup', () => {
-          handButton.clearTint();
-          if (hand.isOpen) {
-            hand.hide();
-          } else {
-            hand.show();
-          }
-        });
+    handButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        handButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        handButton.clearTint();
+      })
+      .on('pointerup', () => {
+        handButton.clearTint();
+        if (hand.isOpen) {
+          hand.hide();
+        } else {
+          hand.show();
+        }
+      });
 
     // Add cards to hand container in hand.ts
     hand.addCard('dragonCard');

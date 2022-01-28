@@ -11,7 +11,6 @@ import { Server, Socket } from 'socket.io';
     origin: '*',
   },
 })
-
 export class SocketGateway {
   constructor() {}
   @WebSocketServer()

@@ -11,20 +11,21 @@ export default class TownPieceScene extends Phaser.Scene {
     const {width} = this.scale;
     /* toggles town piece visibility */
     const townPieceButton = this.add.sprite(width - 130, 30, 'brown-box');
-    this.add.image(townPieceButton.x, townPieceButton.y, 'information').setScale(0.7);
+    this.add
+      .image(townPieceButton.x, townPieceButton.y, 'information')
+      .setScale(0.7);
 
     // Add interactivity
-    townPieceButton.setInteractive()
-        .on('pointerdown',
-            function() {
-              townPieceButton.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              townPieceButton.clearTint();
-            })
-        .on('pointerup', function() {
-          eventsCenter.emit('update-town-piece-vis', true);
-        });
+    townPieceButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        townPieceButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        townPieceButton.clearTint();
+      })
+      .on('pointerup', () => {
+        eventsCenter.emit('update-town-piece-vis', true);
+      });
   }
 }

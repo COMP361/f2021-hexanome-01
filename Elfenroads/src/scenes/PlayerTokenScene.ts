@@ -7,7 +7,12 @@ export default class PlayerTokenScene extends Phaser.Scene {
   }
 
   create() {
-    const player1 = new PlayerToken(this, this.cameras.main.width / 7, this.cameras.main.height / 4, 'blue-actor');
+    const player1 = new PlayerToken(
+      this,
+      this.cameras.main.width / 7,
+      this.cameras.main.height / 4,
+      'blue-actor'
+    );
     player1.addCounter('unknown-counter');
     player1.addCounter('pig-counter');
     player1.addCounter('cloud-counter');

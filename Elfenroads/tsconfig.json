@@ -1,6 +1,9 @@
 {
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "target": "es5",
+    "rootDir": ".",
+    "outDir": "build",
+    "target": "es2018",
     "lib": [
       "dom",
       "dom.iterable",
@@ -12,7 +15,6 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
