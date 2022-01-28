@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Bid } from 'src/bid/bid.model';
+// import { Bid } from 'src/bid/bid.model';
 import { GameSession } from 'src/gamesession/gamesession.model';
-import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
+// import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
 import { Town } from 'src/town/town.model';
 import {
   Column,
@@ -22,19 +22,17 @@ export class LSUser {
   @Field()
   preferredColour: string;
 
-  @Field()
-  role: string;
 }
 
 @ObjectType()
 @Entity()
 export class GameUser {
   @Field()
-  @PrimaryColumn()
+  @PrimaryColumn({unique: false})
   name: string;
 
   @Field(() => GameSession)
-  @PrimaryColumn()
+  @PrimaryColumn({unique:false})
   session_id: string;
 
   @Field({defaultValue: 0})
@@ -49,15 +47,15 @@ export class GameUser {
   @Column({default: 0})
   score: number;
 
-  @Field(() => Town, {nullable: true})
-  @ManyToOne(() => Town, (town) => town.currentPlayers, {nullable: true})
+  @ManyToOne(() => Town, (town) => town.currentPlayers, {eager:false})
+  @JoinColumn()
   currentTown: Town;
 
-  @Field(() => [OwnableUnit], {nullable: true})
-  @OneToMany(() => OwnableUnit, (unit) => unit.user, {nullable: true})
-  ownableUnits: OwnableUnit[];
+  // @Field(() => [OwnableUnit], {nullable: true})
+  // @OneToMany(() => OwnableUnit, (unit) => unit.user, {nullable: true})
+  // ownableUnits: OwnableUnit[];
 
-  @Field(() => [Bid], {nullable: true})
-  @ManyToMany(() => Bid, (bid) => bid.players, {nullable: true})
-  bids: Bid[];
+  // @Field(() => [Bid], {nullable: true})
+  // @ManyToMany(() => Bid, (bid) => bid.players, {nullable: true})
+  // bids: Bid[];
 }

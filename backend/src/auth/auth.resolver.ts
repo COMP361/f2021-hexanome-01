@@ -14,11 +14,10 @@ export class AuthResolver {
 
   @Query(() => AuthInfo)
   async verifyLSUser(
-    @Args('grand_type') grand_type: string,
     @Args('username') username: string,
     @Args('password') password: string,
   ): Promise<AuthInfo> {
-    return await this.authService.verifyUser(grand_type, username, password);
+    return await this.authService.verifyUser(username, password);
   }
 
   @ResolveField()

@@ -1,22 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { OwnableUnit } from 'src/ownableunit/ownableunit.model';
-import { Town } from 'src/town/town.model';
-import { GameUser } from 'src/user/user.model';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum GamePhase {
-  ReadyToJoin = "ReadyToJoin",
-  Rounds = "Rounds",
-  Completed = "Completed"
-}
-
-@ObjectType()
-export class GS {
-  @Field()
-  name: string;
-
-  @Field()
-  displayname: string;
+  ReadyToJoin = 'ReadyToJoin',
+  Rounds = 'Rounds',
+  Completed = 'Completed',
 }
 
 @ObjectType()
@@ -25,16 +12,16 @@ export class GSDetail {
   name: string;
 
   @Field()
-  displayname: string;
+  displayName: string;
 
   @Field()
   location: string;
 
   @Field()
-  maxSessionPlayers: string;
+  maxSessionPlayers: number;
 
   @Field()
-  minSessionPlayers: string;
+  minSessionPlayers: number;
 
   @Field()
   webSupport: boolean;
