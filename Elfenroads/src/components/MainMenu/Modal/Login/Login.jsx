@@ -11,7 +11,7 @@ export default function Login({next}) {
   const [loginError, setLoginError] = useState('');
 
   // Handle response data from login
-  const handleLogin = (data) => {
+  const handleLogin = data => {
     if (data.verifyLSUser) {
       storeUser(data.verifyLSUser);
       next(data.verifyLSUser);
@@ -26,7 +26,7 @@ export default function Login({next}) {
   });
 
   // Check input validity and request user verification
-  const attemptLogin = (e) => {
+  const attemptLogin = e => {
     e.preventDefault();
     const username = e.target.loginUsername.value;
     const password = e.target.loginPassword.value;
@@ -39,7 +39,7 @@ export default function Login({next}) {
   };
 
   // Handle response data from signup, automatically validate if successful
-  const handleSignup = (data) => {
+  const handleSignup = data => {
     const username = document.querySelector('#signupUsername').value;
     const password = document.querySelector('#signupPassword').value;
 
@@ -55,7 +55,7 @@ export default function Login({next}) {
   });
 
   // Check input validity and request user creation
-  const attemptSignup = (e) => {
+  const attemptSignup = e => {
     e.preventDefault();
 
     const username = e.target.signupUsername.value;

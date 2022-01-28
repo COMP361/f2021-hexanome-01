@@ -2,7 +2,7 @@ import React from 'react';
 import './Create.scss';
 
 export default function Create({wait}) {
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = e => {
     e.preventDefault();
     wait({
       roomname: e.target.roomname.value,

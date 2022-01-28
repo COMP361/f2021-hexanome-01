@@ -1,5 +1,8 @@
 {
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "build",
     "target": "es2018",
     "lib": [
       "dom",
@@ -12,13 +15,12 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "module": "esnext"
+    "jsx": "react-jsx"
   },
   "include": [
     "src"
