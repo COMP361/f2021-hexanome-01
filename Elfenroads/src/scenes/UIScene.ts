@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
 export default class UIScene extends Phaser.Scene {
+  points: any;
   constructor() {
     super('uiscene');
   }
@@ -14,7 +15,7 @@ export default class UIScene extends Phaser.Scene {
     this.scene.launch('playertokenscene');
   }
 
-  updatePoints(points) {
+  updatePoints(points: any) {
     this.points.text = `${points}`;
   }
 }
