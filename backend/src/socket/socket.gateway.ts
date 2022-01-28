@@ -1,12 +1,10 @@
 import {
-  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { joinLobbyDto } from './socket';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -19,10 +17,7 @@ export class SocketGateway {
   server: Server;
 
   @SubscribeMessage('joinLobby')
-  async joinLobby(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data,
-  ): Promise<void> {
+  async joinLobby(client: Socket, @MessageBody() data): Promise<void> {
     client.join(data.session_id);
     this.server.to(data.session_id).emit('joinLobby', {
       msg: data,

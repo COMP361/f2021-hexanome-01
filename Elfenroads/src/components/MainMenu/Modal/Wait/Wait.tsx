@@ -1,6 +1,6 @@
 import './Wait.scss';
 import React from 'react';
-export default function Wait({room, username, beginGame}) {
+export default function Wait({room, username, beginGame}: any) {
   return (
     <section className="wait">
       <p className="wait__game">{room.game.toUpperCase()}</p>
