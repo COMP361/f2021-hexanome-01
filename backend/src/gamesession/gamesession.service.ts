@@ -1,4 +1,4 @@
-import {  Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { GSDetail } from 'src/game/gamesvc.model';
 import { GameSession } from './gamesession.model';
@@ -9,22 +9,19 @@ const instance = axios.create({
 
 @Injectable()
 export class GameSessionService {
-  constructor(
-    ){}
+  constructor() {}
 
-    async getAllSessions(): Promise<string> {
-      return instance.get('').then((response) => {
-        return JSON.stringify(response.data['sessions']);
-      });
-    }
-
-
+  async getAllSessions(): Promise<string> {
+    return instance.get('').then((response) => {
+      return JSON.stringify(response.data['sessions']);
+    });
+  }
 
   async getSession(session_id: string): Promise<GameSession> {
     return await instance.get(session_id).then((response) => {
       const gameSession: GameSession = new GameSession();
       gameSession.creator = response.data['creator'];
-      gameSession.gameParameters = response.data['gameParameters'];
+      gameSession.gameParameters = response.data['gameParameters'] as GSDetail;
       gameSession.launched = response.data['launched'];
       gameSession.players = response.data['players'];
       gameSession.savegameid = response.data['savegameid'];
@@ -32,8 +29,6 @@ export class GameSessionService {
       return gameSession;
     });
   }
-
-
 
   async createSession(
     access_token: string,
@@ -46,7 +41,7 @@ export class GameSessionService {
     data = {
       creator: creator,
       game: game,
-      savegame:""
+      savegame: '',
     };
 
     if (savegame) {
@@ -59,9 +54,9 @@ export class GameSessionService {
         data,
         {
           headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       )
       .then((response) => {
         return response.data as string;
@@ -69,12 +64,19 @@ export class GameSessionService {
   }
 
   async launchSession(
-    session_id:string,
-    access_token: string
+    session_id: string,
+    access_token: string,
   ): Promise<string> {
-    return await instance.post(encodeURI(`${session_id}?access_token=${access_token}`).replace(/\+/g, '%2B')).then((response) => {
-      return response.data as string;
-    });
+    return await instance
+      .post(
+        encodeURI(`${session_id}?access_token=${access_token}`).replace(
+          /\+/g,
+          '%2B',
+        ),
+      )
+      .then((response) => {
+        return response.data as string;
+      });
   }
 
   async joinSession(

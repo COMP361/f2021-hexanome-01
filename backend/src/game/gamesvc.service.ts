@@ -3,31 +3,25 @@ import { GSDetail, SaveGame } from './gamesvc.model';
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
+  baseURL:
+    'http://elfenroads.westus3.cloudapp.azure.com:4242/api/gameservices/Elfenroad/',
 });
 @Injectable()
 export class GameService {
   constructor() {}
 
-  async getGameServiceDetail(name: string): Promise<GSDetail> {
-    return instance.get(name).then((response) => {
+  async getGameServiceDetail(): Promise<GSDetail> {
+    return instance.get('').then((response) => {
       return response.data as GSDetail;
     });
   }
 
-  async getAllSaveGames(
-    name: string,
-    access_token: string,
-  ): Promise<SaveGame[]> {
+  async getAllSaveGames(access_token: string): Promise<SaveGame[]> {
     const savegamelist: SaveGame[] = [];
     return await instance
-      .get(
-        encodeURI(
-          `api/gameservices/${name}?access_token=${access_token}`,
-        ).replace(/\+/g, '%2B'),
-      )
+      .get(encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'))
       .then(async (response) => {
-        const game = await this.getGameServiceDetail(name);
+        const game = await this.getGameServiceDetail();
         response.data.array.forEach((element) => {
           const savegame: SaveGame = new SaveGame();
           savegame.game = game;
@@ -41,15 +35,14 @@ export class GameService {
   }
 
   async getSaveGame(
-    name: string,
     savgameid: string,
     access_token: string,
   ): Promise<SaveGame> {
-    const game = await this.getGameServiceDetail(name);
+    const game = await this.getGameServiceDetail();
     return await instance
       .get(
         encodeURI(
-          `api/gameservices/${name}/savegames/${savgameid}?access_token=${access_token}`,
+          `/savegames/${savgameid}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
       )
       .then(async (response) => {
@@ -63,16 +56,15 @@ export class GameService {
   }
 
   async registerSaveGame(
-    name: string,
     savegameid: string,
     access_token: string,
     players: string,
   ): Promise<string> {
-    const game = await this.getGameServiceDetail(name);
+    const game = await this.getGameServiceDetail();
     return await instance
       .put(
         encodeURI(
-          `api/gameservices/${name}/savegames/${savegameid}?access_token=${access_token}`,
+          `/savegames/${savegameid}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
         {
           gamename: game,

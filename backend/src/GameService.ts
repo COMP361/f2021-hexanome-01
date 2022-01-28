@@ -7,7 +7,6 @@ const instance = axios.create({
 export default class GameService {
   private token: string;
   private instance: AxiosInstance;
-
   constructor() {
     this.token = '';
     this.instance = axios.create({
@@ -25,7 +24,7 @@ export default class GameService {
     await instance
       .post(
         encodeURI(
-          'oauth/token?grant_type=password&username=maex&password=abc123_ABC123',
+          'oauth/token?grant_type=password&username=Elfenroad&password=f2021-EFRD',
         ).replace(/\+/g, '%2B'),
         {},
         config,
@@ -39,31 +38,38 @@ export default class GameService {
   }
 
   async registerGameService(): Promise<void> {
-    const data = {
-      location: 'http://elfenroads.westus3.cloudapp.azure.com:3454/',
-      maxSessionPlayers: 6,
-      minSessionPlayers: 2,
-      name: 'Elfenroad',
-      displayName: 'Elfenroad',
-      webSupport: 'true',
-    };
-
-    await this.getOAuthToken();
-
     await instance
-      .put(
-        encodeURI(
-          `api/gameservices/Elfenroad?access_token=${this.token}`,
-        ).replace(/\+/g, '%2B'),
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-      .catch((error) => {
-        console.log(error);
+      .get(encodeURI('api/gameservices/Elfenroad'))
+      .then(() => {
+        return;
+      })
+      .catch(async () => {
+        const data = {
+          location: 'http://elfenroads.westus3.cloudapp.azure.com:3454/',
+          maxSessionPlayers: 6,
+          minSessionPlayers: 2,
+          name: 'Elfenroad',
+          displayName: 'Elfenroad',
+          webSupport: 'true',
+        };
+
+        await this.getOAuthToken();
+
+        await instance
+          .put(
+            encodeURI(
+              `api/gameservices/Elfenroad?access_token=${this.token}`,
+            ).replace(/\+/g, '%2B'),
+            data,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          )
+          .catch((error) => {
+            console.log(error);
+          });
       });
   }
 }
