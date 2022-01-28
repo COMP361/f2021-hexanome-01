@@ -1,8 +1,8 @@
 import React from 'react';
 import './Create.scss';
 
-export default function Create({wait}) {
-  const handleFormSubmit = e => {
+export default function Create({wait}: any) {
+  const handleFormSubmit = (e: any) => {
     e.preventDefault();
     wait({
       roomname: e.target.roomname.value,

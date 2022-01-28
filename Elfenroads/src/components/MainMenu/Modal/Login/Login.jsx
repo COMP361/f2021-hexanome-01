@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import './Login.scss';
 import {useLazyQuery, useMutation} from '@apollo/client';
 import {useState} from 'react';

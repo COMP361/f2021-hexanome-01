@@ -5,7 +5,7 @@ import logo from '../../assets/img/elfenroads.png';
 import Modal from './Modal';
 import Scene from './Scene';
 
-export default function MainMenu({setGame}) {
+export default function MainMenu({setGame}: any) {
   return (
     <div className="main-menu">
       <Scene />
