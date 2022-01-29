@@ -7,8 +7,8 @@ import Login from './Login';
 import Wait from './Wait';
 import Welcome from './Welcome';
 
-export default function Modal({setGame}) {
-  const [frame, setFrame] = useState(null);
+export default function Modal({setGame}: any) {
+  const [frame, setFrame] = useState('');
   const [user, setUser] = useState(null);
   const [room, setRoom] = useState(null);
 
@@ -16,9 +16,9 @@ export default function Modal({setGame}) {
   useEffect(() => setFrame('wait'), [room]);
   useEffect(() => setFrame('login'), []);
 
-  const welcome = _user => setUser(_user);
+  const welcome = (_user: any) => setUser(_user);
   const create = () => setFrame('create');
-  const wait = room => setRoom(room);
+  const wait = (room: any) => setRoom(room);
   const beginGame = () => setGame({room: room, username: user});
 
   return (
