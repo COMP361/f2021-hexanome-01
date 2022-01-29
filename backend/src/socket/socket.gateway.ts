@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
@@ -17,7 +18,10 @@ export class SocketGateway {
   server: Server;
 
   @SubscribeMessage('joinLobby')
-  async joinLobby(client: Socket, @MessageBody() data): Promise<void> {
+  async joinLobby(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data,
+  ): Promise<void> {
     client.join(data.session_id);
     this.server.to(data.session_id).emit('joinLobby', {
       msg: data,
