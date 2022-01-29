@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 export default class Hand {
   scene: Phaser.Scene;
-  container: Phaser.GameObjects.Container
+  container: Phaser.GameObjects.Container;
   isOpen: boolean;
   numCards: number;
 
@@ -42,16 +42,17 @@ export default class Hand {
   // Method to render a card from Map of cards, and it to this Phaser Container.
   addCard(cardName: string) {
     const CARD_SIZE = 0.2;
-    const img = this.store.get(cardName);  // Get card
+    const img = this.store.get(cardName); // Get card
 
     // If card is in map add it to Phaser container
     if (img !== undefined) {
       // Render sprite to this Phaser Scene and offset based on the other cards
       const card = this.scene.add.sprite(this.numCards * 30, 0, img);
-      card.setData({
-            name: cardName,
-          })
-          .setScale(CARD_SIZE);
+      card
+        .setData({
+          name: cardName,
+        })
+        .setScale(CARD_SIZE);
 
       // Add card sprite to Phaser container so that it do the hide/show group animation
       this.container.add(card);
@@ -78,7 +79,12 @@ export default class Hand {
     // Vertical animation
     const {height} = this.scene.scale;
     const CARD_UP = height / 1.12;
-    this.scene.tweens.add({targets: this.container, y: CARD_UP, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
+    this.scene.tweens.add({
+      targets: this.container,
+      y: CARD_UP,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
     this.isOpen = true;
   }
 
@@ -90,7 +96,12 @@ export default class Hand {
 
     // Vertical animation
     const {height} = this.scene.scale;
-    this.scene.tweens.add({targets: this.container, y: height + 100, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
+    this.scene.tweens.add({
+      targets: this.container,
+      y: height + 100,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
     this.isOpen = false;
   }
 }

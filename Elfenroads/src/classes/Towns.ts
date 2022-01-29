@@ -1,7 +1,12 @@
-
-
 export class Town {
-  constructor(name, position) {
+  name: string;
+  position: Array<number>;
+  townPieces: any;
+  currentPlayers: any;
+  nextTowns: any;
+  townPieceHolder: any;
+
+  constructor(name: any, position: any) {
     this.name = name;
     this.position = position;
     this.townPieces = [];
@@ -10,19 +15,19 @@ export class Town {
     this.townPieceHolder = [];
   }
 
-  setTownPieceHolder(holder) {
+  setTownPieceHolder(holder: any) {
     this.townPieceHolder = holder;
   }
 
-  setTownPieces(townPieces) {
+  setTownPieces(townPieces: any) {
     this.townPieces = townPieces;
   }
 
-  setCurrentPlayers(players) {
+  setCurrentPlayers(players: any) {
     this.currentPlayers = players;
   }
 
-  setNextTowns(towns) {
+  setNextTowns(towns: any) {
     this.nextTowns = towns;
   }
 }

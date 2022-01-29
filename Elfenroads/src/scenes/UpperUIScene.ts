@@ -30,26 +30,25 @@ export default class UpperUI extends Phaser.Scene {
     this.add.image(settingsButton.x, settingsButton.y, 'gear').setScale(0.7);
 
     // Add interactive pointer options for settingsButton
-    settingsButton.setInteractive()
-        .on('pointerdown',
-            function() {
-              settingsButton.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              settingsButton.clearTint();
-            })
-        .on('pointerup', () => {
-          settingsButton.clearTint();
-          if (settingsMenu.isOpen) {
-            settingsMenu.hide();
-          } else {
-            this.buttons.forEach((m) => {
-              (m.hide());
-            });
-            settingsMenu.show();
-          }
-        });
+    settingsButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        settingsButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        settingsButton.clearTint();
+      })
+      .on('pointerup', () => {
+        settingsButton.clearTint();
+        if (settingsMenu.isOpen) {
+          settingsMenu.hide();
+        } else {
+          this.buttons.forEach(m => {
+            m.hide();
+          });
+          settingsMenu.show();
+        }
+      });
   }
 
   // Method to create elfenroads cheat sheet card/menu
@@ -63,28 +62,29 @@ export default class UpperUI extends Phaser.Scene {
 
     // Create question mark button
     const cheatsheetButton = this.add.sprite(width - 80, 30, 'brown-box');
-    this.add.image(cheatsheetButton.x, cheatsheetButton.y, 'question').setScale(0.7);
+    this.add
+      .image(cheatsheetButton.x, cheatsheetButton.y, 'question')
+      .setScale(0.7);
 
     // Add interactivity (display image when hover over) for cheatsheetButton
-    cheatsheetButton.setInteractive()
-        .on('pointerdown',
-            function() {
-              cheatsheetButton.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              cheatsheetButton.clearTint();
-            })
-        .on('pointerup', () => {
-          cheatsheetButton.clearTint();
-          if (cheatSheetMenu.isOpen) {
-            cheatSheetMenu.hide();
-          } else {
-            this.buttons.forEach((m) => {
-              (m.hide());
-            });
-            cheatSheetMenu.show();
-          }
-        });
+    cheatsheetButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        cheatsheetButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        cheatsheetButton.clearTint();
+      })
+      .on('pointerup', () => {
+        cheatsheetButton.clearTint();
+        if (cheatSheetMenu.isOpen) {
+          cheatSheetMenu.hide();
+        } else {
+          this.buttons.forEach(m => {
+            m.hide();
+          });
+          cheatSheetMenu.show();
+        }
+      });
   }
 }

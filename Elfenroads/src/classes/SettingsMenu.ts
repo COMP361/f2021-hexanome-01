@@ -15,7 +15,9 @@ export default class SettingsMenu {
     this.isOpen = false;
 
     // Create grey ui panel element
-    const panel = scene.add.nineslice(0, 0, 170, 61, 'brown-panel', 24).setOrigin(1, 0);
+    const panel = scene.add
+      .nineslice(0, 0, 170, 61, 'brown-panel', 24)
+      .setOrigin(1, 0);
 
     this.container.add(panel);
 
@@ -27,15 +29,27 @@ export default class SettingsMenu {
   // Create toggle music button to be added to panel / container
   createMusicButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleMusic = this.scene.add.image(-panel.width + 10, 8, 'brown-box').setOrigin(0, 0);
+    const toggleMusic = this.scene.add
+      .image(-panel.width + 10, 8, 'brown-box')
+      .setOrigin(0, 0);
 
     // Create music icons elements
-    const musicOn =
-        this.scene.add.image(toggleMusic.x + toggleMusic.height * 0.5, toggleMusic.y + toggleMusic.height * 0.5, 'music-on').setScale(0.7);
+    const musicOn = this.scene.add
+      .image(
+        toggleMusic.x + toggleMusic.height * 0.5,
+        toggleMusic.y + toggleMusic.height * 0.5,
+        'music-on'
+      )
+      .setScale(0.7);
 
-    const musicOff = this.scene.add.image(toggleMusic.x + toggleMusic.height * 0.5, toggleMusic.y + toggleMusic.height * 0.5, 'music-off')
-                         .setScale(0.7)
-                         .setVisible(false);
+    const musicOff = this.scene.add
+      .image(
+        toggleMusic.x + toggleMusic.height * 0.5,
+        toggleMusic.y + toggleMusic.height * 0.5,
+        'music-off'
+      )
+      .setScale(0.7)
+      .setVisible(false);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleMusic);
@@ -43,79 +57,92 @@ export default class SettingsMenu {
     this.container.add(musicOff);
 
     // interactive pointer options for toggleMusic button
-    toggleMusic.setInteractive()
-        .on('pointerdown',
-            () => {
-              toggleMusic.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              toggleMusic.clearTint();
-            })
-        .on('pointerup', () => {
-          toggleMusic.clearTint();
+    toggleMusic
+      .setInteractive()
+      .on('pointerdown', () => {
+        toggleMusic.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        toggleMusic.clearTint();
+      })
+      .on('pointerup', () => {
+        toggleMusic.clearTint();
 
-          let isMute = !musicOn.visible;
-          isMute = !isMute;
-          musicOn.setVisible(!isMute);
+        let isMute = !musicOn.visible;
+        isMute = !isMute;
+        musicOn.setVisible(!isMute);
 
-          this.scene.sound.mute = isMute;
-          musicOff.setVisible(isMute);
-        });
+        this.scene.sound.mute = isMute;
+        musicOff.setVisible(isMute);
+      });
   }
 
   // Create toggle save button to be added to panel / container
   createSaveButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleSave = this.scene.add.image(-panel.width + 63, 8, 'brown-box').setOrigin(0, 0);
+    const toggleSave = this.scene.add
+      .image(-panel.width + 63, 8, 'brown-box')
+      .setOrigin(0, 0);
 
     // Create save icon element
-    const saveIcon = this.scene.add.image((toggleSave.x + toggleSave.height * 0.5) + 1, toggleSave.y + toggleSave.height * 0.5, 'save').setScale(0.7);
+    const saveIcon = this.scene.add
+      .image(
+        toggleSave.x + toggleSave.height * 0.5 + 1,
+        toggleSave.y + toggleSave.height * 0.5,
+        'save'
+      )
+      .setScale(0.7);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleSave);
     this.container.add(saveIcon);
 
     // interactive pointer options for toggleSave button
-    toggleSave.setInteractive()
-        .on('pointerdown',
-            function() {
-              toggleSave.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              toggleSave.clearTint();
-            })
-        .on('pointerup', function() {
-          toggleSave.clearTint();
-        });
+    toggleSave
+      .setInteractive()
+      .on('pointerdown', () => {
+        toggleSave.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        toggleSave.clearTint();
+      })
+      .on('pointerup', () => {
+        toggleSave.clearTint();
+      });
   }
 
   // Create toggle exit button to be added to panel / container
   createExitButton(panel: Phaser.GameObjects.RenderTexture) {
     // Create grey ui button element
-    const toggleExit = this.scene.add.image(-panel.width + 115, 8, 'brown-box').setOrigin(0, 0);
+    const toggleExit = this.scene.add
+      .image(-panel.width + 115, 8, 'brown-box')
+      .setOrigin(0, 0);
 
     // Create exit icon element
-    const exitIcon = this.scene.add.image((toggleExit.x + toggleExit.height * 0.5) + 1, toggleExit.y + toggleExit.height * 0.5, 'door').setScale(0.7);
+    const exitIcon = this.scene.add
+      .image(
+        toggleExit.x + toggleExit.height * 0.5 + 1,
+        toggleExit.y + toggleExit.height * 0.5,
+        'door'
+      )
+      .setScale(0.7);
 
     // Add all elements to container for grouped animations
     this.container.add(toggleExit);
     this.container.add(exitIcon);
 
     // interactive pointer options for toggleExit button
-    toggleExit.setInteractive()
-        .on('pointerdown',
-            function() {
-              toggleExit.setTint(0xd3d3d3);
-            })
-        .on('pointerout',
-            function() {
-              toggleExit.clearTint();
-            })
-        .on('pointerup', function() {
-          toggleExit.clearTint();
-        });
+    toggleExit
+      .setInteractive()
+      .on('pointerdown', () => {
+        toggleExit.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        toggleExit.clearTint();
+      })
+      .on('pointerup', () => {
+        toggleExit.clearTint();
+      });
   }
 
   // Show entire settings menu
@@ -126,7 +153,12 @@ export default class SettingsMenu {
 
     // Horizontal animation
     const {width} = this.scene.scale;
-    this.scene.tweens.add({targets: this.container, x: width - 10, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
+    this.scene.tweens.add({
+      targets: this.container,
+      x: width - 10,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
     this.isOpen = true;
   }
 
@@ -138,7 +170,12 @@ export default class SettingsMenu {
 
     // Horizontal animation
     const {width} = this.scene.scale;
-    this.scene.tweens.add({targets: this.container, x: width + 300, duration: 300, ease: Phaser.Math.Easing.Sine.InOut});
+    this.scene.tweens.add({
+      targets: this.container,
+      x: width + 300,
+      duration: 300,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
     this.isOpen = false;
   }
 }

@@ -1,12 +1,10 @@
 import {
-  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { joinLobbyDto } from './socket';
 
 @WebSocketGateway(3001, {
   cors: {
