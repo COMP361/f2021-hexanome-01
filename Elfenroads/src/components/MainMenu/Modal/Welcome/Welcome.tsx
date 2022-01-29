@@ -1,6 +1,6 @@
 import './Welcome.scss';
 import React from 'react';
-export default function Welcome({user, create}) {
+export default function Welcome({user, create}: any) {
   return (
     <section className="welcome">
       <h1 className="welcome__title">
