@@ -1,13 +1,12 @@
-/* eslint-disable */
 import Phaser from 'phaser';
-import { Edge } from '../classes/Edge';
+import {Edge} from '../classes/Edge';
 import {Towns} from './MoveBootScene';
-import {ItemUnit, Spell, Counter, GoldPiece, Obstacle} from '../classes/ItemUnit';
+import {Counter, Obstacle} from '../classes/ItemUnit';
 
-const SpellType = {
-    double: 'double',
-    exchange: 'exchange',
-};
+// const SpellType = {
+//     double: 'double',
+//     exchange: 'exchange',
+// };
 
 const CounterType = {
     giantPig: 'pig-counter',
@@ -21,7 +20,7 @@ const CounterType = {
 const ObstacleType = {
     seaMonster: 'sea-monster',
     tree: 'tree',
-}
+};
 
 const EdgeType = {
     plain: 'plain',
@@ -161,6 +160,8 @@ export default class CounterScene extends Phaser.Scene {
             // assign edge object to each zone
             zone.setData(edge);
         });
+
+        // //// This block is hard coded. We will relate counters with player objects later //////
         let counterX = 750 / 1600 * this.cameras.main.width;
         Counters.forEach((counter) => {
             const counterSprite =
@@ -190,6 +191,7 @@ export default class CounterScene extends Phaser.Scene {
             this.input.setDraggable(obstacleSprite);
             counterX += 50 / 1600 * this.cameras.main.width;
         });
+        // //// block ends here //////
 
         this.input.on('dragstart', function(pointer, gameObject) {
             gameObject.setTint(0x808080);
@@ -211,19 +213,18 @@ export default class CounterScene extends Phaser.Scene {
         // if the counter is dragged to the drop zone, it will stay in it
         this.input.on('drop', function(pointer, gameObject, dropZone) {
             console.log(dropZone.data.values);
-            if (gameObject.data.values.allowedEdges.includes(dropZone.data.values.edgeType) && dropZone.data.values.items.length == 0 && gameObject.data.values.obstacleType !== ObstacleType.tree) {
+            if (gameObject.data.values.allowedEdges.includes(dropZone.data.values.edgeType) &&
+            dropZone.data.values.items.length == 0 && gameObject.data.values.obstacleType !== ObstacleType.tree) {
                 gameObject.x = dropZone.x;
                 gameObject.y = dropZone.y;
                 dropZone.data.values.items.push(gameObject.data.values);
-            }
-            else if (gameObject.data.values.obstacleType === ObstacleType.tree && dropZone.data.values.items.length == 1) {
+            } else if (gameObject.data.values.obstacleType === ObstacleType.tree && dropZone.data.values.items.length == 1) {
                 gameObject.x = dropZone.x - 30;
                 gameObject.y = dropZone.y;
                 dropZone.data.values.items.push(gameObject.data.values);
-            }
-            else {
+            } else {
                 gameObject.x = gameObject.input.dragStartX;
-                gameObject.y = gameObject.input.dragStartY;  
+                gameObject.y = gameObject.input.dragStartY;
             }
         });
 
