@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable quotes */
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +10,8 @@ import { GameSessionModule } from './gamesession/gamesession.module';
 import { GameModule } from './game/gamesvc.module';
 import { UserModule } from './user/user.module';
 import { TownModule } from './town/town.module';
+import { SocketModule } from './socket/socket.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -19,7 +23,11 @@ import { TownModule } from './town/town.module';
       password: 'elfenroad',
       database: 'elfenroad',
       entities: ['dist/**/*.model.js'],
-      synchronize: false,
+      synchronize: true,
+      dropSchema: true,
+      "migrations": ["dist/migrations/*{.ts,.js}"],
+      "migrationsTableName": "migrations_typeorm",
+      "migrationsRun": true
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
@@ -28,8 +36,10 @@ import { TownModule } from './town/town.module';
     GameModule,
     UserModule,
     GameSessionModule,
-    TownModule
+    TownModule,
+    SocketModule
   ],
   providers: [AppService, AppResolver],
+  controllers: [AppController]
 })
 export class AppModule {}

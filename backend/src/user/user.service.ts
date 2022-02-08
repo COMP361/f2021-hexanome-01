@@ -12,7 +12,7 @@ export class UserService {
   constructor(
     @InjectRepository(GameUser)
     private userRepository: Repository<GameUser>,
-  ) {}
+  ) { }
 
   async getLSUser(access_token: string): Promise<LSUser> {
     return await instance
@@ -149,9 +149,10 @@ export class UserService {
     session_id: string,
     color: string,
   ): Promise<GameUser> {
-    const gameUser: GameUser = new GameUser();
+    const gameUser: GameUser = this.userRepository.create();
     gameUser.name = name;
-    (gameUser.session_id = session_id), (gameUser.color = color);
+    gameUser.session_id = session_id;
+    gameUser.color = color;
     return await this.userRepository.save(gameUser);
   }
 
@@ -161,8 +162,8 @@ export class UserService {
         name: name,
         session_id: session_id,
       })
-      .then((response) => {
-        return response as unknown as string;
+      .then(() => {
+        return "succeed";
       });
   }
 
