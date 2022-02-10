@@ -18,6 +18,7 @@ import UIScene from '../../scenes/UIScene';
 import TownPieceScene from '../../scenes/TownPieceScene';
 import CardScene from '../../scenes/CardScene';
 import PlayerTokenScene from '../../scenes/PlayerTokenScene';
+import CounterScene from '../../scenes/CounterScene';
 
 // Phaser Game config
 const game = {
@@ -35,6 +36,7 @@ const game = {
     TownPieceScene,
     CardScene,
     PlayerTokenScene,
+    CounterScene,
   ],
 };
 

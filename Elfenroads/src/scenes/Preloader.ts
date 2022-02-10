@@ -48,9 +48,20 @@ export default class Preloader extends Phaser.Scene {
       'assets/ui/uipack_fixed/PNG/green_circle.png'
     );
     this.load.image('blue-panel', 'assets/ui/uipack_fixed/PNG/blue_panel.png');
+
+    // Assets for CounterScene.js
     this.load.image('unknown-counter', 'assets/boardgame/M00.png');
     this.load.image('pig-counter', 'assets/boardgame/M01.png');
+    this.load.image('elfcycle-counter', 'assets/boardgame/M02.png');
     this.load.image('cloud-counter', 'assets/boardgame/M03.png');
+    this.load.image('unicorn-counter', 'assets/boardgame/M04.png');
+    this.load.image('troll-wagon-counter', 'assets/boardgame/M05.png');
+    this.load.image('dragon-counter', 'assets/boardgame/M06.png');
+    this.load.image('tree', 'assets/boardgame/M09.png');
+    this.load.image('sea-monster', 'assets/boardgame/seamonster.png');
+    this.load.image('bounce', 'assets/boardgame/bounce.png');
+    this.load.image('double', 'assets/boardgame/double.png');
+    this.load.image('gold-piece', 'assets/boardgame/treasure.png');
 
     // Assests for CardScene.js
     this.load.image('open-box', 'assets/ui/iconpack/PNG/White/1x/video.png');
