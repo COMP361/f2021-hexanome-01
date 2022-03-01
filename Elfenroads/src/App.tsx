@@ -4,14 +4,12 @@ import Game from './components/Game/Game';
 import {useState} from 'react';
 import React from 'react';
 
-function App() {
-  const [game, setGame] = useState(null);
+export default function App() {
+  const [socket, setSocket] = useState(null);
 
   return (
     <div className="App">
-      {game ? <Game /> : <MainMenu setGame={setGame} />}
+      {socket ? <Game socket={socket} /> : <MainMenu setSocket={setSocket} />}
     </div>
   );
 }
-
-export default App;
