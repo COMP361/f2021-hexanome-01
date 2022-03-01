@@ -1,34 +1,33 @@
 import './Modal.scss';
+
+import {useState} from 'react';
 import React from 'react';
-import {useEffect, useState} from 'react';
+import {io} from 'socket.io-client';
 
 import Create from './Create';
 import Login from './Login';
 import Wait from './Wait';
 import Welcome from './Welcome';
+import Join from './Join/Join';
 
-export default function Modal({setGame}: any) {
-  const [frame, setFrame] = useState('');
-  const [user, setUser] = useState(null);
-  const [room, setRoom] = useState(null);
+export default function Modal({setSocket}: any) {
+  const [frame, setFrame] = useState('login');
+  const [_socket, _setSocket]: [any, any] = useState(null);
 
-  useEffect(() => setFrame('welcome'), [user]);
-  useEffect(() => setFrame('wait'), [room]);
-  useEffect(() => setFrame('login'), []);
-
-  const welcome = (_user: any) => setUser(_user);
+  const welcome = () => setFrame('welcome');
   const create = () => setFrame('create');
-  const wait = (room: any) => setRoom(room);
-  const beginGame = () => setGame({room: room, username: user});
+  const join = () => setFrame('join');
+
+  const wait = () =>
+    _setSocket(io('http://elfenroads.westus3.cloudapp.azure.com:4243/'));
 
   return (
     <div className="modal">
       {frame === 'login' && <Login next={welcome} />}
-      {frame === 'welcome' && <Welcome user={user} create={create} />}
-      {frame === 'create' && <Create wait={wait} />}
-      {frame === 'wait' && (
-        <Wait room={room} user={user} beginGame={beginGame} />
-      )}
+      {frame === 'welcome' && <Welcome create={create} join={join} />}
+      {!_socket && frame === 'create' && <Create wait={wait} />}
+      {!_socket && frame === 'join' && <Join wait={wait} />}
+      {_socket && <Wait socket={_socket} setSocket={setSocket} />}
     </div>
   );
 }

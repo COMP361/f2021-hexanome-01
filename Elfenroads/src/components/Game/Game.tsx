@@ -40,7 +40,8 @@ const game = {
   ],
 };
 
-export default function Game() {
+export default function Game({socket}: any) {
+  console.log(socket);
   const gameRef = useRef(null);
   const [initialize] = useState(true);
   return (

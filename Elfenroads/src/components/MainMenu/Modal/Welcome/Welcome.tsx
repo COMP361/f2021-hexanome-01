@@ -1,12 +1,17 @@
+import {getUser} from '../../../../utils/storageUtils';
 import './Welcome.scss';
 import React from 'react';
-export default function Welcome({user, create}: any) {
+
+export default function Welcome({create, join}: any) {
+  const {name} = getUser();
   return (
     <section className="welcome">
       <h1 className="welcome__title">
-        Welcome, <span className="welcome__user">{user.lsUser.name}</span>
+        Welcome, <span className="welcome__user">{name}</span>
       </h1>
-      <button className="welcome__button">Join Game</button>
+      <button className="welcome__button" onClick={join}>
+        Join Game
+      </button>
       <button className="welcome__button" onClick={create}>
         Create Game
       </button>
