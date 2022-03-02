@@ -1,15 +1,6 @@
 import { Towns } from "../scenes/MoveBootScene";
 import { Town } from "./Towns";
-
-export enum BootColour {
-    Black,
-    Blue,
-    Red,
-    Yellow,
-    Purple,
-    Green,
-    None,
-}
+import { BootColour } from "./BootColour";
 
 export class PlayerManager {
     private static instance: PlayerManager;
@@ -89,11 +80,11 @@ export class PlayerManager {
         this.totalCoins[playerIndex] += coinAmount;
     }
 
-    public setTown(playerIndex: number, town: Town) {
+    public setCurrentTown(playerIndex: number, town: Town) {
         this.currentTown[playerIndex] = town;
     }
 
-    public addTown(playerIndex: number, town: Town) {
+    public addVisitedTown(playerIndex: number, town: Town) {
         this.visitedTowns[playerIndex].push(town);
     }
 }
