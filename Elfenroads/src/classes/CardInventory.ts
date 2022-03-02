@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-export default class Hand {
+export default class CardInventory {
   scene: Phaser.Scene;
   container: Phaser.GameObjects.Container;
   isOpen: boolean;
