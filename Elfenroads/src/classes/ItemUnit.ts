@@ -1,23 +1,7 @@
-import {EdgeType} from './Edge';
-
-export enum SpellType {
-  Double = 'double',
-  Exchange = 'exchange',
-}
-
-export enum CounterType {
-  GiantPig = 'pig-counter',
-  ElfCycle = 'elfcycle-counter',
-  MagicCloud = 'cloud-counter',
-  Unicorn = 'unicorn-counter',
-  TrollWagon = 'troll-wagon-counter',
-  Dragon = 'dragon-counter',
-}
-
-export enum ObstacleType {
-  SeaMonster = 'sea-monster',
-  Tree = 'tree',
-}
+import {CounterType} from '../enums/CounterType';
+import {EdgeType} from '../enums/EdgeType';
+import {ObstacleType} from '../enums/ObstacleType';
+import {SpellType} from '../enums/SpellType';
 
 export class ItemUnit {
   allowedEdges: Array<EdgeType>;

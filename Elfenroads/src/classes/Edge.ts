@@ -1,14 +1,6 @@
+import {EdgeType} from '../enums/EdgeType';
 import {ItemUnit} from './ItemUnit';
-import {Town} from './Towns';
-
-export enum EdgeType {
-  Plain,
-  Wood,
-  Desert,
-  Mountain,
-  River,
-  Lake,
-}
+import {Town} from './Town';
 
 export class Edge {
   town1: Town;
