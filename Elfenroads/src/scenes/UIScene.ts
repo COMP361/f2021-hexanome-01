@@ -9,7 +9,6 @@ export default class UIScene extends Phaser.Scene {
   create() {
     // All UI related scene are launched here:
     this.scene.launch('movebootscene');
-    this.scene.launch('counterscene');
     this.scene.launch('upperuiscene');
     this.scene.launch('townpiecescene');
     this.scene.launch('inventoryscene');
