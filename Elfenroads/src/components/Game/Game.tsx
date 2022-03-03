@@ -16,8 +16,8 @@ import Preloader from '../../scenes/Preloader';
 import UpperUIScene from '../../scenes/UpperUIScene';
 import UIScene from '../../scenes/UIScene';
 import TownPieceScene from '../../scenes/TownPieceScene';
-import CardScene from '../../scenes/CardScene';
-import PlayerTokenScene from '../../scenes/PlayerTokenScene';
+import InventoryScene from '../../scenes/InventoryScene';
+import PlayerIconScene from '../../scenes/PlayerIconScene';
 import CounterScene from '../../scenes/CounterScene';
 
 // Phaser Game config
@@ -34,8 +34,8 @@ const game = {
     MoveBootScene,
     UpperUIScene,
     TownPieceScene,
-    CardScene,
-    PlayerTokenScene,
+    InventoryScene,
+    PlayerIconScene,
     CounterScene,
   ],
 };

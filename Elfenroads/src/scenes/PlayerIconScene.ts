@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
-import PlayerToken from '../classes/PlayerToken';
+import PlayerIcon from '../classes/PlayerIcon';
 
 export default class PlayerTokenScene extends Phaser.Scene {
   constructor() {
-    super('playertokenscene');
+    super('playericonscene');
   }
 
   create() {
-    const player1 = new PlayerToken(
+    const player1 = new PlayerIcon(
       this,
       this.cameras.main.width / 7,
       this.cameras.main.height / 4,
@@ -16,7 +16,13 @@ export default class PlayerTokenScene extends Phaser.Scene {
     player1.addCounter('unknown-counter');
     player1.addCounter('pig-counter');
     player1.addCounter('cloud-counter');
-    // const player2 = new PlayerToken(this, this.xOrigin, this.yOrigin - 80, 'blue-actor');
-    // player2.addCounter('unknown-counter');
+
+    const player2 = new PlayerIcon(
+      this,
+      this.cameras.main.width / 7,
+      this.cameras.main.height / 3,
+      'blue-actor'
+    );
+    player2.addCounter('unknown-counter');
   }
 }

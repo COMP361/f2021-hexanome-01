@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 
-import eventsCenter from '../classes/EventsCenter';
+import eventsCenter from './EventsCenter';
 
-export default class PlayerToken {
+export default class PlayerIcon {
   scene: Phaser.Scene;
   isShowed: boolean;
   container: Phaser.GameObjects.Container;

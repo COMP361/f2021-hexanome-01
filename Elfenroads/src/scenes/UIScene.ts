@@ -12,8 +12,8 @@ export default class UIScene extends Phaser.Scene {
     this.scene.launch('counterscene');
     this.scene.launch('upperuiscene');
     this.scene.launch('townpiecescene');
-    this.scene.launch('cardscene');
-    this.scene.launch('playertokenscene');
+    this.scene.launch('inventoryscene');
+    this.scene.launch('playericonscene');
   }
 
   updatePoints(points: any) {
