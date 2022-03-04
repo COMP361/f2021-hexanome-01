@@ -18,7 +18,6 @@ import UIScene from '../../scenes/UIScene';
 import TownPieceScene from '../../scenes/TownPieceScene';
 import InventoryScene from '../../scenes/InventoryScene';
 import PlayerIconScene from '../../scenes/PlayerIconScene';
-import CounterScene from '../../scenes/CounterScene';
 
 // Phaser Game config
 const game = {
@@ -36,7 +35,6 @@ const game = {
     TownPieceScene,
     InventoryScene,
     PlayerIconScene,
-    CounterScene,
   ],
 };
 

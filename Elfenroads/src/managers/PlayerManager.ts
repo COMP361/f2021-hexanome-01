@@ -1,6 +1,6 @@
 import {Towns} from '../scenes/MoveBootScene';
-import {Town} from './Towns';
-import {BootColour} from './BootColour';
+import {Town} from '../classes/Town';
+import {BootColour} from '../enums/BootColour';
 
 export class PlayerManager {
   private static instance: PlayerManager;
