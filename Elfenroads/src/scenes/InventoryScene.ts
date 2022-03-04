@@ -18,9 +18,6 @@ export default class InventoryScene extends Phaser.Scene {
     const graphics = this.add.graphics();
     const zoneRadius = (30 / 1600) * this.cameras.main.width;
 
-    // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
-    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
-
     // creating all the dropzones for counters
     RoadManager.getInstance()
       .getEdges()
@@ -36,6 +33,9 @@ export default class InventoryScene extends Phaser.Scene {
         // assign edge object to each zone
         zone.setData(edge);
       });
+
+    // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
+    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
 
     // Dynamically updates the counter inventory based on the currentPlayer counter array.
     let counterX = (750 / 1600) * this.cameras.main.width;
