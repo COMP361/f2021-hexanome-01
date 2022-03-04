@@ -59,7 +59,7 @@ export default class BoardGame extends Phaser.Scene {
     /* move boot */
     const elvenboot = this.add
       .sprite(
-        (Towns.elvenhold.position[0] / 1600) * this.cameras.main.width,
+        (Towns.elvenhold.position[0] / 1580) * this.cameras.main.width,
         (Towns.elvenhold.position[1] / 750) * this.cameras.main.height,
         'boot'
       )

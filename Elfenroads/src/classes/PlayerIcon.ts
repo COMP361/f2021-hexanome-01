@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {BootColour} from '../enums/BootColour';
 
 import eventsCenter from './EventsCenter';
 
@@ -10,22 +11,35 @@ export default class PlayerIcon {
   panel: Phaser.GameObjects.RenderTexture;
   numCounter: number;
 
-  constructor(scene: Phaser.Scene, xpos: number, ypos: number, img: string) {
+  constructor(
+    scene: Phaser.Scene,
+    xpos: number,
+    ypos: number,
+    img: string,
+    color: BootColour
+  ) {
     this.scene = scene;
     this.isShowed = false;
     this.xpos = xpos;
     this.numCounter = 0;
 
     /* add player token */
-    const token = this.scene.add.sprite(xpos, ypos, img);
-    const panel = this.scene.add
+    const token: Phaser.GameObjects.Sprite = this.scene.add.sprite(
+      xpos,
+      ypos,
+      img
+    );
+    const panel: Phaser.GameObjects.RenderTexture = this.scene.add
       .nineslice(0, 0, 120, 60, 'blue-panel', 24)
       .setOrigin(0, 0);
     this.panel = panel;
 
     token.setScale(0.3);
 
-    const aContainer = this.scene.add.container(xpos + 30, ypos - 30);
+    const aContainer: Phaser.GameObjects.Container = this.scene.add.container(
+      xpos + 30,
+      ypos - 30
+    );
     this.container = aContainer;
     aContainer.add(panel);
     aContainer.setVisible(false);
@@ -44,8 +58,16 @@ export default class PlayerIcon {
       });
 
     // Show player current score
-    const circle = this.scene.add.sprite(xpos - 70, ypos, 'green-circle');
-    const score = this.scene.add.text(xpos - 80, ypos - 12, '0');
+    const circle: Phaser.GameObjects.Sprite = this.scene.add.sprite(
+      xpos - 70,
+      ypos,
+      'green-circle'
+    );
+    const score: Phaser.GameObjects.Text = this.scene.add.text(
+      xpos - 80,
+      ypos - 12,
+      '0'
+    );
     score.setColor('black');
     score.setFontSize(32);
     circle.setScale(2);
@@ -58,7 +80,7 @@ export default class PlayerIcon {
   }
 
   addCounter(img: string) {
-    const counter = this.scene.add
+    const counter: Phaser.GameObjects.Sprite = this.scene.add
       .sprite(5 + this.numCounter * 60, 5, img)
       .setOrigin(0, 0);
     counter.setScale(0.3);
