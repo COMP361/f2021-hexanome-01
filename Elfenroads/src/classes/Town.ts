@@ -1,12 +1,14 @@
-export class Town {
+import Player from './Player';
+
+export default class Town {
   name: string;
-  position: Array<number>;
+  position: Array<integer>;
   townPieces: any;
-  currentPlayers: any;
-  nextTowns: any;
+  currentPlayers: Array<Player>;
+  nextTowns: Array<Town>;
   townPieceHolder: any;
 
-  constructor(name: any, position: any) {
+  constructor(name: any, position: Array<integer>) {
     this.name = name;
     this.position = position;
     this.townPieces = [];
@@ -15,19 +17,23 @@ export class Town {
     this.townPieceHolder = [];
   }
 
-  setTownPieceHolder(holder: any) {
+  public setTownPieceHolder(holder: any): void {
     this.townPieceHolder = holder;
   }
 
-  setTownPieces(townPieces: any) {
+  public setTownPieces(townPieces: any): void {
     this.townPieces = townPieces;
   }
 
-  setCurrentPlayers(players: any) {
+  public setCurrentPlayers(players: Array<Player>): void {
     this.currentPlayers = players;
   }
 
-  setNextTowns(towns: any) {
+  public setNextTowns(towns: Array<Town>): void {
     this.nextTowns = towns;
+  }
+
+  public addVisitingPlayer(pPlayer: Player): void {
+    this.currentPlayers.push(pPlayer);
   }
 }

@@ -1,8 +1,8 @@
 import {EdgeType} from '../enums/EdgeType';
 import {ItemUnit} from './ItemUnit';
-import {Town} from './Town';
+import Town from './Town';
 
-export class Edge {
+export default class Edge {
   town1: Town;
   town2: Town;
   edgeType: EdgeType;
