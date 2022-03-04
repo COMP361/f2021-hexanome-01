@@ -5,10 +5,11 @@ import SettingsMenu from '../classes/SettingsMenu';
 
 export default class UpperUI extends Phaser.Scene {
   // Global array to store buttons in this scene
-  buttons: any[] = [];
+  buttons: Array<any>;
 
   constructor() {
     super('upperuiscene');
+    this.buttons = [];
   }
 
   create() {

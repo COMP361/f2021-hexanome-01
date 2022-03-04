@@ -1,25 +1,14 @@
-import {Towns} from '../scenes/MoveBootScene';
-import {Town} from '../classes/Town';
-import {BootColour} from '../enums/BootColour';
+import Player from '../classes/Player';
+import Town from '../classes/Town';
 
-export class PlayerManager {
+export default class PlayerManager {
   private static instance: PlayerManager;
-  private currentPlayer: number;
-  private players: Array<String>;
-  private bootColour: Array<BootColour>;
-  private totalPoints: Array<number>;
-  private totalCoins: Array<number>;
-  private currentTown: Array<Town>;
-  private visitedTowns: Array<Array<Town>>;
+  private currentPlayerIndex: number;
+  private players: Array<Player>;
 
   private constructor() {
-    this.currentPlayer = 0;
+    this.currentPlayerIndex = 0;
     this.players = [];
-    this.bootColour = [];
-    this.totalPoints = [];
-    this.totalCoins = [];
-    this.currentTown = [];
-    this.visitedTowns = [];
   }
 
   public static getInstance() {
@@ -29,67 +18,55 @@ export class PlayerManager {
     return PlayerManager.instance;
   }
 
-  public addPlayer(player: String, bootColour: BootColour) {
+  public addPlayer(player: Player): void {
     this.players.push(player);
-    this.bootColour.push(bootColour);
-    this.totalPoints.push(0);
-    this.totalCoins.push(0);
-    this.currentTown.push(Towns.elvenhold);
-    this.visitedTowns.push([]);
   }
 
-  public removePlayer(playerIndex: number) {
-    const attr = [
-      this.players,
-      this.bootColour,
-      this.totalPoints,
-      this.totalCoins,
-      this.currentTown,
-      this.visitedTowns,
-    ];
-    attr.forEach(element => {
-      element.splice(playerIndex, 1);
-    });
+  public removePlayer(playerIndex: number): void {
+    this.players.splice(playerIndex, 1);
   }
 
-  public resetPlayers() {
+  public resetAllPlayers(): void {
     for (let i = 0; i < this.players.length; i++) {
-      this.totalPoints[i] = 0;
-      this.totalCoins[i] = 0;
-      this.currentTown[i] = Towns.elvenhold;
-      this.visitedTowns[i] = [];
+      this.players[i].resetPlayer();
     }
   }
 
-  public getCurrentPlayer() {
-    return this.currentPlayer;
+  public getCurrentPlayer(): Player {
+    return this.players[this.currentPlayerIndex];
   }
 
-  public setCurrentPlayer(playerIndex: number) {
-    this.currentPlayer = playerIndex;
+  public setCurrentPlayerIndex(playerIndex: number): void {
+    this.currentPlayerIndex = playerIndex;
   }
 
-  public setNextPlayer() {
-    if (this.currentPlayer < this.players.length - 1) {
-      this.currentPlayer++;
+  public setNextPlayer(): void {
+    if (this.currentPlayerIndex < this.players.length - 1) {
+      this.currentPlayerIndex++;
     } else {
-      this.currentPlayer = 0;
+      this.currentPlayerIndex = 0;
     }
   }
 
-  public addPoint(playerIndex: number) {
-    this.totalPoints[playerIndex]++;
+  public addPoint(playerIndex: number): void {
+    const tempPlayer: Player = this.players[playerIndex];
+    const newScore = tempPlayer.getScore() + 1;
+    tempPlayer.setScore(newScore);
   }
 
-  public addCoins(playerIndex: number, coinAmount: number) {
-    this.totalCoins[playerIndex] += coinAmount;
+  public addCoins(playerIndex: number, coinAmount: number): void {
+    const tempPlayer: Player = this.players[playerIndex];
+    const newScore = tempPlayer.getScore() + coinAmount;
+    tempPlayer.setScore(newScore);
   }
 
-  public setCurrentTown(playerIndex: number, town: Town) {
-    this.currentTown[playerIndex] = town;
+  public setCurrentTown(playerIndex: number, town: Town): void {
+    const tempPlayer: Player = this.players[playerIndex];
+    tempPlayer.setCurrentLocation(town);
   }
 
-  public addVisitedTown(playerIndex: number, town: Town) {
-    this.visitedTowns[playerIndex].push(town);
+  public addVisitedTown(playerIndex: number, town: Town): void {
+    const tempPlayer: Player = this.players[playerIndex];
+    tempPlayer.addVisitedTown(town);
   }
 }
