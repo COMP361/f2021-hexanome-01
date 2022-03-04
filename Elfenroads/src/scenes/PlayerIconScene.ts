@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {BootColour} from '../classes/BootColour';
 import PlayerIcon from '../classes/PlayerIcon';
 
 export default class PlayerTokenScene extends Phaser.Scene {
@@ -11,7 +12,8 @@ export default class PlayerTokenScene extends Phaser.Scene {
       this,
       this.cameras.main.width / 7,
       this.cameras.main.height / 4,
-      'blue-actor'
+      'blue-actor',
+      BootColour.Blue
     );
     player1.addCounter('unknown-counter');
     player1.addCounter('pig-counter');
@@ -21,7 +23,8 @@ export default class PlayerTokenScene extends Phaser.Scene {
       this,
       this.cameras.main.width / 7,
       this.cameras.main.height / 3,
-      'blue-actor'
+      'blue-actor',
+      BootColour.Green
     );
     player2.addCounter('unknown-counter');
   }
