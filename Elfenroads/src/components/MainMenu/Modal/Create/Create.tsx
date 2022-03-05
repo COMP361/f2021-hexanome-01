@@ -5,7 +5,7 @@ import {getUser, storeSessionId} from '../../../../utils/storageUtils';
 import React from 'react';
 
 export default function Create({wait}: any) {
-  const id = uuidv4();
+  // const id = uuidv4();
   const {accessToken, name} = getUser();
 
   const handleFormSubmit = (e: any) => {
@@ -16,8 +16,9 @@ export default function Create({wait}: any) {
 
     if (displayname && min && max) {
       console.log(createSession);
-      registerGameService(displayname, id, `${min}`, `${max}`)
-        .then(() => createSession(id, name, accessToken))
+
+      //Specify elfenland or elfengold in the param below
+      createSession('Elfenroad', name, accessToken)
         .then(res => {
           console.log(res);
           return res.data.data;
@@ -31,13 +32,13 @@ export default function Create({wait}: any) {
     <section className="create">
       <h1 className="create__title">Create Game</h1>
       <form className="form" onSubmit={handleFormSubmit}>
-        <input
+        {/* <input
           className="form__input form__input--create"
           name="roomname"
           id="roomname"
           placeholder="Room Name"
           autoComplete="off"
-        />
+        /> */}
         <div className="form__group">
           <div className="form__input form__input--radio">
             <input
