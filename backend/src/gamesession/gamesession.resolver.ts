@@ -7,7 +7,6 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { LSUser } from 'src/user/user.model';
 import { GameSession } from './gamesession.model';
 import { GameSessionService } from './gamesession.service';
 

@@ -55,7 +55,7 @@ export class SocketGateway {
 
   @SubscribeMessage('declareWinner')
   async declareWinner(@MessageBody() data: any) {
-    this.server.to(data.session_id).emit('statusChange', {
+    this.server.to(data.session_id).emit('declareWinner', {
       msg: data,
     });
   }
