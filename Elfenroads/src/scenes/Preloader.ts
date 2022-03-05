@@ -54,11 +54,44 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('red-boot', 'assets/boardgame/actors/red_boot.png');
     this.load.image('yellow-boot', 'assets/boardgame/actors/yellow_boot.png');
     this.load.image('purple-boot', 'assets/boardgame/actors/purple_boot.png');
+    this.load.image('blue-panel', 'assets/ui/uipack_fixed/PNG/blue_panel.png');
+    this.load.image('red-panel', 'assets/ui/uipack_fixed/PNG/red_panel.png');
+    this.load.image('black-panel', 'assets/ui/uipack_fixed/PNG/grey_panel.png');
+    this.load.image(
+      'green-panel',
+      'assets/ui/uipack_fixed/PNG/green_panel.png'
+    );
+    this.load.image(
+      'yellow-panel',
+      'assets/ui/uipack_fixed/PNG/yellow_panel.png'
+    );
+    this.load.image(
+      'purple-panel',
+      'assets/ui/uipack_fixed/PNG/purple_panel.png'
+    );
     this.load.image(
       'green-circle',
       'assets/ui/uipack_fixed/PNG/green_circle.png'
     );
-    this.load.image('blue-panel', 'assets/ui/uipack_fixed/PNG/blue_panel.png');
+    this.load.image(
+      'blue-circle',
+      'assets/ui/uipack_fixed/PNG/blue_circle.png'
+    );
+    this.load.image('red-circle', 'assets/ui/uipack_fixed/PNG/red_circle.png');
+    this.load.image(
+      'yellow-circle',
+      'assets/ui/uipack_fixed/PNG/yellow_circle.png'
+    );
+
+    this.load.image(
+      'black-circle',
+      'assets/ui/uipack_fixed/PNG/grey_circle.png'
+    );
+
+    this.load.image(
+      'purple-circle',
+      'assets/ui/uipack_fixed/PNG/purple_circle.png'
+    );
 
     // Assets for CounterScene.js
     this.load.image('unknown-counter', 'assets/boardgame/M00.png');
