@@ -21,33 +21,32 @@ export class LSUser {
 
   @Field()
   preferredColour: string;
-
 }
 
 @ObjectType()
 @Entity()
 export class GameUser {
   @Field()
-  @PrimaryColumn({unique: false})
+  @PrimaryColumn({ unique: false })
   name: string;
 
   @Field(() => GameSession)
-  @PrimaryColumn({unique:false})
+  @PrimaryColumn({ unique: false })
   session_id: string;
 
-  @Field({defaultValue: 0})
-  @Column({default: 0})
+  @Field({ defaultValue: 0 })
+  @Column({ default: 0 })
   coins: number;
 
   @Field()
   @Column()
   color: string;
 
-  @Field({defaultValue: 0})
-  @Column({default: 0})
+  @Field({ defaultValue: 0 })
+  @Column({ default: 0 })
   score: number;
 
-  @ManyToOne(() => Town, (town) => town.currentPlayers, {eager:false})
+  @ManyToOne(() => Town, (town) => town.currentPlayers, { eager: false })
   @JoinColumn()
   currentTown: Town;
 

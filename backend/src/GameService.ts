@@ -1,18 +1,10 @@
-import axios, { AxiosInstance } from 'axios';
-
-const instance = axios.create({
-  baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
-});
+import axios from 'axios';
 
 export default class GameService {
-  private token: string;
-  private instance: AxiosInstance;
-  constructor() {
-    this.token = '';
-    this.instance = axios.create({
-      baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
-    });
-  }
+  private token = '';
+  private instance = axios.create({
+    baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/',
+  });
 
   private async getOAuthToken(): Promise<void> {
     const config = {
@@ -21,7 +13,7 @@ export default class GameService {
         Authorization: 'Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=',
       },
     };
-    await instance
+    await this.instance
       .post(
         encodeURI(
           'oauth/token?grant_type=password&username=Elfenroad&password=f2021-EFRD',
@@ -38,7 +30,7 @@ export default class GameService {
   }
 
   async registerGameService(): Promise<void> {
-    await instance
+    await this.instance
       .get(encodeURI('api/gameservices/Elfenroad'))
       .then(() => {
         return;
@@ -55,7 +47,7 @@ export default class GameService {
 
         await this.getOAuthToken();
 
-        await instance
+        await this.instance
           .put(
             encodeURI(
               `api/gameservices/Elfenroad?access_token=${this.token}`,

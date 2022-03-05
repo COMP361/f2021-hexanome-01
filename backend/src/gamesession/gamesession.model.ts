@@ -1,11 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GSDetail } from 'src/game/gamesvc.model';
-import { Town } from 'src/town/town.model';
-import { GameUser, LSUser } from 'src/user/user.model';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { LSUser } from 'src/user/user.model';
 
 @ObjectType()
 export class GameSession {
+  @Field()
+  sessionid: string;
+
   @Field()
   creator: string;
 
@@ -15,8 +16,8 @@ export class GameSession {
   @Field()
   launched: boolean;
 
-  @Field(() => [String])
-  players: string[];
+  @Field(() => [LSUser])
+  players: LSUser[];
 
   @Field()
   savegameid: string;

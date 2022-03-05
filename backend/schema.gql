@@ -39,10 +39,11 @@ type Town {
 }
 
 type GameSession {
+  sessionid: String!
   creator: String!
   gameParameters: GSDetail!
   launched: Boolean!
-  players: [String!]!
+  players: [LSUser!]!
   savegameid: String!
 }
 
@@ -62,7 +63,7 @@ type Query {
   LSUser(access_token: String!): LSUser!
   GameUser(session_id: String!, name: String!): GameUser!
   AllGameUser(name: String!): [GameUser!]!
-  AllSessions: String!
+  AllSessions: [GameSession!]!
   Session(session_id: String!): GameSession!
   GameServiceDetail: GSDetail!
   SaveGames(access_token: String!): [SaveGame!]!
