@@ -12,8 +12,7 @@ export default class PlayerTokenScene extends Phaser.Scene {
       this,
       this.cameras.main.width / 7,
       this.cameras.main.height / 4,
-      'blue-actor',
-      BootColour.Blue
+      BootColour.Green
     );
     player1.addCounter('unknown-counter');
     player1.addCounter('pig-counter');
@@ -22,9 +21,8 @@ export default class PlayerTokenScene extends Phaser.Scene {
     const player2 = new PlayerIcon(
       this,
       this.cameras.main.width / 7,
-      this.cameras.main.height / 3,
-      'blue-actor',
-      BootColour.Green
+      this.cameras.main.height / 3 + 10,
+      BootColour.Blue
     );
     player2.addCounter('unknown-counter');
   }
