@@ -45,4 +45,26 @@ export class SocketGateway {
       msg: data,
     });
   }
+
+  @SubscribeMessage('statusChange')
+  async statusChange(@MessageBody() data: any) {
+    this.server.to(data.session_id).emit('statusChange', {
+      msg: data
+    })
+  }
+
+  @SubscribeMessage('declareWinner')
+  async declareWinner(@MessageBody() data: any) {
+    this.server.to(data.session_id).emit('statusChange', {
+      msg: data
+    })
+  }
+
+  @SubscribeMessage('nextRound')
+  async nextRound(@MessageBody() data: any) {
+    this.server.to(data.session_id).emit('nextRound', {
+      msg: data
+    })
+  }
+  
 }
