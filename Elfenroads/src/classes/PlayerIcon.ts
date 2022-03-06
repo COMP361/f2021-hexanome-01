@@ -1,9 +1,6 @@
 import Phaser from 'phaser';
 import {BootColour} from '../enums/BootColour';
-import PlayerManager from '../managers/PlayerManager';
-
 import eventsCenter from './EventsCenter';
-import {Counter} from './ItemUnit';
 
 // helper class for getting the right image
 class ImgStore {
@@ -11,7 +8,7 @@ class ImgStore {
   private bootStore: Map<BootColour, string> = new Map();
   private panelStore: Map<BootColour, string> = new Map();
   private circleStore: Map<BootColour, string> = new Map();
-  public constructor() {
+  private constructor() {
     // set up actor image store
     this.actorStore.set(BootColour.Black, 'black-actor');
     this.actorStore.set(BootColour.Blue, 'blue-actor');
@@ -42,6 +39,10 @@ class ImgStore {
     this.circleStore.set(BootColour.Purple, 'purple-circle');
   }
 
+  public static instance(): ImgStore {
+    return new ImgStore();
+  }
+
   public getActor(c: BootColour) {
     return String(this.actorStore.get(c));
   }
@@ -66,6 +67,7 @@ export default class PlayerIcon {
   private xpos: number;
   private panel: Phaser.GameObjects.RenderTexture;
   private numCounter: number;
+  private color: BootColour;
 
   public constructor(
     scene: Phaser.Scene,
@@ -77,8 +79,9 @@ export default class PlayerIcon {
     this.isShowed = false;
     this.xpos = xpos;
     this.numCounter = 0;
+    this.color = color;
 
-    const store: ImgStore = new ImgStore();
+    const store: ImgStore = ImgStore.instance();
 
     /* add player token */
     const token: Phaser.GameObjects.Sprite = this.scene.add.sprite(
@@ -136,7 +139,7 @@ export default class PlayerIcon {
     );
   }
 
-  public addCounter(img: string) {
+  public addCounter(img: string): void {
     const counter: Phaser.GameObjects.Sprite = this.scene.add
       .sprite(5 + this.numCounter * 60, 5, img)
       .setOrigin(0, 0);
@@ -146,13 +149,13 @@ export default class PlayerIcon {
     this.container.add(counter);
   }
 
-  public updateIcon(): void {
-    const counters: Array<Counter> = PlayerManager.getInstance()
-      .getCurrentPlayer()
-      .getCounters();
-
-    for (let i = 0; i < counters.length; i++) {
-      this.addCounter(counters[i].getCounterPNG());
-    }
+  public addBootImg(xpos: number, ypos: number): void {
+    const boot: Phaser.GameObjects.Sprite = this.scene.add.sprite(
+      xpos,
+      ypos,
+      ImgStore.instance().getBoot(this.color)
+    );
+    boot.setOrigin(0, 0);
+    boot.setScale(0.1);
   }
 }
