@@ -6,20 +6,6 @@ export default class CardInventory {
   isOpen: boolean;
   numCards: number;
 
-  // Map to store reference to the Preloaded card sprites in Preloader.ts
-  // Key is just a string...(might need to change that)
-  store: Map<string, string> = new Map([
-    ['dragonCard', 'dragon-card'],
-    ['giantPigCard', 'giant-pig-card'],
-    ['elfCycleCard', 'elf-cycle-card'],
-    ['magicCloudCard', 'magic-cloud-card'],
-    ['uicornCard', 'unicorn-card'],
-    ['trollWagonCard', 'troll-wagon-card'],
-    ['raftCard', 'raft-card'],
-    ['witchCard', 'witch-card'],
-    ['goldCard', 'gold-card'],
-  ]);
-
   constructor(scene: Phaser.Scene) {
     // Initialize hand
     this.scene = scene;
@@ -42,12 +28,11 @@ export default class CardInventory {
   // Method to render a card from Map of cards, and it to this Phaser Container.
   addCard(cardName: string) {
     const CARD_SIZE = 0.2;
-    const img = this.store.get(cardName); // Get card
 
     // If card is in map add it to Phaser container
-    if (img !== undefined) {
+    if (cardName) {
       // Render sprite to this Phaser Scene and offset based on the other cards
-      const card = this.scene.add.sprite(this.numCards * 30, 0, img);
+      const card = this.scene.add.sprite(this.numCards * 30, 0, cardName);
       card
         .setData({
           name: cardName,
