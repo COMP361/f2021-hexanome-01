@@ -110,7 +110,7 @@ export default class GameService {
       })
       .catch(async () => {
         const data = {
-          location: 'http://elfenroads.westus3.cloudapp.azure.com:3454/',
+          location: 'http://elfenroads.westus3.cloudapp.azure.com:3455/',
           maxSessionPlayers: 6,
           minSessionPlayers: 2,
           name: service,
