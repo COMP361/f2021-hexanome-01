@@ -1,15 +1,7 @@
 import { Inject } from '@nestjs/common';
-import {
-  Args,
-  Resolver,
-  Query,
-  Mutation,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
-import { GameSession } from 'src/gamesession/gamesession.model';
-import { GameSessionService } from 'src/gamesession/gamesession.service';
-import { GameUser, LSUser } from './user.model';
+import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
+import { GameSessionService } from 'src/LS/gamesession/gamesession.service';
+import { LSUser } from './user.model';
 import { UserService } from './user.service';
 
 @Resolver(() => LSUser)
@@ -65,41 +57,5 @@ export class UserResolver {
       oldPassword,
       newPassword,
     );
-  }
-
-  @Query(() => GameUser)
-  async GameUser(
-    @Args('name') name: string,
-    @Args('session_id') session_id: string,
-  ): Promise<GameUser> {
-    return await this.userService.getGameUser(name, session_id);
-  }
-
-  @Query(() => [GameUser])
-  async AllGameUser(@Args('name') name: string): Promise<GameUser[]> {
-    return await this.userService.getAllGameUsers(name);
-  }
-
-  @Mutation(() => GameUser)
-  async createGameUser(
-    @Args('name') name: string,
-    @Args('session_id') session_id: string,
-    @Args('color') color: string,
-  ) {
-    return await this.userService.createGameUser(name, session_id, color);
-  }
-
-  @Mutation(() => String)
-  async deleteGameUser(
-    @Args('name') name: string,
-    @Args('session_id') session_id: string,
-  ) {
-    return await this.userService.removeGameUser(name, session_id);
-  }
-
-  @ResolveField(() => GameSession)
-  async gameSession(@Parent() gameUser: GameUser): Promise<GameSession> {
-    const { session_id } = gameUser;
-    return await this.sessionService.getSession(session_id);
   }
 }
