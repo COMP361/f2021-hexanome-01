@@ -12,8 +12,8 @@ export class AppController {
   }
 
   @Put('/api/games/:gameid')
-  getHello2(@Param() params, @Body() body):string {
+  getHello2(@Param() params, @Body() body): string {
     Logger.log(params.gameid);
-    return params.gameid;
+    return body;
   }
 }

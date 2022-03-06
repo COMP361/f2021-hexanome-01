@@ -12,7 +12,7 @@ export class UserService {
   constructor(
     @InjectRepository(GameUser)
     private userRepository: Repository<GameUser>,
-  ) { }
+  ) {}
 
   async getLSUser(access_token: string): Promise<LSUser> {
     return await instance
@@ -163,8 +163,7 @@ export class UserService {
         session_id: session_id,
       })
       .then(() => {
-        return "succeed";
+        return 'succeed';
       });
   }
-
 }

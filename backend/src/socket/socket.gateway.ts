@@ -17,6 +17,10 @@ export class SocketGateway {
   @WebSocketServer()
   server: Server;
 
+  async handleConnection(client: Socket): Promise<string> {
+    return 'connected';
+  }
+
   @SubscribeMessage('joinLobby')
   async joinLobby(
     @ConnectedSocket() client: Socket,
@@ -38,6 +42,27 @@ export class SocketGateway {
   @SubscribeMessage('moveBoot')
   async moveBoot(@MessageBody() data: any) {
     this.server.to(data.session_id).emit('moveBoot', {
+      msg: data,
+    });
+  }
+
+  @SubscribeMessage('statusChange')
+  async statusChange(@MessageBody() data: any) {
+    this.server.to(data.session_id).emit('statusChange', {
+      msg: data,
+    });
+  }
+
+  @SubscribeMessage('declareWinner')
+  async declareWinner(@MessageBody() data: any) {
+    this.server.to(data.session_id).emit('declareWinner', {
+      msg: data,
+    });
+  }
+
+  @SubscribeMessage('nextRound')
+  async nextRound(@MessageBody() data: any) {
+    this.server.to(data.session_id).emit('nextRound', {
       msg: data,
     });
   }
