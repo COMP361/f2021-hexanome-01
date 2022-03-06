@@ -43,7 +43,7 @@ export default class GameManager {
     );
 
     this.playerManager.addPlayer(
-      new Player(BootColour.Red, this.roadManager.getTowns().get('elvenhold')!)
+      new Player(BootColour.Blue, this.roadManager.getTowns().get('elvenhold')!)
     );
 
     this.playerManager.addPlayer(
@@ -54,24 +54,23 @@ export default class GameManager {
     );
 
     // Now, let's pretend that the current player is drawing random counters
+    for (const player of this.playerManager.getPlayers()) {
+      // Draw the random counters from the counter pile. Counters aren't remove for simulation purposes.
+      const random1: Counter = this.counterManager.getRandomCounter();
+      const random2: Counter = this.counterManager.getRandomCounter();
 
-    // Draw the random counters from the counter pile. Counters aren't remove for simulation purposes.
-    const random1: Counter = this.counterManager.getRandomCounter();
-    const random2: Counter = this.counterManager.getRandomCounter();
+      // Draw random cards from the card pile.
+      const card1: CardUnit = this.cardManager.getRandomCard();
+      const card2: CardUnit = this.cardManager.getRandomCard();
+      const card3: CardUnit = this.cardManager.getRandomCard();
 
-    // Draw random cards from the card pile.
-    const card1: CardUnit = this.cardManager.getRandomCard();
-    const card2: CardUnit = this.cardManager.getRandomCard();
-    const card3: CardUnit = this.cardManager.getRandomCard();
+      // Add the random counters/cards to the player's owned counters/cards
+      player.addCounter(random1);
+      player.addCounter(random2);
 
-    // Get current player
-    const currentPlayer: Player = this.playerManager.getCurrentPlayer();
-
-    // Add the random counters/cards to the player's owned counters/cards
-    currentPlayer.addCounter(random1);
-    currentPlayer.addCounter(random2);
-    currentPlayer.addCard(card1);
-    currentPlayer.addCard(card2);
-    currentPlayer.addCard(card3);
+      player.addCard(card1);
+      player.addCard(card2);
+      player.addCard(card3);
+    }
   }
 }
