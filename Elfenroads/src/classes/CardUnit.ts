@@ -41,7 +41,7 @@ export class TownCard extends CardUnit {
   town: Town;
 
   constructor(town: Town) {
-    super(town.name);
+    super(town.getName()!);
     this.town = town;
   }
 }

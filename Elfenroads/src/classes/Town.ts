@@ -1,28 +1,16 @@
 import Player from './Player';
 
 export default class Town {
-  name: string;
-  position: Array<integer>;
-  townPieces: any;
-  currentPlayers: Array<Player>;
-  nextTowns: Array<Town>;
-  townPieceHolder: any;
+  private name: string;
+  private position: Array<integer>;
+  private currentPlayers: Array<Player>;
+  private nextTowns: Array<Town>;
 
-  constructor(name: any, position: Array<integer>) {
+  constructor(name: string, position: Array<integer>) {
     this.name = name;
     this.position = position;
-    this.townPieces = [];
     this.currentPlayers = [];
     this.nextTowns = [];
-    this.townPieceHolder = [];
-  }
-
-  public setTownPieceHolder(holder: any): void {
-    this.townPieceHolder = holder;
-  }
-
-  public setTownPieces(townPieces: any): void {
-    this.townPieces = townPieces;
   }
 
   public setCurrentPlayers(players: Array<Player>): void {
@@ -35,5 +23,25 @@ export default class Town {
 
   public addVisitingPlayer(pPlayer: Player): void {
     this.currentPlayers.push(pPlayer);
+  }
+
+  public setPosition(position: Array<integer>): void {
+    this.position = position;
+  }
+
+  public getPosition(): Array<integer> {
+    return this.position;
+  }
+
+  public getXposition(): integer {
+    return this.position[0];
+  }
+
+  public getYposition(): integer {
+    return this.position[1];
+  }
+
+  public getName(): string {
+    return this.name;
   }
 }

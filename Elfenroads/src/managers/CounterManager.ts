@@ -9,33 +9,31 @@ export default class CounterManager {
   private constructor() {
     // Only added a few for now...
     this.counterPile = [
-      new Counter(CounterType.ElfCycle, [
-        EdgeType.Plain,
-        EdgeType.Wood,
-        EdgeType.Mountain,
-      ]),
-      new Counter(CounterType.MagicCloud, [
-        EdgeType.Plain,
-        EdgeType.Wood,
-        EdgeType.Mountain,
-      ]),
-      new Counter(CounterType.Unicorn, [
-        EdgeType.Wood,
-        EdgeType.Desert,
-        EdgeType.Mountain,
-      ]),
-      new Counter(CounterType.TrollWagon, [
-        EdgeType.Plain,
-        EdgeType.Wood,
-        EdgeType.Desert,
-        EdgeType.Mountain,
-      ]),
-      new Counter(CounterType.Dragon, [
-        EdgeType.Plain,
-        EdgeType.Wood,
-        EdgeType.Desert,
-        EdgeType.Mountain,
-      ]),
+      new Counter(
+        CounterType.ElfCycle,
+        [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
+        'elfcycle-counter'
+      ),
+      new Counter(
+        CounterType.MagicCloud,
+        [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
+        'cloud-counter'
+      ),
+      new Counter(
+        CounterType.Unicorn,
+        [EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+        'unicorn-counter'
+      ),
+      new Counter(
+        CounterType.TrollWagon,
+        [EdgeType.Plain, EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+        'troll-wagon-counter'
+      ),
+      new Counter(
+        CounterType.Dragon,
+        [EdgeType.Plain, EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+        'dragon-counter'
+      ),
     ];
   }
 

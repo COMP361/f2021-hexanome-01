@@ -25,9 +25,17 @@ export class Spell extends ItemUnit {
 export class Counter extends ItemUnit {
   counterType: CounterType;
 
-  constructor(counterType: CounterType, allowedEdges: Array<EdgeType>) {
-    super(counterType, allowedEdges);
+  constructor(
+    counterType: CounterType,
+    allowedEdges: Array<EdgeType>,
+    name: string
+  ) {
+    super(name, allowedEdges);
     this.counterType = counterType;
+  }
+
+  public getCounterPNG(): string {
+    return this.name;
   }
 }
 
