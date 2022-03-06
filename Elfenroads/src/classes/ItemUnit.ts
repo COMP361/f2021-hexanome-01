@@ -3,10 +3,12 @@ import {EdgeType} from '../enums/EdgeType';
 import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
 
-export class ItemUnit {
+export abstract class ItemUnit {
+  name: string;
   allowedEdges: Array<EdgeType>;
 
-  constructor(allowedEdges: Array<EdgeType>) {
+  constructor(name: string, allowedEdges: Array<EdgeType>) {
+    this.name = name;
     this.allowedEdges = allowedEdges;
   }
 }
@@ -15,27 +17,25 @@ export class Spell extends ItemUnit {
   spellType: SpellType;
 
   constructor(spellType: SpellType, allowedEdges: Array<EdgeType>) {
-    super(allowedEdges);
+    super(spellType, allowedEdges);
     this.spellType = spellType;
   }
 }
 
 export class Counter extends ItemUnit {
   counterType: CounterType;
-  counterPNG: string;
 
   constructor(
     counterType: CounterType,
     allowedEdges: Array<EdgeType>,
-    counterPNG: string
+    name: string
   ) {
-    super(allowedEdges);
+    super(name, allowedEdges);
     this.counterType = counterType;
-    this.counterPNG = counterPNG;
   }
 
   public getCounterPNG(): string {
-    return this.counterPNG;
+    return this.name;
   }
 }
 
@@ -43,7 +43,7 @@ export class GoldPiece extends ItemUnit {
   amount: number;
 
   constructor(amount: number, allowedEdges: Array<EdgeType>) {
-    super(allowedEdges);
+    super('gold-piece', allowedEdges);
     this.amount = amount;
   }
 }
@@ -52,7 +52,7 @@ export class Obstacle extends ItemUnit {
   obstacleType: ObstacleType;
 
   constructor(obstacleType: ObstacleType, allowedEdges: Array<EdgeType>) {
-    super(allowedEdges);
+    super(obstacleType, allowedEdges);
     this.obstacleType = obstacleType;
   }
 }

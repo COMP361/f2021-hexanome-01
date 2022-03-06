@@ -11,31 +11,9 @@ type GSDetail {
   webSupport: Boolean!
 }
 
-type SaveGame {
-  game: GSDetail!
-  players: String!
-  savegameid: String!
-}
-
-type Town {
-  session_id: String!
-  name: String!
-  townPieces: String
-  currentPlayers: [GameUser!]
-}
-
 type LSUser {
   name: String!
   preferredColour: String!
-  gameSession: GameSession!
-}
-
-type GameUser {
-  name: String!
-  session_id: GameSession!
-  coins: Float!
-  color: String!
-  score: Float!
 }
 
 type GameSession {
@@ -43,8 +21,13 @@ type GameSession {
   creator: String!
   gameParameters: GSDetail!
   launched: Boolean!
-  players: [LSUser!]!
+  players: [String!]!
   savegameid: String!
+}
+
+type SessionInfo {
+  gameSession: GameSession!
+  users: [LSUser!]!
 }
 
 type AuthInfo {
@@ -61,28 +44,17 @@ type Query {
   getOnline: String!
   verifyLSUser(password: String!, username: String!): AuthInfo!
   LSUser(access_token: String!): LSUser!
-  GameUser(session_id: String!, name: String!): GameUser!
-  AllGameUser(name: String!): [GameUser!]!
   AllSessions: [GameSession!]!
-  Session(session_id: String!): GameSession!
-  GameServiceDetail: GSDetail!
-  SaveGames(access_token: String!): [SaveGame!]!
-  SaveGame(access_token: String!, savegameid: String!): SaveGame!
-  Town(name: String!, session_id: String!): Town!
-  AllTowns(session_id: String!): [Town!]!
+  Session(session_id: String!): SessionInfo!
+  GameServiceDetail(game: String!): GSDetail!
 }
 
 type Mutation {
   createLSUser(role: String!, preferredColour: String!, password: String!, name: String!): String!
   modifyLSUserColor(colour: String!, access_token: String!, name: String!): String!
   changeLSUserPassword(newPassword: String!, oldPassword: String!, access_token: String!, name: String!): String!
-  createGameUser(color: String!, session_id: String!, name: String!): GameUser!
-  deleteGameUser(session_id: String!, name: String!): String!
-  createSession(savegame: String, game: String, creator: String, access_token: String!): String!
+  createSession(savegame: String, game: String, creator: String, access_token: String!): SessionInfo!
   LaunchSession(access_token: String!, session_id: String!): String!
-  joinSession(access_token: String!, name: String!, session_id: String!): String!
+  joinSession(access_token: String!, name: String!, session_id: String!): SessionInfo!
   exitSession(access_token: String!, name: String!, session_id: String!): String!
-  registerSaveGame(players: String!, access_token: String!, savegameid: String!): String!
-  createTowns(session_id: String!): [Town!]!
-  moveToNewTown(username: String!, new_town: String!, old_town: String!, session_id: String!): [Town!]!
 }
