@@ -21,12 +21,12 @@ export default class BoardGame extends Phaser.Scene {
     // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
     const Towns = RoadManager.getInstance().getTowns();
     const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
-    Towns.elvenhold.addVisitingPlayer(currentPlayer);
+    const elvenhold: Town = Towns.get('elvenhold')!;
+    elvenhold.addVisitingPlayer(currentPlayer);
 
     // Initialize each town
-    for (const townname in Towns) {
-      const town: Town = Towns[townname];
-      const position: Array<integer> = town.getPosition();
+    for (const currentTown of Towns.values()) {
+      const position: Array<integer> = currentTown.getPosition();
       if (position) {
         this.add
           .zone(
@@ -36,10 +36,11 @@ export default class BoardGame extends Phaser.Scene {
             zoneHeight
           )
           .setRectangleDropZone(zoneWidth, zoneHeight);
-        if (town.getName() === 'elvenhold') {
+        if (currentTown.getName() === 'elvenhold') {
           continue;
         }
-        this.townPieceHolders.set(townname,
+        this.townPieceHolders.set(
+          currentTown.getName(),
           this.add.circle(
             (position[0] / 1600) * this.cameras.main.width,
             ((position[1] - 40) / 750) * this.cameras.main.height,
@@ -48,7 +49,8 @@ export default class BoardGame extends Phaser.Scene {
           )
         );
 
-        this.townPieces.set(townname,
+        this.townPieces.set(
+          currentTown.getName(),
           this.add.circle(
             (position[0] / 1600) * this.cameras.main.width,
             ((position[1] - 40) / 750) * this.cameras.main.height,
@@ -66,8 +68,8 @@ export default class BoardGame extends Phaser.Scene {
     /* move boot */
     const elvenboot = this.add
       .sprite(
-        (Towns.elvenhold.getXposition() / 1580) * this.cameras.main.width,
-        (Towns.elvenhold.getYposition() / 750) * this.cameras.main.height,
+        (elvenhold.getXposition() / 1580) * this.cameras.main.width,
+        (elvenhold.getYposition() / 750) * this.cameras.main.height,
         'boot'
       )
       .setInteractive();
@@ -95,12 +97,13 @@ export default class BoardGame extends Phaser.Scene {
         gameObject.y = dragY;
         graphics.lineStyle(2, 0xffff00, 1);
         // highlight every draggable town
-        for (const townname in Towns) {
-          const town = Towns[townname];
-          if (town.getPosition()) {
+        for (const currentTown of Towns.values()) {
+          if (currentTown.getPosition()) {
             graphics.strokeRect(
-              ((town.getXposition() - 30) / 1600) * this.cameras.main.width,
-              ((town.getYposition() - 30) / 750) * this.cameras.main.height,
+              ((currentTown.getXposition() - 30) / 1600) *
+                this.cameras.main.width,
+              ((currentTown.getYposition() - 30) / 750) *
+                this.cameras.main.height,
               zoneWidth,
               zoneHeight
             );
@@ -117,15 +120,15 @@ export default class BoardGame extends Phaser.Scene {
         gameObject: {x: any; y: any},
         dropZone: {x: number; y: number}
       ) => {
-        for (const townname in Towns) {
-          const town = Towns[townname];
+        for (const currentTown of Towns.values()) {
           if (
-            (town.getXposition() / 1600) * this.cameras.main.width ===
+            (currentTown.getXposition() / 1600) * this.cameras.main.width ===
               dropZone.x &&
-            (town.getYposition() / 750) * this.cameras.main.height ===
+            (currentTown.getYposition() / 750) * this.cameras.main.height ===
               dropZone.y
           ) {
-            const townPiece: Phaser.GameObjects.Arc|undefined = this.townPieces.get(townname);
+            const townPiece: Phaser.GameObjects.Arc | undefined =
+              this.townPieces.get(currentTown.getName());
             if (townPiece === undefined) continue;
             if (townPiece.active) {
               townPiece.destroy();
@@ -166,11 +169,12 @@ export default class BoardGame extends Phaser.Scene {
 
   updateVis() {
     const Towns = RoadManager.getInstance().getTowns();
-    for (const townname in Towns) {
-      const town = Towns[townname];
-      if (town) {
-        const townPiece: Phaser.GameObjects.Arc|undefined = this.townPieces.get(townname);
-        const holder: Phaser.GameObjects.Arc|undefined = this.townPieceHolders.get(townname);
+    for (const currentTownName of Towns.keys()) {
+      if (currentTownName) {
+        const townPiece: Phaser.GameObjects.Arc | undefined =
+          this.townPieces.get(currentTownName);
+        const holder: Phaser.GameObjects.Arc | undefined =
+          this.townPieceHolders.get(currentTownName);
         if (townPiece === undefined || holder === undefined) continue;
         if (townPiece.active) {
           townPiece.setVisible(!townPiece.visible);

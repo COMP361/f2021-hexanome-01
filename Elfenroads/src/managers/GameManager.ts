@@ -32,15 +32,21 @@ export default class GameManager {
     // Add our player/players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     this.playerManager.addPlayer(
-      new Player(BootColour.Green, this.roadManager.getTowns().elvenhold)
+      new Player(
+        BootColour.Green,
+        this.roadManager.getTowns().get('elvenhold')!
+      )
     );
 
     this.playerManager.addPlayer(
-      new Player(BootColour.Red, this.roadManager.getTowns().elvenhold)
+      new Player(BootColour.Red, this.roadManager.getTowns().get('elvenhold')!)
     );
 
     this.playerManager.addPlayer(
-      new Player(BootColour.Yellow, this.roadManager.getTowns().elvenhold)
+      new Player(
+        BootColour.Yellow,
+        this.roadManager.getTowns().get('elvenhold')!
+      )
     );
 
     // Now, let's pretend that the current player is drawing random counters

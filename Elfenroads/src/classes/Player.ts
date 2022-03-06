@@ -67,7 +67,9 @@ export default class Player {
   }
 
   public resetPlayer(): void {
-    this.currentLocation = RoadManager.getInstance().getTowns().elvenhold;
+    this.currentLocation = RoadManager.getInstance()
+      .getTowns()
+      .get('elvenhold')!;
     this.gold = 0;
     this.score = 0;
     this.myCounters = [];
