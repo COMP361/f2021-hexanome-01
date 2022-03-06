@@ -17,6 +17,13 @@ type SaveGame {
   savegameid: String!
 }
 
+type Town {
+  session_id: String!
+  name: String!
+  townPieces: String
+  currentPlayers: [GameUser!]
+}
+
 type LSUser {
   name: String!
   preferredColour: String!
@@ -29,13 +36,6 @@ type GameUser {
   coins: Float!
   color: String!
   score: Float!
-}
-
-type Town {
-  session_id: String!
-  name: String!
-  townPieces: String
-  currentPlayers: [GameUser!]
 }
 
 type GameSession {
