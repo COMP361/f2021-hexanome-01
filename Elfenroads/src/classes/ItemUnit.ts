@@ -3,7 +3,7 @@ import {EdgeType} from '../enums/EdgeType';
 import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
 
-export class ItemUnit {
+export abstract class ItemUnit {
   allowedEdges: Array<EdgeType>;
 
   constructor(allowedEdges: Array<EdgeType>) {
