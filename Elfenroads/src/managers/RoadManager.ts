@@ -4,8 +4,8 @@ import {EdgeType} from '../enums/EdgeType';
 
 export default class RoadManager {
   private static instance: RoadManager;
-  private allEdges;
-  private allTowns;
+  private allEdges: Array<Edge>;
+  private allTowns: {[name: string]: Town};
 
   private constructor() {
     this.allTowns = {
