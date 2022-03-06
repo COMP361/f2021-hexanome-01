@@ -26,6 +26,10 @@ export default class PlayerManager {
     this.players.splice(playerIndex, 1);
   }
 
+  public getPlayers(): Array<Player> {
+    return this.players;
+  }
+
   public resetAllPlayers(): void {
     for (let i = 0; i < this.players.length; i++) {
       this.players[i].resetPlayer();
