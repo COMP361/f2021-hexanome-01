@@ -46,7 +46,6 @@ export default class GameManager {
     const random2: Counter = this.counterManager.getRandomCounter();
 
     // Draw random cards from the card pile.
-
     const card1: CardUnit = this.cardManager.getRandomCard();
     const card2: CardUnit = this.cardManager.getRandomCard();
     const card3: CardUnit = this.cardManager.getRandomCard();
@@ -54,7 +53,7 @@ export default class GameManager {
     // Get current player
     const currentPlayer: Player = this.playerManager.getCurrentPlayer();
 
-    // Add the random counters to the player's owned counters
+    // Add the random counters/cards to the player's owned counters/cards
     currentPlayer.addCounter(random1);
     currentPlayer.addCounter(random2);
     currentPlayer.addCard(card1);
