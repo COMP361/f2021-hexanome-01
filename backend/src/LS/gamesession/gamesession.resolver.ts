@@ -1,18 +1,6 @@
 import { Inject } from '@nestjs/common';
-<<<<<<< HEAD:backend/src/LS/gamesession/gamesession.resolver.ts
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { GameSession, SessionInfo } from './gamesession.model';
-=======
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
-import { GameSession } from './gamesession.model';
->>>>>>> 0c169e024719dfaeee9e260250077f10cd2bcbf8:backend/src/gamesession/gamesession.resolver.ts
 import { GameSessionService } from './gamesession.service';
 
 @Resolver(() => GameSession)
