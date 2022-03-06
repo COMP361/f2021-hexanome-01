@@ -17,7 +17,7 @@ export enum ObstacleType {
   TREE = 'Tree',
 }
 
-export class Obstacle {
+export abstract class ItemUnit {
   obstacleType: SpellType | CounterType | ObstacleType;
 
   constructor(type: SpellType | CounterType | ObstacleType) {

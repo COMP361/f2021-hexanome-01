@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Logger } from '@nestjs/common';
-import GameManager from './GameServiceInstance/model/GameManager';
-import GameInstance from './GameServiceInstance/model/GameInstance';
+import GameManager from './GameServiceInstance/manager/GameManager';
+import GameInstance from './GameServiceInstance/GameInstance';
 
 @Controller()
 export class AppController {

@@ -1,5 +1,5 @@
-import GameInstance from './GameInstance';
-import LaunchInfo from './LaunchInfo';
+import GameInstance from '../GameInstance';
+import LaunchInfo from '../model/LaunchInfo';
 
 export default class GameManager {
   private static _instance: GameManager = new GameManager();
