@@ -4,24 +4,27 @@ import axios from 'axios';
 
 const instance = axios.create({
   baseURL:
-    'http://elfenroads.westus3.cloudapp.azure.com:4242/api/gameservices/Elfenroad/',
+    'http://elfenroads.westus3.cloudapp.azure.com:4242/api/gameservices/',
 });
 @Injectable()
 export class GameService {
   constructor() {}
 
-  async getGameServiceDetail(): Promise<GSDetail> {
-    return instance.get('').then((response) => {
+  async getGameServiceDetail(game: string): Promise<GSDetail> {
+    return instance.get(game).then((response) => {
       return response.data as GSDetail;
     });
   }
 
-  async getAllSaveGames(access_token: string): Promise<SaveGame[]> {
+  async getAllSaveGames(
+    name: string,
+    access_token: string,
+  ): Promise<SaveGame[]> {
     const savegamelist: SaveGame[] = [];
     return await instance
       .get(encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'))
       .then(async (response) => {
-        const game = await this.getGameServiceDetail();
+        const game = await this.getGameServiceDetail(name);
         response.data.array.forEach((element) => {
           const savegame: SaveGame = new SaveGame();
           savegame.game = game;
@@ -35,10 +38,11 @@ export class GameService {
   }
 
   async getSaveGame(
+    name: string,
     savgameid: string,
     access_token: string,
   ): Promise<SaveGame> {
-    const game = await this.getGameServiceDetail();
+    const game = await this.getGameServiceDetail(name);
     return await instance
       .get(
         encodeURI(
@@ -56,11 +60,12 @@ export class GameService {
   }
 
   async registerSaveGame(
+    name,
     savegameid: string,
     access_token: string,
     players: string,
   ): Promise<string> {
-    const game = await this.getGameServiceDetail();
+    const game = await this.getGameServiceDetail(name);
     return await instance
       .put(
         encodeURI(

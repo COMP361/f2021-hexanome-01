@@ -98,8 +98,6 @@ export class TownService {
             name: player_name
         })
 
-        Logger.log(new_town.currentPlayers.length)
-        Logger.log(previous_town.currentPlayers.findIndex(player => player.name === player_name))
         if (new_town.currentPlayers.findIndex(player => player.name === player_name) == -1 && previous_town.currentPlayers.findIndex(player => player.name === player_name) > -1) {
             const colorIndex = new_town.townPieces.indexOf(player.color);
             if (colorIndex > -1) {

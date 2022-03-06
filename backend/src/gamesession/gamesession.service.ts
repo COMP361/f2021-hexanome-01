@@ -11,15 +11,29 @@ const instance = axios.create({
 export class GameSessionService {
   constructor() {}
 
-  async getAllSessions(): Promise<string> {
+  async getAllSessions(): Promise<GameSession[]> {
     return instance.get('').then((response) => {
-      return JSON.stringify(response.data['sessions']);
+      const result: GameSession[] = [];
+
+      for (const key of Object.keys(response.data['sessions'])) {
+        const value = response.data['sessions'][key];
+        const gameSession: GameSession = new GameSession();
+        gameSession.sessionid = key;
+        gameSession.creator = value.creator;
+        gameSession.gameParameters = value.gameParameters;
+        gameSession.launched = value.launched;
+        gameSession.players = value.players;
+        gameSession.savegameid = value.savegameid;
+        result.push(gameSession);
+      }
+      return result;
     });
   }
 
   async getSession(session_id: string): Promise<GameSession> {
     return await instance.get(session_id).then((response) => {
       const gameSession: GameSession = new GameSession();
+      gameSession.sessionid = session_id;
       gameSession.creator = response.data['creator'];
       gameSession.gameParameters = response.data['gameParameters'] as GSDetail;
       gameSession.launched = response.data['launched'];

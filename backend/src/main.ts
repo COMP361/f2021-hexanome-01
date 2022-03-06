@@ -1,13 +1,11 @@
 import { NestFactory } from '@nestjs/core';
+import GameService from './GameService';
 import { AppModule } from './app.module';
-import axios from 'axios';
-import GameService from './GameService'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const gameService = new GameService();
-  await gameService.registerGameService();
-  app.enableShutdownHooks();
+  await gameService.registerGameServices();
   await app.listen(3000);
 }
 
