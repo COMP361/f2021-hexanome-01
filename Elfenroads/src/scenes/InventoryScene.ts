@@ -157,9 +157,13 @@ export default class InventoryScene extends Phaser.Scene {
         }
       });
 
-    // Add cards to hand container in hand.ts
-    cardInventory.addCard('dragonCard');
-    cardInventory.addCard('dragonCard');
-    cardInventory.addCard('giantPigCard');
+    // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
+    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
+    const playerCards = currentPlayer.getCards();
+
+    // display all the cards on screen
+    playerCards.forEach(card => {
+      cardInventory.addCard(card.name);
+    });
   }
 }

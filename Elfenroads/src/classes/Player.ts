@@ -1,5 +1,6 @@
 import {BootColour} from '../enums/BootColour';
 import RoadManager from '../managers/RoadManager';
+import {CardUnit} from './CardUnit';
 import {Counter} from './ItemUnit';
 import Town from './Town';
 
@@ -9,6 +10,7 @@ export default class Player {
   private bootColour: BootColour;
   private currentLocation: Town;
   private myCounters: Array<Counter>;
+  private myCards: Array<CardUnit>;
   private visitedTowns: Array<Town>;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
@@ -18,6 +20,7 @@ export default class Player {
     this.gold = 0;
     this.score = 0;
     this.myCounters = [];
+    this.myCards = [];
     this.visitedTowns = [];
   }
 
@@ -46,6 +49,10 @@ export default class Player {
     return this.myCounters;
   }
 
+  public getCards(): Array<CardUnit> {
+    return this.myCards;
+  }
+
   public setGold(pGold: integer): void {
     this.gold = pGold;
   }
@@ -60,6 +67,10 @@ export default class Player {
 
   public addCounter(pCounter: Counter): void {
     this.myCounters.push(pCounter);
+  }
+
+  public addCard(pCard: CardUnit): void {
+    this.myCards.push(pCard);
   }
 
   public addVisitedTown(pTown: Town): void {
