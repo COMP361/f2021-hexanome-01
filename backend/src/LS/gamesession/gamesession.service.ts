@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { GSDetail } from 'src/game/gamesvc.model';
-import { GameSession } from './gamesession.model';
+import { GSDetail } from 'src/LS/game/gamesvc.model';
+import { LSUser } from 'src/LS/user/user.model';
+import { UserService } from 'src/LS/user/user.service';
+import { GameSession, SessionInfo } from './gamesession.model';
 
 const instance = axios.create({
   baseURL: 'http://elfenroads.westus3.cloudapp.azure.com:4242/api/sessions/',
@@ -9,7 +11,12 @@ const instance = axios.create({
 
 @Injectable()
 export class GameSessionService {
-  constructor() {}
+  private sessionPlayers: Map<string, LSUser[]>;
+  private userService: UserService;
+  constructor() {
+    this.sessionPlayers = new Map();
+    this.userService = new UserService();
+  }
 
   async getAllSessions(): Promise<GameSession[]> {
     return instance.get('').then((response) => {
@@ -30,18 +37,27 @@ export class GameSessionService {
     });
   }
 
-  async getSession(session_id: string): Promise<GameSession> {
-    return await instance.get(session_id).then((response) => {
-      const gameSession: GameSession = new GameSession();
-      gameSession.sessionid = session_id;
-      gameSession.creator = response.data['creator'];
-      gameSession.gameParameters = response.data['gameParameters'] as GSDetail;
-      gameSession.launched = response.data['launched'];
-      gameSession.players = response.data['players'];
-      gameSession.savegameid = response.data['savegameid'];
+  async getSession(session_id: string): Promise<SessionInfo> {
+    const sessionInfo = new SessionInfo();
+    sessionInfo.gameSession = await instance
+      .get(session_id)
+      .then((response) => {
+        const gameSession: GameSession = new GameSession();
+        gameSession.sessionid = session_id;
+        gameSession.creator = response.data['creator'];
+        gameSession.gameParameters = response.data[
+          'gameParameters'
+        ] as GSDetail;
+        gameSession.launched = response.data['launched'];
+        gameSession.players = response.data['players'];
+        gameSession.savegameid = response.data['savegameid'];
 
-      return gameSession;
-    });
+        return gameSession;
+      });
+
+    sessionInfo.users = this.sessionPlayers.get(session_id);
+
+    return sessionInfo;
   }
 
   async createSession(
@@ -49,7 +65,7 @@ export class GameSessionService {
     creator: string,
     game: string,
     savegame?: string,
-  ): Promise<string> {
+  ): Promise<SessionInfo> {
     let data = null;
 
     data = {
@@ -62,7 +78,7 @@ export class GameSessionService {
       data.savegame = savegame;
     }
 
-    return instance
+    const session_id = await instance
       .post(
         encodeURI(`?access_token=${access_token}`).replace(/\+/g, '%2B'),
         data,
@@ -75,6 +91,10 @@ export class GameSessionService {
       .then((response) => {
         return response.data as string;
       });
+
+    this.userService.getLSUser(access_token);
+
+    return this.getSession(session_id);
   }
 
   async launchSession(
@@ -97,15 +117,15 @@ export class GameSessionService {
     session_id: string,
     name: string,
     access_token: string,
-  ): Promise<string> {
+  ): Promise<SessionInfo> {
     return await instance
       .put(
         encodeURI(
           `${session_id}/players/${name}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
       )
-      .then((response) => {
-        return response.data as string;
+      .then(() => {
+        return this.getSession(session_id);
       });
   }
 

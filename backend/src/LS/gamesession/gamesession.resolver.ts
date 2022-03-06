@@ -1,13 +1,6 @@
 import { Inject } from '@nestjs/common';
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
-import { GameSession } from './gamesession.model';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { GameSession, SessionInfo } from './gamesession.model';
 import { GameSessionService } from './gamesession.service';
 
 @Resolver(() => GameSession)
@@ -21,7 +14,7 @@ export class GameSessionResolver {
     return this.gameSessionService.getAllSessions();
   }
 
-  @Mutation(() => String)
+  @Mutation(() => SessionInfo)
   async createSession(
     @Args('access_token') access_token: string,
     @Args({
@@ -51,8 +44,8 @@ export class GameSessionResolver {
     );
   }
 
-  @Query(() => GameSession)
-  async Session(@Args('session_id') session_id: string): Promise<GameSession> {
+  @Query(() => SessionInfo)
+  async Session(@Args('session_id') session_id: string): Promise<SessionInfo> {
     return await this.gameSessionService.getSession(session_id);
   }
 
@@ -67,12 +60,12 @@ export class GameSessionResolver {
     );
   }
 
-  @Mutation(() => String)
+  @Mutation(() => SessionInfo)
   async joinSession(
     @Args('session_id') session_id: string,
     @Args('name') name: string,
     @Args('access_token') access_token: string,
-  ) {
+  ): Promise<SessionInfo> {
     return await this.gameSessionService.joinSession(
       session_id,
       name,

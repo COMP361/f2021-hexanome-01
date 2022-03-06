@@ -1,11 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-export enum GamePhase {
-  ReadyToJoin = 'ReadyToJoin',
-  Rounds = 'Rounds',
-  Completed = 'Completed',
-}
-
 @ObjectType()
 export class GSDetail {
   @Field()
@@ -25,16 +19,4 @@ export class GSDetail {
 
   @Field()
   webSupport: boolean;
-}
-
-@ObjectType()
-export class SaveGame {
-  @Field()
-  game: GSDetail;
-
-  @Field()
-  players: string;
-
-  @Field()
-  savegameid: string;
 }
