@@ -92,8 +92,9 @@ export class GameSessionService {
         return response.data as string;
       });
 
-    this.userService.getLSUser(access_token);
-
+    this.sessionPlayers
+      .get(session_id)
+      .push(await this.userService.getLSUser(access_token));
     return this.getSession(session_id);
   }
 
