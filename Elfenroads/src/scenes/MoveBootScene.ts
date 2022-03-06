@@ -7,6 +7,9 @@ import RoadManager from '../managers/RoadManager';
 import Town from '../classes/Town';
 
 export default class BoardGame extends Phaser.Scene {
+  private townPieces: Map<string, Phaser.GameObjects.Arc> = new Map();
+  private townPieceHolders: Map<string, Phaser.GameObjects.Arc> = new Map();
+
   constructor() {
     super('movebootscene');
   }
@@ -36,7 +39,7 @@ export default class BoardGame extends Phaser.Scene {
         if (town.getName() === 'elvenhold') {
           continue;
         }
-        town.setTownPieceHolder(
+        this.townPieceHolders.set(townname,
           this.add.circle(
             (position[0] / 1600) * this.cameras.main.width,
             ((position[1] - 40) / 750) * this.cameras.main.height,
@@ -45,7 +48,7 @@ export default class BoardGame extends Phaser.Scene {
           )
         );
 
-        town.setTownPieces(
+        this.townPieces.set(townname,
           this.add.circle(
             (position[0] / 1600) * this.cameras.main.width,
             ((position[1] - 40) / 750) * this.cameras.main.height,
@@ -122,8 +125,10 @@ export default class BoardGame extends Phaser.Scene {
             (town.getYposition() / 750) * this.cameras.main.height ===
               dropZone.y
           ) {
-            if (town.townPieceIsActive()) {
-              town.destroyTownPiece();
+            const townPiece: Phaser.GameObjects.Arc|undefined = this.townPieces.get(townname);
+            if (townPiece === undefined) continue;
+            if (townPiece.active) {
+              townPiece.destroy();
               const score: number = currentPlayer.getScore() + 1;
               currentPlayer.setScore(score);
               eventsCenter.emit('update-points', score);
@@ -164,11 +169,14 @@ export default class BoardGame extends Phaser.Scene {
     for (const townname in Towns) {
       const town = Towns[townname];
       if (town) {
-        if (town.townPieceIsActive()) {
-          town.alterTownPieceVisibility();
+        const townPiece: Phaser.GameObjects.Arc|undefined = this.townPieces.get(townname);
+        const holder: Phaser.GameObjects.Arc|undefined = this.townPieceHolders.get(townname);
+        if (townPiece === undefined || holder === undefined) continue;
+        if (townPiece.active) {
+          townPiece.setVisible(!townPiece.visible);
         }
-        if (town.townPieceHolderIsActive()) {
-          town.alterTownPieceHolderVisibility();
+        if (holder.active) {
+          holder.setVisible(!holder.visible);
         }
       }
     }
