@@ -30,4 +30,5 @@ export class AppController {
     Logger.log(params.service);
     return GameManager.getInstance().deleteGame(params.service, params.game_id);
   }
+
 }
