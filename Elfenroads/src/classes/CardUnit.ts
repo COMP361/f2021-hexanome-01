@@ -1,41 +1,41 @@
-import { SpellType } from "../enums/SpellType";
-import { TravelCardType } from "../enums/TravelCardType";
-import Town from "./Town";
+import {SpellType} from '../enums/SpellType';
+import {TravelCardType} from '../enums/TravelCardType';
+import Town from './Town';
 
 export abstract class CardUnit {}
 
 export class MagicSpellCard extends CardUnit {
-    spellType: SpellType;
+  spellType: SpellType;
 
-    constructor(spellType: SpellType) {
-        super();
-        this.spellType = spellType;
-    }
+  constructor(spellType: SpellType) {
+    super();
+    this.spellType = spellType;
+  }
 }
 
 export class TravelCard extends CardUnit {
-    travelType: TravelCardType;
+  travelType: TravelCardType;
 
-    constructor(travelType: TravelCardType) {
-        super();
-        this.travelType = travelType;
-    }
+  constructor(travelType: TravelCardType) {
+    super();
+    this.travelType = travelType;
+  }
 }
 
 export class GoldCard extends CardUnit {
-    amount: number;
+  amount: number;
 
-    constructor(amount: number) {
-        super();
-        this.amount = amount;
-    }
+  constructor(amount: number) {
+    super();
+    this.amount = amount;
+  }
 }
 
 export class TownCard extends CardUnit {
-    town: Town;
+  town: Town;
 
-    constructor(town: Town) {
-        super();
-        this.town = town;
-    }
+  constructor(town: Town) {
+    super();
+    this.town = town;
+  }
 }
