@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { LSUser } from 'src/user/user.model';
+import { LSUser } from 'src/LS/user/user.model';
 
 @ObjectType()
 export class AuthInfo {

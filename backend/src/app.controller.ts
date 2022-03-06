@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Logger } from '@nestjs/common';
+import GameManager from './GameServiceInstance/model/GameManager';
+import GameInstance from './GameServiceInstance/model/GameInstance';
 
 @Controller()
 export class AppController {
@@ -11,9 +13,22 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Put('/api/games/:gameid')
-  getHello2(@Param() params, @Body() body): string {
+  @Put('/:service/api/games/:gameid')
+  startSession(@Param() params, @Body() body): GameInstance {
     Logger.log(params.gameid);
-    return body;
+    Logger.log(params.service);
+    return GameManager.getInstance().addGame(
+      params.service,
+      params.game_id,
+      body,
+    );
   }
+
+  @Delete('/:service/api/games/:gameid')
+  deleteSession(@Param() params): String {
+    Logger.log(params.gameid);
+    Logger.log(params.service);
+    return GameManager.getInstance().deleteGame(params.service, params.game_id);
+  }
+
 }
