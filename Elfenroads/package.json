@@ -1,3 +1,4 @@
+
 {
   "name": "elfenroads",
   "version": "0.1.0",
@@ -60,7 +61,7 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
-    "eslint": "^7.32.0",
+    "eslint": "^8.1.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
