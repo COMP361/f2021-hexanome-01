@@ -17,8 +17,8 @@ export default function Create({wait}: any) {
     if (displayname && min && max) {
       console.log(createSession);
 
-      //Specify elfenland or elfengold in the param below
-      createSession('Elfenroad', name, accessToken)
+      //Specify elfenland versions
+      createSession('ElfenroadVer1', name, accessToken)
         .then(res => {
           console.log(res);
           return res.data.data;
