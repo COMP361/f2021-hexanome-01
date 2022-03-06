@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import {BootColour} from '../enums/BootColour';
+import PlayerManager from '../managers/PlayerManager';
 
 import eventsCenter from './EventsCenter';
+import {Counter} from './ItemUnit';
 
 // helper class for getting the right image
 class ImgStore {
@@ -142,5 +144,15 @@ export default class PlayerIcon {
     this.numCounter++;
     this.panel.setSize(60 * this.numCounter, 60);
     this.container.add(counter);
+  }
+
+  public updateIcon(): void {
+    const counters: Array<Counter> = PlayerManager.getInstance()
+      .getCurrentPlayer()
+      .getCounters();
+
+    for (let i = 0; i < counters.length; i++) {
+      this.addCounter(counters[i].getCounterPNG());
+    }
   }
 }

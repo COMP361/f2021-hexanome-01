@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {BootColour} from '../enums/BootColour';
 import PlayerIcon from '../classes/PlayerIcon';
 import PlayerManager from '../managers/PlayerManager';
 import Player from '../classes/Player';
@@ -27,10 +28,22 @@ export default class PlayerTokenScene extends Phaser.Scene {
   create() {
     this.createPlayerIcons();
 
+    //   const player1: PlayerIcon = new PlayerIcon(
+    //     this,
+    //     this.cameras.main.width / 7,
+    //     this.cameras.main.height / 4,
+    //     BootColour.Green
+    //   );
     //   player1.addCounter('unknown-counter');
     //   player1.addCounter('pig-counter');
     //   player1.addCounter('cloud-counter');
-
+    //   const player2: PlayerIcon = new PlayerIcon(
+    //     this,
+    //     this.cameras.main.width / 7,
+    //     this.cameras.main.height / 4 + 70,
+    //     BootColour.Blue
+    //   );
     //   player2.addCounter('unknown-counter');
+    // }
   }
 }

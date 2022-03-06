@@ -22,10 +22,20 @@ export class Spell extends ItemUnit {
 
 export class Counter extends ItemUnit {
   counterType: CounterType;
+  counterPNG: string;
 
-  constructor(counterType: CounterType, allowedEdges: Array<EdgeType>) {
+  constructor(
+    counterType: CounterType,
+    allowedEdges: Array<EdgeType>,
+    counterPNG: string
+  ) {
     super(allowedEdges);
     this.counterType = counterType;
+    this.counterPNG = counterPNG;
+  }
+
+  public getCounterPNG(): string {
+    return this.counterPNG;
   }
 }
 
