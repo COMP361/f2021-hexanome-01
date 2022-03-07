@@ -51,6 +51,8 @@ export default class ItemManager {
   }
 
   public getRandomItem(): ItemUnit {
-    return this.itemPile[Math.floor(Math.random() * this.itemPile.length)];
+    const item =
+      this.itemPile[Math.floor(Math.random() * this.itemPile.length)];
+    return item.getCopy();
   }
 }

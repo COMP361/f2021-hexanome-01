@@ -95,7 +95,8 @@ export default class InventoryScene extends Phaser.Scene {
           dropZone.data.values.edgeType
         ) &&
         dropZone.data.values.items.length === 0 &&
-        gameObject.data.values.obstacleType !== ObstacleType.Tree
+        gameObject.data.values.obstacleType !== ObstacleType.Tree &&
+        gameObject.active
       ) {
         gameObject.x = dropZone.x;
         gameObject.y = dropZone.y;
@@ -103,7 +104,8 @@ export default class InventoryScene extends Phaser.Scene {
         gameObject.setActive(false);
       } else if (
         gameObject.data.values.obstacleType === ObstacleType.Tree &&
-        dropZone.data.values.items.length === 1
+        dropZone.data.values.items.length === 1 &&
+        gameObject.active
       ) {
         gameObject.x = dropZone.x - 30;
         gameObject.y = dropZone.y;

@@ -8,6 +8,10 @@ export abstract class CardUnit {
   constructor(name: string) {
     this.name = name;
   }
+
+  public getCopy(): CardUnit {
+    return JSON.parse(JSON.stringify(this));
+  }
 }
 
 export class MagicSpellCard extends CardUnit {

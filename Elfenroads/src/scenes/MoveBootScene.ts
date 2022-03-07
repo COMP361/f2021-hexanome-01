@@ -65,12 +65,16 @@ export default class BoardGame extends Phaser.Scene {
     // update visibility of town pieces
     eventsCenter.on('update-town-piece-vis', this.updateVis, this);
 
+    // for demostration
+    const player = PlayerManager.getInstance().getCurrentPlayer();
+    const bootColour = player.getBootColour();
+
     /* move boot */
     const elvenboot = this.add
       .sprite(
-        (elvenhold.getXposition() / 1580) * this.cameras.main.width,
+        (elvenhold.getXposition() / 1600) * this.cameras.main.width,
         (elvenhold.getYposition() / 750) * this.cameras.main.height,
-        'boot'
+        bootColour
       )
       .setInteractive();
 

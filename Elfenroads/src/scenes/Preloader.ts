@@ -14,9 +14,6 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('brownBackground', 'assets/background/brown.jpg');
     this.load.image('map', 'assets/boardgame/mapNEW.png');
 
-    // Assets for UIScene.js/MoveBootScene.js
-    this.load.image('boot', 'assets/boardgame/boots/green_boot.png');
-
     // Assets for UIScene.js/UpperUIScene
     this.load.image('gear', 'assets/ui/iconpack/PNG/White/1x/gear.png');
     this.load.image(
@@ -48,12 +45,12 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('red-actor', 'assets/boardgame/actors/red_actor.png');
     this.load.image('yellow-actor', 'assets/boardgame/actors/yellow_actor.png');
     this.load.image('purple-actor', 'assets/boardgame/actors/purple_actor.png');
-    this.load.image('blue-boot', 'assets/boardgame/actors/blue_boot.png');
-    this.load.image('black-boot', 'assets/boardgame/actors/black_boot.png');
-    this.load.image('green-boot', 'assets/boardgame/actors/green_boot.png');
-    this.load.image('red-boot', 'assets/boardgame/actors/red_boot.png');
-    this.load.image('yellow-boot', 'assets/boardgame/actors/yellow_boot.png');
-    this.load.image('purple-boot', 'assets/boardgame/actors/purple_boot.png');
+    this.load.image('blue-boot', 'assets/boardgame/boots/blue_boot.png');
+    this.load.image('black-boot', 'assets/boardgame/boots/black_boot.png');
+    this.load.image('green-boot', 'assets/boardgame/boots/green_boot.png');
+    this.load.image('red-boot', 'assets/boardgame/boots/red_boot.png');
+    this.load.image('yellow-boot', 'assets/boardgame/boots/yellow_boot.png');
+    this.load.image('purple-boot', 'assets/boardgame/boots/purple_boot.png');
     this.load.image('blue-panel', 'assets/ui/uipack_fixed/PNG/blue_panel.png');
     this.load.image('red-panel', 'assets/ui/uipack_fixed/PNG/red_panel.png');
     this.load.image('black-panel', 'assets/ui/uipack_fixed/PNG/grey_panel.png');
