@@ -8,9 +8,11 @@ export const storeUser = (user: any) => {
 };
 
 export const getSessionId = () => localStorage.getItem('sessionId');
+export const getGame = () => localStorage.getItem('game');
 
-export const storeSessionId = (id: any, cb: any) => {
+export const storeSessionId = (id: any, game: any, cb: any) => {
   localStorage.setItem('sessionId', id);
+  localStorage.setItem('game', game);
   if (cb) cb();
 };
 

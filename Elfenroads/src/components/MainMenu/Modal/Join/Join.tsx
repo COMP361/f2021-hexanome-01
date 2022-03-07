@@ -11,25 +11,11 @@ export default function Join({wait}: any) {
   useEffect(() => {
     allSessions()
       .then((res: any) => res.data.data)
-      .then((data: any) => {
-        const gamesObj = JSON.parse(data.AllSessions);
-        console.log(gamesObj);
-        setGames(
-          Object.keys(gamesObj).map((game: any, ind: any) => {
-            game = gamesObj[game];
-            console.log(game);
-            if (!game.launched) {
-              const gameObj = game;
-              gameObj['session_id'] = Object.keys(gamesObj)[ind];
-              return gameObj;
-            }
-          })
-        );
-      });
+      .then((data: any) => setGames(data.AllSessions));
   }, []);
 
   const attemptJoin = (sessionId: any) => {
-    storeSessionId(sessionId, () =>
+    storeSessionId(sessionId, 'ElfenlandVer1', () =>
       joinSession(accessToken, name, sessionId).then(wait).catch(console.log)
     );
   };
@@ -52,7 +38,7 @@ export default function Join({wait}: any) {
               game =>
                 game &&
                 game.players.length < game.gameParameters.maxSessionPlayers && (
-                  <tr className="join__row" key={game.session_id}>
+                  <tr className="join__row" key={game.sessionid}>
                     <td className="join__td">
                       {game.gameParameters.displayName}
                     </td>
@@ -64,7 +50,7 @@ export default function Join({wait}: any) {
                     </td>
                     <td className="join__td">
                       <button
-                        onClick={() => attemptJoin(game.session_id)}
+                        onClick={() => attemptJoin(game.sessionid)}
                         className="join__button"
                       >
                         Join Game
