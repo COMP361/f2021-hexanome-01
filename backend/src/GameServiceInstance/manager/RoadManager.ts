@@ -3,8 +3,8 @@ import { LaunchPlayer } from '../model/LaunchInfo';
 import Town from '../model/Town';
 
 export default class RoadManager {
-  private edges: Map<String, Map<String, Array<Object>>>;
-  private towns: Town[];
+  private edges: Map<String, Map<String, Object[]>> = new Map();
+  private towns: Town[] = [];
   constructor(launchPlayers: LaunchPlayer[]) {
     this.createTowns(launchPlayers);
     this.createEdges();
@@ -18,13 +18,13 @@ export default class RoadManager {
       'lapphalya',
       'rivinia',
       'ergeren',
-      'beafa',
+      'beata',
       'strykhaven',
       'virst',
       'jxara',
       'mahdavikia',
       'grangor',
-      'kihrimah',
+      'kihromah',
       'dagamura',
       'albaran',
       'parundia',

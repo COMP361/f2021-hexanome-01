@@ -22,4 +22,3 @@ export class TownCard {
     this.town = town;
   }
 }
-

@@ -17,10 +17,42 @@ export enum ObstacleType {
   TREE = 'Tree',
 }
 
-export abstract class ItemUnit {
-  obstacleType: SpellType | CounterType | ObstacleType;
+export interface ItemUnit {
+  getType(): SpellType | CounterType | ObstacleType;
+}
 
-  constructor(type: SpellType | CounterType | ObstacleType) {
-    this.obstacleType = type;
+export class SpellItem implements ItemUnit {
+  spellType: SpellType;
+
+  constructor(spellType: SpellType) {
+    this.spellType = spellType;
+  }
+
+  getType(): SpellType {
+    return this.spellType;
+  }
+}
+
+export class Counter implements ItemUnit {
+  counterType: CounterType;
+
+  constructor(counterType: CounterType) {
+    this.counterType = counterType;
+  }
+
+  getType(): CounterType {
+    return this.counterType;
+  }
+}
+
+export class Obstacle implements ItemUnit {
+  obstacleType: ObstacleType;
+
+  constructor(obstacleType: ObstacleType) {
+    this.obstacleType = obstacleType;
+  }
+
+  getType(): ObstacleType {
+    return this.obstacleType;
   }
 }

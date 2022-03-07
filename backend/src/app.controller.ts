@@ -15,8 +15,9 @@ export class AppController {
 
   @Put('/:service/api/games/:gameid')
   startSession(@Param() params, @Body() body): GameInstance {
-    Logger.log(params.gameid);
-    Logger.log(params.service);
+    // Logger.log(params.gameid);
+    // Logger.log(params.service);
+    // Logger.log(body);
     return GameManager.getInstance().addGame(
       params.service,
       params.game_id,
@@ -26,9 +27,9 @@ export class AppController {
 
   @Delete('/:service/api/games/:gameid')
   deleteSession(@Param() params): String {
-    Logger.log(params.gameid);
-    Logger.log(params.service);
+    // Logger.log(params.gameid);
+    // Logger.log(params.service);
+    // return params;
     return GameManager.getInstance().deleteGame(params.service, params.game_id);
   }
-
 }

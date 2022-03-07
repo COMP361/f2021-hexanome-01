@@ -4,8 +4,8 @@ import { DisplayPlayer, GamePlayer } from '../model/Player';
 
 export default class PlayerManager {
   private currentPlayerIndex: number;
-  private players: GamePlayer[];
-  private playerStatus: Map<GamePhase, GamePlayer[]>;
+  private players: GamePlayer[] = [];
+  private playerStatus: Map<GamePhase, GamePlayer[]> = new Map();
 
   constructor(launchPlayer: LaunchPlayer[]) {
     this.currentPlayerIndex = 0;

@@ -25,10 +25,10 @@ export default class GameManager {
   }
 
   addGame(game: string, game_id: string, launchInfo: LaunchInfo): GameInstance {
-    if (this.gameInstances.get(game).has(game_id)) {
-      throw Error('game already launched');
+    if (!this.gameInstances.has(game)) {
+      this.gameInstances.set(game, new Map());
     }
-
+    console.log(launchInfo);
     this.gameInstances.get(game).set(game_id, new GameInstance(launchInfo));
 
     return this.getGame(game, game_id);
