@@ -6,7 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import GameManager from '../model/GameManager';
+import GameManager from '../manager/GameManager';
 
 @WebSocketGateway(3001, {
   cors: {
@@ -27,6 +27,7 @@ export class SocketGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() data,
   ): Promise<string> {
+    console.log(data);
     client.join(data.game + '-' + data.session_id);
     return 'joined';
   }

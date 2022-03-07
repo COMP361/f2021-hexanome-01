@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Logger } from '@nestjs/common';
-import GameManager from './GameServiceInstance/model/GameManager';
-import GameInstance from './GameServiceInstance/model/GameInstance';
+import GameManager from './GameServiceInstance/manager/GameManager';
+import GameInstance from './GameServiceInstance/GameInstance';
 
 @Controller()
 export class AppController {
@@ -15,8 +15,6 @@ export class AppController {
 
   @Put('/:service/api/games/:gameid')
   startSession(@Param() params, @Body() body): GameInstance {
-    Logger.log(params.gameid);
-    Logger.log(params.service);
     return GameManager.getInstance().addGame(
       params.service,
       params.game_id,
@@ -26,9 +24,6 @@ export class AppController {
 
   @Delete('/:service/api/games/:gameid')
   deleteSession(@Param() params): String {
-    Logger.log(params.gameid);
-    Logger.log(params.service);
     return GameManager.getInstance().deleteGame(params.service, params.game_id);
   }
-
 }

@@ -5,13 +5,20 @@ export enum TravelCardType {
   UNICORN = 'Unicorn',
   TROLLWAGON = 'Troll wagon',
   DRAGON = 'Dragon',
-  RAFTS = 'Rafts',
+  RAFT = 'Raft',
 }
 
-export class Card {
+export class TravelCard {
   cardType: TravelCardType;
 
   constructor(type: TravelCardType) {
     this.cardType = type;
+  }
+}
+
+export class TownCard {
+  town: String;
+  constructor(town: String) {
+    this.town = town;
   }
 }
