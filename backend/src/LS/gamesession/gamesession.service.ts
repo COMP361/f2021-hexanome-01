@@ -40,7 +40,7 @@ export class GameSessionService {
   async getSession(session_id: string): Promise<SessionInfo> {
     const sessionInfo = new SessionInfo();
     sessionInfo.gameSession = await instance
-      .get(session_id)
+      .get(encodeURI(session_id))
       .then((response) => {
         const gameSession: GameSession = new GameSession();
         gameSession.sessionid = session_id;
@@ -89,13 +89,19 @@ export class GameSessionService {
         },
       )
       .then((response) => {
-        return response.data as string;
+        return String(response.data).substring(0, 16);
       });
 
-    this.sessionPlayers
-      .get(session_id)
-      .push(await this.userService.getLSUser(access_token));
-    return this.getSession(session_id);
+    let result: string;
+    for (const session of await this.getAllSessions()) {
+      if (session.sessionid.startsWith(session_id)) {
+        result = session.sessionid;
+      }
+    }
+    this.sessionPlayers.set(result, [
+      await this.userService.getLSUser(access_token),
+    ]);
+    return this.getSession(result);
   }
 
   async launchSession(
@@ -125,7 +131,9 @@ export class GameSessionService {
           `${session_id}/players/${name}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
       )
-      .then(() => {
+      .then(async () => {
+        this.sessionPlayers.get(session_id).push(
+          await this.userService.getLSUser(access_token));
         return this.getSession(session_id);
       });
   }
@@ -141,7 +149,10 @@ export class GameSessionService {
           `${session_id}/players/${name}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
       )
-      .then((response) => {
+      .then(async (response) => {
+        const user = await this.userService.getLSUser(access_token);
+            this.sessionPlayers.set(session_id, this.sessionPlayers.get(session_id).filter((player) => (player.name !== user.name)));
+
         return response.data as string;
       });
   }

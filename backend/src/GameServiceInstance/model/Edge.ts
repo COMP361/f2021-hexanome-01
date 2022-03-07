@@ -1,11 +1,20 @@
-import { Obstacle } from './Obstacle';
-import Town from './Town';
-
 export default class Edge {
-  edgeStart: Town;
-  edgeEnd: Town;
+  edgeStart: String;
+  edgeEnd: String;
   edgeType: EdgeType;
-  obstacles: Obstacle[];
+  obstacles: String[];
+
+  constructor(
+    edgeStart: string,
+    edgeEnd: string,
+    edgeType: EdgeType,
+    obstacles: String[],
+  ) {
+    this.edgeStart = edgeStart;
+    this.edgeEnd = edgeEnd;
+    this.edgeType = edgeType;
+    this.obstacles = obstacles;
+  }
 }
 
 export enum EdgeType {
