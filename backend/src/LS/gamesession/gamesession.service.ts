@@ -131,7 +131,9 @@ export class GameSessionService {
           `${session_id}/players/${name}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
       )
-      .then(() => {
+      .then(async () => {
+        this.sessionPlayers.get(session_id).push(
+          await this.userService.getLSUser(access_token));
         return this.getSession(session_id);
       });
   }
@@ -147,7 +149,10 @@ export class GameSessionService {
           `${session_id}/players/${name}?access_token=${access_token}`,
         ).replace(/\+/g, '%2B'),
       )
-      .then((response) => {
+      .then(async (response) => {
+        const user = await this.userService.getLSUser(access_token);
+            this.sessionPlayers.set(session_id, this.sessionPlayers.get(session_id).filter((player) => (player.name !== user.name)));
+
         return response.data as string;
       });
   }

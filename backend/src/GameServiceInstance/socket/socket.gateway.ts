@@ -27,6 +27,7 @@ export class SocketGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() data,
   ): Promise<string> {
+    console.log(data);
     client.join(data.game + '-' + data.session_id);
     return 'joined';
   }

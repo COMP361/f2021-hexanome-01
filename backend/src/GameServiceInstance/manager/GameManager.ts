@@ -28,7 +28,6 @@ export default class GameManager {
     if (!this.gameInstances.has(game)) {
       this.gameInstances.set(game, new Map());
     }
-    console.log(launchInfo);
     this.gameInstances.get(game).set(game_id, new GameInstance(launchInfo));
 
     return this.getGame(game, game_id);
