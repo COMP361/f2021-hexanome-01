@@ -1,7 +1,7 @@
 import {BootColour} from '../enums/BootColour';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
-import {Counter} from './ItemUnit';
+import {ItemUnit} from './ItemUnit';
 import Town from './Town';
 
 export default class Player {
@@ -9,7 +9,7 @@ export default class Player {
   private score: integer;
   private bootColour: BootColour;
   private currentLocation: Town;
-  private myCounters: Array<Counter>;
+  private myItems: Array<ItemUnit>;
   private myCards: Array<CardUnit>;
   private visitedTowns: Array<Town>;
 
@@ -19,7 +19,7 @@ export default class Player {
 
     this.gold = 0;
     this.score = 0;
-    this.myCounters = [];
+    this.myItems = [];
     this.myCards = [];
     this.visitedTowns = [];
   }
@@ -45,8 +45,8 @@ export default class Player {
   }
 
   // Not well encapsulated...
-  public getCounters(): Array<Counter> {
-    return this.myCounters;
+  public getItems(): Array<ItemUnit> {
+    return this.myItems;
   }
 
   public getCards(): Array<CardUnit> {
@@ -65,8 +65,8 @@ export default class Player {
     this.currentLocation = pTown;
   }
 
-  public addCounter(pCounter: Counter): void {
-    this.myCounters.push(pCounter);
+  public addItem(pItem: ItemUnit): void {
+    this.myItems.push(pItem);
   }
 
   public addCard(pCard: CardUnit): void {
@@ -83,7 +83,7 @@ export default class Player {
       .get('elvenhold')!;
     this.gold = 0;
     this.score = 0;
-    this.myCounters = [];
+    this.myItems = [];
     this.visitedTowns = [];
   }
 }

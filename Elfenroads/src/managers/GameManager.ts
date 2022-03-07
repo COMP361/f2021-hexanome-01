@@ -1,22 +1,22 @@
 import {CardUnit} from '../classes/CardUnit';
-import {Counter} from '../classes/ItemUnit';
+import {ItemUnit} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {BootColour} from '../enums/BootColour';
 import {CardManager} from './CardManagaer';
-import CounterManager from './CounterManager';
+import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;
-  private counterManager: CounterManager;
+  private itemManager: ItemManager;
   private cardManager: CardManager;
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
 
   private constructor() {
     // Instantiate all other Singleton Managers
-    this.counterManager = CounterManager.getInstance();
+    this.itemManager = ItemManager.getInstance();
     this.cardManager = CardManager.getInstance();
     this.playerManager = PlayerManager.getInstance();
     this.roadManager = RoadManager.getInstance();
@@ -56,8 +56,8 @@ export default class GameManager {
     // Now, let's pretend that the current player is drawing random counters
     for (const player of this.playerManager.getPlayers()) {
       // Draw the random counters from the counter pile. Counters aren't remove for simulation purposes.
-      const random1: Counter = this.counterManager.getRandomCounter();
-      const random2: Counter = this.counterManager.getRandomCounter();
+      const random1: ItemUnit = this.itemManager.getRandomItem();
+      const random2: ItemUnit = this.itemManager.getRandomItem();
 
       // Draw random cards from the card pile.
       const card1: CardUnit = this.cardManager.getRandomCard();
@@ -65,8 +65,8 @@ export default class GameManager {
       const card3: CardUnit = this.cardManager.getRandomCard();
 
       // Add the random counters/cards to the player's owned counters/cards
-      player.addCounter(random1);
-      player.addCounter(random2);
+      player.addItem(random1);
+      player.addItem(random2);
 
       player.addCard(card1);
       player.addCard(card2);
