@@ -10,11 +10,11 @@ export default class InventoryScene extends Phaser.Scene {
   }
 
   create() {
-    this.createCounterInventory();
+    this.createItemInventory();
     this.createCardInventory();
   }
 
-  createCounterInventory() {
+  createItemInventory() {
     const graphics = this.add.graphics();
     const zoneRadius = (30 / 1600) * this.cameras.main.width;
 
@@ -38,22 +38,22 @@ export default class InventoryScene extends Phaser.Scene {
     const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
 
     // Dynamically updates the counter inventory based on the currentPlayer counter array.
-    let counterX = (750 / 1600) * this.cameras.main.width;
-    currentPlayer.getCounters().forEach(counter => {
-      const counterSprite = this.add
+    let itemX = (750 / 1600) * this.cameras.main.width;
+    currentPlayer.getItems().forEach(item => {
+      const itemSprite = this.add
         .sprite(
-          (counterX / 1600) * this.cameras.main.width,
+          (itemX / 1600) * this.cameras.main.width,
           (670 / 750) * this.cameras.main.height,
-          counter.counterType
+          item.name
         )
         .setInteractive();
       // set sprite data
-      counterSprite.setData(counter);
+      itemSprite.setData(item);
       // set initial position and relative size
-      counterSprite.setScale(0.25);
+      itemSprite.setScale(0.25);
       // make counter draggable to any position
-      this.input.setDraggable(counterSprite);
-      counterX += (50 / 1600) * this.cameras.main.width;
+      this.input.setDraggable(itemSprite);
+      itemX += (50 / 1600) * this.cameras.main.width;
     });
     // //// block ends here //////
 

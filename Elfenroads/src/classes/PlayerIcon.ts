@@ -66,7 +66,7 @@ export default class PlayerIcon {
   private container: Phaser.GameObjects.Container;
   private xpos: number;
   private panel: Phaser.GameObjects.RenderTexture;
-  private numCounter: number;
+  private numItems: number;
   private color: BootColour;
 
   public constructor(
@@ -78,7 +78,7 @@ export default class PlayerIcon {
     this.scene = scene;
     this.isShowed = false;
     this.xpos = xpos;
-    this.numCounter = 0;
+    this.numItems = 0;
     this.color = color;
 
     const store: ImgStore = ImgStore.instance();
@@ -139,14 +139,14 @@ export default class PlayerIcon {
     );
   }
 
-  public addCounter(img: string): void {
-    const counter: Phaser.GameObjects.Sprite = this.scene.add
-      .sprite(5 + this.numCounter * 60, 5, img)
+  public addItem(img: string): void {
+    const item: Phaser.GameObjects.Sprite = this.scene.add
+      .sprite(5 + this.numItems * 60, 5, img)
       .setOrigin(0, 0);
-    counter.setScale(0.3);
-    this.numCounter++;
-    this.panel.setSize(60 * this.numCounter, 60);
-    this.container.add(counter);
+    item.setScale(0.3);
+    this.numItems++;
+    this.panel.setSize(60 * this.numItems, 60);
+    this.container.add(item);
   }
 
   public addBootImg(xpos: number, ypos: number): void {
