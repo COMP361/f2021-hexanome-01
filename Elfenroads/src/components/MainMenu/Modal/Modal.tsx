@@ -19,7 +19,7 @@ export default function Modal({setSocket}: any) {
   const join = () => setFrame('join');
 
   const wait = () =>
-    _setSocket(io('http://elfenroads.westus3.cloudapp.azure.com:4243/'));
+    _setSocket(io('http://elfenroads.westus3.cloudapp.azure.com:3455/'));
 
   return (
     <div className="modal">

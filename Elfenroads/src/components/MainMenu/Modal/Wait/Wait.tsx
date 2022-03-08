@@ -13,9 +13,6 @@ import {
 } from '../../../../utils/storageUtils';
 import './Wait.scss';
 
-//               green     blue      purple    red       yellow    black
-const colors = ['238f1b', '2443bf', '511d96', 'ad211c', 'e0a10d', '000000'];
-
 export default function Wait({socket, setSocket}: any) {
   const [session, setSession]: [any, any] = useState(null);
   const [sessionId, setSessionId]: [any, any] = useState(getSessionId());
@@ -29,17 +26,15 @@ export default function Wait({socket, setSocket}: any) {
     allSessions()
       .then(res => res.data.data)
       .then(data => {
-        const sessions = JSON.parse(data.AllSessions);
-        Object.keys(sessions).forEach(key => {
-          if (key.substr(0, 8) === sessionId.substr(0, 8)) {
-            storeSessionId(key, null);
-            // Once we have the correct session id, we create a game user for
-            // the the newly joined player. If successful, we update the
-            // session id in state
-            console.log(sessions[key]);
-            createGameUser(colors[sessions[key].players.length - 1], key, name)
-              .then(() => setSessionId(key))
-              .catch(console.log);
+        const sessions = data.AllSessions;
+        sessions.forEach((session: any) => {
+          if (session.sessionid === sessionId) {
+            storeSessionId(session.sessionid, 'ElfenlandVer1', null);
+            setSessionId(session.sessionid);
+            socket.emit('joinLobby', {
+              game: 'ElfenlandVer1',
+              session_id: session.sessionid,
+            });
           }
         });
       })
@@ -51,10 +46,15 @@ export default function Wait({socket, setSocket}: any) {
   // With the correct session id we can now query the single session and save the
   // updated data in state.
   const getSession = () => {
+    // socket.emit('chat', {
+    //   msg: '',
+    //   game: 'ElfenlandVer1',
+    //   session_id: sessionId,
+    // });
     singleSession(sessionId)
       .then(res => res.data.data)
       .then(data => {
-        if (data.Session.launched) {
+        if (data.Session.gameSession.launched) {
           setSocket(socket);
         } else {
           setSession(data.Session);
@@ -68,52 +68,52 @@ export default function Wait({socket, setSocket}: any) {
   // refetch our session data, and finally fetch our initial session data.
   let interval: any;
   useEffect(() => {
-    // socket.emit('joinLobby', {session_id: sessionId});
-    // socket.on('joinLobby', getSession);
-    interval = setInterval(getSession, 500);
+    interval = setInterval(getSession, 2000);
     getSession();
 
     return () => clearInterval(interval);
   }, [sessionId]);
 
-  const startGame = () => launchSession(`=${accessToken}`, sessionId);
+  const startGame = () => launchSession(accessToken, sessionId);
 
   return (
     <section className="wait">
       {session && (
         <>
-          <p className="wait__game">Elfenland</p>
-          <h1 className="wait__title">{session.gameParameters.displayName}</h1>
+          <p className="wait__game">Version 1</p>
+          <h1 className="wait__title">Elfenland</h1>
           <h2 className="wait__subtitle">
             Players{' '}
             <span className="wait__player-count">
-              {session.players.length +
+              {session.users.length +
                 '/' +
-                session.gameParameters.maxSessionPlayers}
+                session.gameSession.gameParameters.maxSessionPlayers}
             </span>
           </h2>
           <ul className="wait__player-list">
-            {session.players.map((player: any, ind: any) => (
-              <li key={player} className="wait__player">
+            {session.users.map((player: any, ind: any) => (
+              <li key={player.name} className="wait__player">
                 <div
                   className="color"
-                  style={{background: `#${colors[ind]}`}}
+                  style={{background: `#${player.preferredColour}`}}
                 ></div>
-                <p>{player}</p>
+                <p>{player.name}</p>
               </li>
             ))}
           </ul>
           <div className="wait__footer">
-            {name === session.creator &&
-              session.players.length >=
-                session.gameParameters.minSessionPlayers && (
+            {name === session.gameSession.creator &&
+              session.users.length >=
+                session.gameSession.gameParameters.minSessionPlayers && (
                 <button className="wait__button" onClick={startGame}>
                   Start
                 </button>
               )}
-            {name !== session.creator && (
+            {name !== session.gameSession.creator && (
               <p>
-                Waiting for <b>{session.creator}</b> to start the game.
+                Waiting for
+                <b> {session.gameSession.creator} </b>
+                to start the game.
               </p>
             )}
           </div>

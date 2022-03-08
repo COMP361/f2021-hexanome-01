@@ -37,7 +37,6 @@ export const verifyUser = (password: any, username: any) =>
         verifyLSUser(
             password: $password
             username: $username
-            grand_type: "password"
         ) {
             access_token
             lsUser {
@@ -59,58 +58,62 @@ export const verifyUser = (password: any, username: any) =>
     }
   );
 
-export const registerGameService = (
-  displayname: any,
-  name: any,
-  minSessionPlayers: any,
-  maxSessionPlayers: any
-) =>
-  axios.post(
-    URL,
-    {
-      query: `
-    mutation registerGameService($displayname: String!, $name: String!, $minSessionPlayers: String!, $maxSessionPlayers: String!) {
-        registerGameService(
-            displayname: $displayname
-            name: $name
-            minSessionPlayers: $minSessionPlayers
-            maxSessionPlayers: $maxSessionPlayers
-            location: "http://elfenroads.westus3.cloudapp.azure.com:3454/"
-        )
-    }
-    `,
-      variables: {
-        displayname: displayname,
-        name: name,
-        minSessionPlayers: minSessionPlayers,
-        maxSessionPlayers: maxSessionPlayers,
-      },
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+// export const registerGameService = (
+//   displayname: any,
+//   name: any,
+//   minSessionPlayers: any,
+//   maxSessionPlayers: any
+// ) =>
+//   axios.post(
+//     URL,
+//     {
+//       query: `
+//     mutation registerGameService($displayname: String!, $name: String!, $minSessionPlayers: String!, $maxSessionPlayers: String!) {
+//         registerGameService(
+//             displayname: $displayname
+//             name: $name
+//             minSessionPlayers: $minSessionPlayers
+//             maxSessionPlayers: $maxSessionPlayers
+//             location: "http://elfenroads.westus3.cloudapp.azure.com:3454/"
+//         )
+//     }
+//     `,
+//       variables: {
+//         displayname: displayname,
+//         name: name,
+//         minSessionPlayers: minSessionPlayers,
+//         maxSessionPlayers: maxSessionPlayers,
+//       },
+//     },
+//     {
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     }
+//   );
 
-export const createSession = (game: any, creator: any, accessToken: any) =>
+export const createSession = (accessToken: any, creator: any, game: any) =>
   axios.post(
     URL,
     {
       query: `
-    mutation createSession($game: String!, $creator: String!, $access_token: String!) {
+    mutation createSession($access_token: String!, $creator: String!, $game: String!) {
         createSession(
-            savegame: ""
-            game: $game
-            creator: $creator
             access_token: $access_token
-        )
+            creator: $creator
+            game: $game
+            savegame: ""
+        ) {
+          gameSession {
+            sessionid
+          }
+        }
     }
     `,
       variables: {
-        game: game,
-        creator: creator,
         access_token: accessToken,
+        creator: creator,
+        game: game,
       },
     },
     {
@@ -130,7 +133,11 @@ export const joinSession = (accessToken: any, name: any, sessionId: any) =>
             access_token: $access_token
             name: $name
             session_id: $session_id
-        )
+        ) {
+          gameSession {
+            sessionid
+          }
+        }
     }
     `,
       variables: {
@@ -145,12 +152,23 @@ export const joinSession = (accessToken: any, name: any, sessionId: any) =>
       },
     }
   );
-
 export const allSessions = () =>
   axios.post(URL, {
     query: `
     query{
-        AllSessions
+        AllSessions {
+          sessionid
+          creator
+          gameParameters {
+            name
+            displayName
+            maxSessionPlayers
+            minSessionPlayers
+          }
+          launched
+          players
+          savegameid
+        }
     }
     `,
   });
@@ -164,15 +182,18 @@ export const singleSession = (sessionId: any) =>
         Session(
             session_id: $session_id
         ) {
+          gameSession {
             creator
             gameParameters {
-                name
-                displayName
                 maxSessionPlayers
                 minSessionPlayers
             }
             launched
-            players
+          }
+          users {
+            name
+            preferredColour
+          }
         }
     }
     `,
