@@ -44,7 +44,7 @@ export default class InventoryScene extends Phaser.Scene {
         .sprite(
           (itemX / 1600) * this.cameras.main.width,
           (670 / 750) * this.cameras.main.height,
-          item.name
+          item.getName()
         )
         .setInteractive();
       // set sprite data
@@ -165,7 +165,7 @@ export default class InventoryScene extends Phaser.Scene {
 
     // display all the cards on screen
     playerCards.forEach(card => {
-      cardInventory.addCard(card.name);
+      cardInventory.addCard(card.getName());
     });
   }
 }

@@ -6,16 +6,19 @@ export class CardManager {
   private cardPile: Array<CardUnit>;
 
   private constructor() {
-    // the pile only has travel cards for now
-    this.cardPile = [
-      new TravelCard(TravelCardType.Dragon),
-      new TravelCard(TravelCardType.GiantPig),
-      new TravelCard(TravelCardType.ElfCycle),
-      new TravelCard(TravelCardType.MagicCloud),
-      new TravelCard(TravelCardType.Uicorn),
-      new TravelCard(TravelCardType.TrollWagon),
-      new TravelCard(TravelCardType.Raft),
-    ];
+    // the pile contains elfenroads cards
+    this.cardPile = [];
+    for (let i = 0; i < 12; i++) {
+      if (i < 10) {
+        this.cardPile.push(new TravelCard(TravelCardType.Dragon));
+        this.cardPile.push(new TravelCard(TravelCardType.GiantPig));
+        this.cardPile.push(new TravelCard(TravelCardType.ElfCycle));
+        this.cardPile.push(new TravelCard(TravelCardType.MagicCloud));
+        this.cardPile.push(new TravelCard(TravelCardType.Uicorn));
+        this.cardPile.push(new TravelCard(TravelCardType.TrollWagon));
+      }
+      new TravelCard(TravelCardType.Raft);
+    }
   }
 
   public static getInstance(): CardManager {
@@ -30,8 +33,9 @@ export class CardManager {
   }
 
   public getRandomCard(): CardUnit {
-    const card =
-      this.cardPile[Math.floor(Math.random() * this.cardPile.length)];
-    return card.getCopy();
+    const index = Math.floor(Math.random() * this.cardPile.length);
+    const card = this.cardPile[index];
+    this.cardPile.splice(index, 1);
+    return card;
   }
 }
