@@ -22,8 +22,9 @@ export default class BoardGame extends Phaser.Scene {
       .nineslice(-85, 0, 170, 61, 'brown-panel', 24)
       .setOrigin(0, 0);
 
-    const moveBootText = this.add.text(0, 0, 'Move Your Boot!', {
-      fontFamily: 'cursive',
+    const moveBootText = this.add.text(0, 0, 'Hello there', {
+      fontFamily: 'Rock Salt',
+      fontSize: '50px',
     });
 
     container.add(brownPanel);

@@ -4,6 +4,11 @@ import './Game.scss';
 import {IonPhaser} from '@ion-phaser/react';
 import Phaser from 'phaser';
 import React from 'react';
+
+// Plug in for using Web fonts
+// eslint-disable-next-line node/no-unpublished-import
+import {WebFontLoaderPlugin} from 'phaser3-webfont-loader';
+
 // Plug in for better image scaling
 import {Plugin as NineSlicePlugin} from 'phaser3-nineslice';
 import {useRef, useState} from 'react';
@@ -22,7 +27,16 @@ const game = {
   type: Phaser.AUTO,
   width: '100%',
   height: '100%',
-  plugins: {global: [NineSlicePlugin.DefaultCfg]},
+  plugins: {
+    global: [
+      NineSlicePlugin.DefaultCfg,
+      {
+        key: 'WebFontLoader',
+        plugin: WebFontLoaderPlugin,
+        start: true,
+      },
+    ],
+  },
   scene: [
     Preloader,
     MainScene,
