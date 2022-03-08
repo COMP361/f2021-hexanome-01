@@ -66,8 +66,7 @@ export default class BoardGame extends Phaser.Scene {
     eventsCenter.on('update-town-piece-vis', this.updateVis, this);
 
     // for demostration
-    const player = PlayerManager.getInstance().getCurrentPlayer();
-    const bootColour = player.getBootColour();
+    const bootColour = currentPlayer.getBootColour();
 
     /* move boot */
     const elvenboot = this.add
