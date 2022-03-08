@@ -32,6 +32,8 @@
     &__player {
         margin: 0.25rem 0;
         font-size: 1.25rem;
+        display: flex;
+        align-items: center;
     }
     &__footer {
         text-align: center;
@@ -56,4 +58,12 @@
             outline: none;
         }
     }
+}
+
+.color {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
 }
