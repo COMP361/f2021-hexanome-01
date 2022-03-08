@@ -15,7 +15,6 @@ import MoveBootScene from '../../scenes/MoveBootScene';
 import Preloader from '../../scenes/Preloader';
 import UpperUIScene from '../../scenes/UpperUIScene';
 import UIScene from '../../scenes/UIScene';
-import TownPieceScene from '../../scenes/TownPieceScene';
 import InventoryScene from '../../scenes/InventoryScene';
 import PlayerIconScene from '../../scenes/PlayerIconScene';
 
@@ -32,7 +31,6 @@ const game = {
     UIScene,
     MoveBootScene,
     UpperUIScene,
-    TownPieceScene,
     InventoryScene,
     PlayerIconScene,
   ],
