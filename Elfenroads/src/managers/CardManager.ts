@@ -1,4 +1,4 @@
-import {CardUnit, MagicSpellCard, TravelCard} from '../classes/CardUnit';
+import {CardUnit, TravelCard} from '../classes/CardUnit';
 import {TravelCardType} from '../enums/TravelCardType';
 
 export class CardManager {
@@ -30,6 +30,8 @@ export class CardManager {
   }
 
   public getRandomCard(): CardUnit {
-    return this.cardPile[Math.floor(Math.random() * this.cardPile.length)];
+    const card =
+      this.cardPile[Math.floor(Math.random() * this.cardPile.length)];
+    return card.getCopy();
   }
 }

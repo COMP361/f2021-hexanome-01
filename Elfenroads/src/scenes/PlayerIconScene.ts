@@ -10,6 +10,9 @@ export default class PlayerIconScene extends Phaser.Scene {
   private createPlayerIcons(): Array<PlayerIcon> {
     const icons: Array<PlayerIcon> = [];
     const players: Array<Player> = PlayerManager.getInstance().getPlayers();
+    let bootX = 0;
+    // need to change this later
+    const localPlayer: Player = PlayerManager.getInstance().getCurrentPlayer();
 
     for (let i = 0; i < players.length; i++) {
       const icon: PlayerIcon = new PlayerIcon(
@@ -19,16 +22,26 @@ export default class PlayerIconScene extends Phaser.Scene {
         players[i].getBootColour()
       );
       const items: Array<ItemUnit> = players[i].getItems();
-      for (let i = 0; i < items.length; i++) {
-        icon.addItem(items[i].name);
+      for (let j = 0; j < items.length; j++) {
+        if (items[j].isHidden && players[i] !== localPlayer) {
+          icon.addItem('unknown-counter');
+        } else {
+          icon.addItem(items[j].name);
+        }
       }
       icons.push(icon);
-      if (players[i] !== PlayerManager.getInstance().getCurrentPlayer()) {
+      if (players[i] !== localPlayer) {
         icon.addBootImg(
-          players[i].getCurrentLocation().getXposition(),
-          players[i].getCurrentLocation().getYposition()
+          (players[i].getCurrentLocation().getXposition() / 1600) *
+            this.cameras.main.width +
+            bootX,
+          (players[i].getCurrentLocation().getYposition() / 750) *
+            this.cameras.main.height,
+          this.cameras.main.width * 0.04,
+          this.cameras.main.height * 0.08
         );
       }
+      bootX += 15;
     }
     return icons;
   }

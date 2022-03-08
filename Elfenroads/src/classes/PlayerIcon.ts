@@ -149,13 +149,17 @@ export default class PlayerIcon {
     this.container.add(item);
   }
 
-  public addBootImg(xpos: number, ypos: number): void {
+  public addBootImg(
+    xpos: number,
+    ypos: number,
+    width: number,
+    height: number
+  ): void {
     const boot: Phaser.GameObjects.Sprite = this.scene.add.sprite(
       xpos,
       ypos,
       ImgStore.instance().getBoot(this.color)
     );
-    boot.setOrigin(0, 0);
-    boot.setScale(0.1);
+    boot.setDisplaySize(width, height);
   }
 }
