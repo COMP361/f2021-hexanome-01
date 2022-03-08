@@ -10,7 +10,7 @@ export default class PlayerIconScene extends Phaser.Scene {
   private createPlayerIcons(): Array<PlayerIcon> {
     const icons: Array<PlayerIcon> = [];
     const players: Array<Player> = PlayerManager.getInstance().getPlayers();
-    let bootX = 30;
+    let bootX = 0;
     // need to change this later
     const localPlayer: Player = PlayerManager.getInstance().getCurrentPlayer();
 
@@ -33,16 +33,15 @@ export default class PlayerIconScene extends Phaser.Scene {
       if (players[i] !== localPlayer) {
         icon.addBootImg(
           (players[i].getCurrentLocation().getXposition() / 1600) *
-            this.cameras.main.width -
+            this.cameras.main.width +
             bootX,
           (players[i].getCurrentLocation().getYposition() / 750) *
-            this.cameras.main.height -
-            30,
+            this.cameras.main.height,
           this.cameras.main.width * 0.04,
           this.cameras.main.height * 0.08
         );
       }
-      bootX -= 15;
+      bootX += 15;
     }
     return icons;
   }

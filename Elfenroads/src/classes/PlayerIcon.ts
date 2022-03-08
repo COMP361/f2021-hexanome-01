@@ -160,7 +160,6 @@ export default class PlayerIcon {
       ypos,
       ImgStore.instance().getBoot(this.color)
     );
-    boot.setOrigin(0, 0);
     boot.setDisplaySize(width, height);
   }
 }
