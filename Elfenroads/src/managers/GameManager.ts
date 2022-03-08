@@ -79,22 +79,22 @@ export default class GameManager {
     mainScene.scene.launch('movebootscene');
 
     const width = mainScene.cameras.main.width;
-    const settingsButton = mainScene.add.sprite(width - 30, 100, 'brown-box');
+    const passTurnButton = mainScene.add.sprite(width - 30, 100, 'brown-box');
     mainScene.add
-      .image(settingsButton.x, settingsButton.y, 'gear')
+      .image(passTurnButton.x, passTurnButton.y, 'checkmark')
       .setScale(0.7);
 
-    // Add interactive pointer options for settingsButton
-    settingsButton
+    // Add interactive pointer options for passTurnButton
+    passTurnButton
       .setInteractive()
       .on('pointerdown', () => {
-        settingsButton.setTint(0xd3d3d3);
+        passTurnButton.setTint(0xd3d3d3);
       })
       .on('pointerout', () => {
-        settingsButton.clearTint();
+        passTurnButton.clearTint();
       })
       .on('pointerup', () => {
-        settingsButton.clearTint();
+        passTurnButton.clearTint();
         if (mainScene.scene.isSleeping('movebootscene')) {
           mainScene.scene.wake('movebootscene');
         } else {

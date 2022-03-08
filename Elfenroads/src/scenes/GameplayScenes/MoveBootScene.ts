@@ -14,6 +14,21 @@ export default class BoardGame extends Phaser.Scene {
     super('movebootscene');
   }
   create() {
+    // Initialize container to group elements
+    const container = this.add.container(this.cameras.main.width / 2, 60);
+
+    // Create brown ui panel element
+    const brownPanel = this.add
+      .nineslice(-85, 0, 170, 61, 'brown-panel', 24)
+      .setOrigin(0, 0);
+
+    const moveBootText = this.add.text(0, 0, 'Move Your Boot!', {
+      fontFamily: 'cursive',
+    });
+
+    container.add(brownPanel);
+    container.add(moveBootText);
+
     const graphics = this.add.graphics();
     const zoneWidth = (60 / 1600) * this.cameras.main.width;
     const zoneHeight = (60 / 750) * this.cameras.main.height;

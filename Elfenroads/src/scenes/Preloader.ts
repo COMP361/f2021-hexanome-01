@@ -15,6 +15,10 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('map', 'assets/boardgame/mapNEW.png');
 
     // Assets for UIScene.js/UpperUIScene
+    this.load.image(
+      'checkmark',
+      'assets/ui/iconpack/PNG/White/1x/checkmark.png'
+    );
     this.load.image('gear', 'assets/ui/iconpack/PNG/White/1x/gear.png');
     this.load.image(
       'brown-box',
