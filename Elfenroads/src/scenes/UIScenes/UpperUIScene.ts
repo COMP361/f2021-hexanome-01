@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 
-import CheatSheetMenu from '../classes/CheatSheetMenu';
-import eventsCenter from '../classes/EventsCenter';
-import SettingsMenu from '../classes/SettingsMenu';
+import CheatSheetMenu from '../../classes/CheatSheetMenu';
+import eventsCenter from '../../classes/EventsCenter';
+import SettingsMenu from '../../classes/SettingsMenu';
 
 export default class UpperUI extends Phaser.Scene {
   // Global array to store buttons in this scene

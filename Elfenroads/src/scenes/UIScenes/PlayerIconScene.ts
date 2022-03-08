@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import PlayerIcon from '../classes/PlayerIcon';
-import PlayerManager from '../managers/PlayerManager';
-import Player from '../classes/Player';
-import {ItemUnit} from '../classes/ItemUnit';
+import PlayerIcon from '../../classes/PlayerIcon';
+import PlayerManager from '../../managers/PlayerManager';
+import Player from '../../classes/Player';
+import {ItemUnit} from '../../classes/ItemUnit';
 
 export default class PlayerIconScene extends Phaser.Scene {
   private playerIcons: Array<PlayerIcon>;

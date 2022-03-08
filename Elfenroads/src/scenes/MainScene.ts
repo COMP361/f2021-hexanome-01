@@ -7,16 +7,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    // Game sequence is initiated. This is not final, just simulating it right now...
-    GameManager.getInstance().playGame();
-
-    // //////////////////////////////////////////////////////////
-    // /////// MAIN SCENE WILL LAUNCH ALL OTHER SCENES //////////
-    // //////////////////////////////////////////////////////////
-
-    // Launch BoardScene.js
+    // Launch UI related scenes
     this.scene.launch('boardscene');
-    // Launch UIScene.js
-    this.scene.launch('uiscene');
+    this.scene.launch('upperuiscene');
+    this.scene.launch('inventoryscene');
+    this.scene.launch('playericonscene');
+
+    // Game sequence is initiated.
+    // We pass in this Phase.Scene that way we can launch other scenes in the GameManager class.
+    GameManager.getInstance().playGame(this);
   }
 }

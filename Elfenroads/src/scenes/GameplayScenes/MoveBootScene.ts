@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import Phaser from 'phaser';
 
-import eventsCenter from '../classes/EventsCenter';
-import PlayerManager from '../managers/PlayerManager';
-import RoadManager from '../managers/RoadManager';
-import Town from '../classes/Town';
+import eventsCenter from '../../classes/EventsCenter';
+import PlayerManager from '../../managers/PlayerManager';
+import RoadManager from '../../managers/RoadManager';
+import Town from '../../classes/Town';
 
 export default class BoardGame extends Phaser.Scene {
   private townPieces: Map<string, Phaser.GameObjects.Arc> = new Map();

@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import CardInventory from '../classes/CardInventory';
-import {ObstacleType} from '../enums/ObstacleType';
-import RoadManager from '../managers/RoadManager';
-import PlayerManager from '../managers/PlayerManager';
+import CardInventory from '../../classes/CardInventory';
+import {ObstacleType} from '../../enums/ObstacleType';
+import RoadManager from '../../managers/RoadManager';
+import PlayerManager from '../../managers/PlayerManager';
 
 export default class InventoryScene extends Phaser.Scene {
   constructor() {
