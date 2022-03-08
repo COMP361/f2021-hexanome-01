@@ -21,6 +21,7 @@ import Preloader from '../../scenes/Preloader';
 import UpperUIScene from '../../scenes/UIScenes/UpperUIScene';
 import InventoryScene from '../../scenes/UIScenes/InventoryScene';
 import PlayerIconScene from '../../scenes/UIScenes/PlayerIconScene';
+import PlayerTurnScene from '../../scenes/UIScenes/PlayerTurnScene';
 
 // Phaser Game config
 const game = {
@@ -45,6 +46,7 @@ const game = {
     UpperUIScene,
     InventoryScene,
     PlayerIconScene,
+    PlayerTurnScene,
   ],
 };
 

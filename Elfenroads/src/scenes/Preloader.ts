@@ -10,8 +10,8 @@ export default class Preloader extends Phaser.Scene {
     // ///// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
     // /////////////////////////////////////////////////////////
     this.load.webfont(
-      'Rock Salt',
-      'https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap'
+      'MedievalSharp',
+      'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'
     );
 
     // Assets for BoardScene.js

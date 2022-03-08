@@ -4,7 +4,7 @@ import CheatSheetMenu from '../../classes/CheatSheetMenu';
 import eventsCenter from '../../classes/EventsCenter';
 import SettingsMenu from '../../classes/SettingsMenu';
 
-export default class UpperUI extends Phaser.Scene {
+export default class UpperUIScene extends Phaser.Scene {
   // Global array to store buttons in this scene
   buttons: Array<any>;
 
