@@ -76,15 +76,54 @@ export default class GameManager {
       player.addCard(card3);
     }
 
+    /**
+     * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
+     */
     mainScene.scene.launch('movebootscene');
 
     const width = mainScene.cameras.main.width;
-    const passTurnButton = mainScene.add.sprite(width - 30, 100, 'brown-box');
+    const toggleMoveBootButton = mainScene.add.sprite(
+      width - 30,
+      100,
+      'brown-box'
+    );
     mainScene.add
-      .image(passTurnButton.x, passTurnButton.y, 'checkmark')
+      .image(toggleMoveBootButton.x, toggleMoveBootButton.y, 'power')
+      .setScale(0.7);
+
+    // Add interactive pointer options for toggleMoveBootButton
+    toggleMoveBootButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        toggleMoveBootButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        toggleMoveBootButton.clearTint();
+      })
+      .on('pointerup', () => {
+        toggleMoveBootButton.clearTint();
+        if (mainScene.scene.isSleeping('movebootscene')) {
+          mainScene.scene.wake('movebootscene');
+        } else {
+          mainScene.scene.sleep('movebootscene');
+        }
+      });
+
+    // BLOCK END
+
+    /**
+     * SHOWCASE FOR CHANGING PLAYER TURN
+     */
+
+    // Create small button with the "next" icon
+    const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
+    mainScene.add
+      .image(passTurnButton.x, passTurnButton.y, 'next')
       .setScale(0.7);
 
     // Add interactive pointer options for passTurnButton
+    // After click, currentPlayer is updated via playerManager
+    // PlayerTurnScene is rerendered to show whose turn it is
     passTurnButton
       .setInteractive()
       .on('pointerdown', () => {
@@ -95,11 +134,8 @@ export default class GameManager {
       })
       .on('pointerup', () => {
         passTurnButton.clearTint();
-        if (mainScene.scene.isSleeping('movebootscene')) {
-          mainScene.scene.wake('movebootscene');
-        } else {
-          mainScene.scene.sleep('movebootscene');
-        }
+        this.playerManager.setNextPlayer();
+        mainScene.scene.get('playerturnscene').scene.restart();
       });
   }
 }
