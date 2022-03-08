@@ -9,12 +9,22 @@ export default class Preloader extends Phaser.Scene {
     // /////////////////////////////////////////////////////////
     // ///// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
     // /////////////////////////////////////////////////////////
+    this.load.webfont(
+      'MedievalSharp',
+      'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'
+    );
 
     // Assets for BoardScene.js
     this.load.image('brownBackground', 'assets/background/brown.jpg');
     this.load.image('map', 'assets/boardgame/mapNEW.png');
 
     // Assets for UIScene.js/UpperUIScene
+    this.load.image('power', 'assets/ui/iconpack/PNG/White/1x/power.png');
+    this.load.image('next', 'assets/ui/iconpack/PNG/White/1x/next.png');
+    this.load.image(
+      'checkmark',
+      'assets/ui/iconpack/PNG/White/1x/checkmark.png'
+    );
     this.load.image('gear', 'assets/ui/iconpack/PNG/White/1x/gear.png');
     this.load.image(
       'brown-box',
