@@ -23,10 +23,10 @@ export default class PlayerIconScene extends Phaser.Scene {
       );
       const items: Array<ItemUnit> = players[i].getItems();
       for (let j = 0; j < items.length; j++) {
-        if (items[j].isHidden && players[i] !== localPlayer) {
+        if (items[j].getHidden() && players[i] !== localPlayer) {
           icon.addItem('unknown-counter');
         } else {
-          icon.addItem(items[j].name);
+          icon.addItem(items[j].getName());
         }
       }
       icons.push(icon);
