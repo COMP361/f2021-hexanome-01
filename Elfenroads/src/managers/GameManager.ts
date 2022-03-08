@@ -58,7 +58,7 @@ export default class GameManager {
       // Draw the random counters from the counter pile. Counters aren't remove for simulation purposes.
       const random1: ItemUnit = this.itemManager.getRandomItem();
       const random2: ItemUnit = this.itemManager.getRandomItem();
-      random2.isHidden = true;
+      random2.setHidden(true);
 
       // Draw random cards from the card pile.
       const card1: CardUnit = this.cardManager.getRandomCard();

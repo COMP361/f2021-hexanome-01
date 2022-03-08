@@ -4,9 +4,9 @@ import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
 
 export abstract class ItemUnit {
-  name: string;
-  allowedEdges: Array<EdgeType>;
-  isHidden: boolean;
+  private name: string;
+  private allowedEdges: Array<EdgeType>;
+  private isHidden: boolean;
 
   constructor(name: string, allowedEdges: Array<EdgeType>, isHidden = false) {
     this.name = name;
@@ -14,55 +14,62 @@ export abstract class ItemUnit {
     this.isHidden = isHidden;
   }
 
-  public getCopy(): ItemUnit {
-    return JSON.parse(JSON.stringify(this));
+  public getName(): string {
+    return this.name;
+  }
+
+  public getAllowedEdges(): Array<EdgeType> {
+    return this.allowedEdges;
+  }
+
+  public getHidden(): boolean {
+    return this.isHidden;
+  }
+
+  public setHidden(state: boolean): void {
+    this.isHidden = state;
   }
 }
 
 export class Spell extends ItemUnit {
-  spellType: SpellType;
-
   constructor(
     spellType: SpellType,
     allowedEdges: Array<EdgeType>,
     isHidden = false
   ) {
     super(spellType, allowedEdges, isHidden);
-    this.spellType = spellType;
   }
 }
 
 export class Counter extends ItemUnit {
-  counterType: CounterType;
-
   constructor(
     counterType: CounterType,
     allowedEdges: Array<EdgeType>,
     isHidden = false
   ) {
     super(counterType, allowedEdges, isHidden);
-    this.counterType = counterType;
   }
 }
 
 export class GoldPiece extends ItemUnit {
-  amount: number;
+  private amount: number;
 
   constructor(amount: number, allowedEdges: Array<EdgeType>, isHidden = false) {
     super('gold-piece', allowedEdges, isHidden);
     this.amount = amount;
   }
+
+  public getAmount(): number {
+    return this.amount;
+  }
 }
 
 export class Obstacle extends ItemUnit {
-  obstacleType: ObstacleType;
-
   constructor(
     obstacleType: ObstacleType,
     allowedEdges: Array<EdgeType>,
     isHidden = false
   ) {
     super(obstacleType, allowedEdges, isHidden);
-    this.obstacleType = obstacleType;
   }
 }
