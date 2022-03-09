@@ -18,7 +18,7 @@ export class SocketGateway {
   @WebSocketServer()
   server: Server;
 
-  async handleConnection(client: Socket): Promise<string> {
+  async handleConnection(): Promise<string> {
     return 'connected';
   }
 

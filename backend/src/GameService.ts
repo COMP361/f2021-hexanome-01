@@ -98,7 +98,11 @@ export default class GameService {
       });
   }
 
-  private async deleteGameService(service: string, username: string, password: string): Promise<void> {
+  private async deleteGameService(
+    service: string,
+    username: string,
+    password: string,
+  ): Promise<void> {
     await this.getOAuthToken(username, password);
     await this.instance.delete(
       encodeURI(
@@ -112,7 +116,6 @@ export default class GameService {
     username: string,
     password: string,
   ): Promise<void> {
-
     await this.instance
       .get(encodeURI(`api/gameservices/${service}`))
       .then(() => {
@@ -161,7 +164,7 @@ export default class GameService {
       'ElfenlandVer2',
       'f2021-EFLDV2',
     );
-        await this.registerGameService(
+    await this.registerGameService(
       'ElfenlandVer1',
       'ElfenlandVer1',
       'f2021-EFLDV1',

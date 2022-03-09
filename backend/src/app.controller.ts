@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Logger } from '@nestjs/common';
 import GameManager from './GameServiceInstance/manager/GameManager';
 import GameInstance from './GameServiceInstance/GameInstance';
 
