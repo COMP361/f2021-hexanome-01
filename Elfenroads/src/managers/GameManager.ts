@@ -7,6 +7,7 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
+import Town from '../classes/Town';
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;

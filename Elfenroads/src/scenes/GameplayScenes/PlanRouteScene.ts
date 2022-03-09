@@ -20,8 +20,8 @@ export default class PlanRouteScene extends Phaser.Scene {
           .forEach(edge => {
             const zone = this.add
               .zone(
-                (edge.position[0] / 1600) * this.cameras.main.width,
-                (edge.position[1] / 750) * this.cameras.main.height,
+                (edge.getPosition()[0] / 1600) * this.cameras.main.width,
+                (edge.getPosition()[1] / 750) * this.cameras.main.height,
                 1,
                 1
               )
@@ -59,10 +59,10 @@ export default class PlanRouteScene extends Phaser.Scene {
               RoadManager.getInstance()
                 .getEdges()
                 .forEach(edge => {
-                  if (gameObject.data.list.allowedEdges.includes(edge.edgeType)) {
+                  if (gameObject.data.list.allowedEdges.includes(edge.getType())) {
                     graphics.strokeCircle(
-                      (edge.position[0] / 1600) * this.cameras.main.width,
-                      (edge.position[1] / 750) * this.cameras.main.height,
+                      (edge.getPosition()[0] / 1600) * this.cameras.main.width,
+                      (edge.getPosition()[1] / 750) * this.cameras.main.height,
                       zoneRadius / 3
                     );
                   }
