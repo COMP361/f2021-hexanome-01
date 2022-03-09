@@ -34,47 +34,18 @@ export default class GameManager {
    * SIMULATION OF GAME
    */
   public playGame(mainScene: Phaser.Scene): void {
-    // Add our player/players. Imagine we have many to add based on the lobby.
-    // Starting town is set to elvenhold.
+    // Step 1: Get players and inialize them based on their bootchoices
+    this.initializePlayers();
 
-    this.playerManager.addPlayer(
-      new Player(
-        BootColour.Green,
-        this.roadManager.getTowns().get('elvenhold')!
-      )
-    );
+    // Step 2: Get number of rounds
+    const numRounds: integer = 1;
 
-    this.playerManager.addPlayer(
-      new Player(BootColour.Blue, this.roadManager.getTowns().get('elvenhold')!)
-    );
-
-    this.playerManager.addPlayer(
-      new Player(
-        BootColour.Yellow,
-        this.roadManager.getTowns().get('elvenhold')!
-      )
-    );
-
-    // Now, let's pretend that the current player is drawing random counters
-    for (const player of this.playerManager.getPlayers()) {
-      // Draw the random counters from the counter pile. Counters aren't remove for simulation purposes.
-      const random1: ItemUnit = this.itemManager.getRandomItem();
-      const random2: ItemUnit = this.itemManager.getRandomItem();
-      random2.setHidden(true);
-
-      // Draw random cards from the card pile.
-      const card1: CardUnit = this.cardManager.getRandomCard();
-      const card2: CardUnit = this.cardManager.getRandomCard();
-      const card3: CardUnit = this.cardManager.getRandomCard();
-
-      // Add the random counters/cards to the player's owned counters/cards
-      player.addItem(random1);
-      player.addItem(random2);
-
-      player.addCard(card1);
-      player.addCard(card2);
-      player.addCard(card3);
+    // Step 3: Play number of rounds
+    for (let i = 1; i < numRounds + 1; i++) {
+      this.playRound(mainScene);
     }
+
+    // Step 4: Determine winner
 
     /**
      * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
@@ -114,7 +85,6 @@ export default class GameManager {
     /**
      * SHOWCASE FOR CHANGING PLAYER TURN
      */
-
     // Create small button with the "next" icon
     const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
     mainScene.add
@@ -138,4 +108,51 @@ export default class GameManager {
         mainScene.scene.get('playerturnscene').scene.restart();
       });
   }
+
+  private playRound(mainScene: Phaser.Scene): void {
+    // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
+    this.dealCardsAndCounter();
+
+    // Phase 3: Draw additional Transportation counters
+    mainScene.scene.launch('drawcountersscene');
+  }
+
+  private dealCardsAndCounter(): void {
+    for (const player of this.playerManager.getPlayers()) {
+      // Deal up to 8 cards
+      while (player.getCards().length < 8) {
+        const randomCard: CardUnit = this.cardManager.getRandomCard();
+        player.addCard(randomCard);
+      }
+
+      // Deal the random facedown counter from the counter pile.
+      const random1: ItemUnit = this.itemManager.getRandomItem();
+      random1.setHidden(true);
+      player.addItem(random1);
+    }
+  }
+
+  private initializePlayers(): void {
+    // Add our player/players. Imagine we have many to add based on the lobby.
+    // Starting town is set to elvenhold.
+    this.playerManager.addPlayer(
+      new Player(
+        BootColour.Green,
+        this.roadManager.getTowns().get('elvenhold')!
+      )
+    );
+
+    this.playerManager.addPlayer(
+      new Player(BootColour.Red, this.roadManager.getTowns().get('elvenhold')!)
+    );
+
+    this.playerManager.addPlayer(
+      new Player(
+        BootColour.Black,
+        this.roadManager.getTowns().get('elvenhold')!
+      )
+    );
+  }
+
+  private drawAdditionalCounters(): void {}
 }
