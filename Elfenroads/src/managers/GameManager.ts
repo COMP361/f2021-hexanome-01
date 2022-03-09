@@ -51,63 +51,62 @@ export default class GameManager {
     /**
      * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
      */
-    mainScene.scene.launch('movebootscene');
 
-    const width = mainScene.cameras.main.width;
-    const toggleMoveBootButton = mainScene.add.sprite(
-      width - 30,
-      100,
-      'brown-box'
-    );
-    mainScene.add
-      .image(toggleMoveBootButton.x, toggleMoveBootButton.y, 'power')
-      .setScale(0.7);
+    // const width = mainScene.cameras.main.width;
+    // const toggleMoveBootButton = mainScene.add.sprite(
+    //   width - 30,
+    //   100,
+    //   'brown-box'
+    // );
+    // mainScene.add
+    //   .image(toggleMoveBootButton.x, toggleMoveBootButton.y, 'power')
+    //   .setScale(0.7);
 
-    // Add interactive pointer options for toggleMoveBootButton
-    toggleMoveBootButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        toggleMoveBootButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        toggleMoveBootButton.clearTint();
-      })
-      .on('pointerup', () => {
-        toggleMoveBootButton.clearTint();
-        if (mainScene.scene.isSleeping('movebootscene')) {
-          mainScene.scene.wake('movebootscene');
-        } else {
-          mainScene.scene.sleep('movebootscene');
-        }
-      });
+    // // Add interactive pointer options for toggleMoveBootButton
+    // toggleMoveBootButton
+    //   .setInteractive()
+    //   .on('pointerdown', () => {
+    //     toggleMoveBootButton.setTint(0xd3d3d3);
+    //   })
+    //   .on('pointerout', () => {
+    //     toggleMoveBootButton.clearTint();
+    //   })
+    //   .on('pointerup', () => {
+    //     toggleMoveBootButton.clearTint();
+    //     if (mainScene.scene.isSleeping('movebootscene')) {
+    //       mainScene.scene.wake('movebootscene');
+    //     } else {
+    //       mainScene.scene.sleep('movebootscene');
+    //     }
+    //   });
 
-    // BLOCK END
+    // // BLOCK END
 
-    /**
-     * SHOWCASE FOR CHANGING PLAYER TURN
-     */
-    // Create small button with the "next" icon
-    const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
-    mainScene.add
-      .image(passTurnButton.x, passTurnButton.y, 'next')
-      .setScale(0.7);
+    // /**
+    //  * SHOWCASE FOR CHANGING PLAYER TURN
+    //  */
+    // // Create small button with the "next" icon
+    // const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
+    // mainScene.add
+    //   .image(passTurnButton.x, passTurnButton.y, 'next')
+    //   .setScale(0.7);
 
-    // Add interactive pointer options for passTurnButton
-    // After click, currentPlayer is updated via playerManager
-    // PlayerTurnScene is rerendered to show whose turn it is
-    passTurnButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        passTurnButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        passTurnButton.clearTint();
-      })
-      .on('pointerup', () => {
-        passTurnButton.clearTint();
-        this.playerManager.setNextPlayer();
-        mainScene.scene.get('playerturnscene').scene.restart();
-      });
+    // // Add interactive pointer options for passTurnButton
+    // // After click, currentPlayer is updated via playerManager
+    // // PlayerTurnScene is rerendered to show whose turn it is
+    // passTurnButton
+    //   .setInteractive()
+    //   .on('pointerdown', () => {
+    //     passTurnButton.setTint(0xd3d3d3);
+    //   })
+    //   .on('pointerout', () => {
+    //     passTurnButton.clearTint();
+    //   })
+    //   .on('pointerup', () => {
+    //     passTurnButton.clearTint();
+    //     this.playerManager.setNextPlayer();
+    //     mainScene.scene.get('playerturnscene').scene.restart();
+    //   });
   }
 
   private playRound(mainScene: Phaser.Scene): void {
@@ -116,6 +115,11 @@ export default class GameManager {
 
     // Phase 3: Draw additional Transportation counters
     mainScene.scene.launch('drawcountersscene');
+
+    // Phase 4: Plan route
+
+    // Phase 5: Move Boot
+    mainScene.scene.launch('movebootscene');
   }
 
   private dealCardsAndCounter(): void {
@@ -134,21 +138,30 @@ export default class GameManager {
   }
 
   private initializePlayers(): void {
-    // Add our player/players. Imagine we have many to add based on the lobby.
+    // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
-    this.playerManager.addPlayer(
-      new Player(BootColour.Green, Town.getTown('elvenhold'))
+    const p1: Player = new Player(
+      BootColour.Green,
+      this.roadManager.getTowns().get('elvenhold')!
     );
 
-    this.playerManager.addPlayer(
-      new Player(BootColour.Red, Town.getTown('elvenhold'))
+    const p2: Player = new Player(
+      BootColour.Red,
+      this.roadManager.getTowns().get('elvenhold')!
     );
 
-    this.playerManager.addPlayer(
-      new Player(BootColour.Black, Town.getTown('elvenhold'))
+    const p3: Player = new Player(
+      BootColour.Black,
+      this.roadManager.getTowns().get('elvenhold')!
     );
 
-    this.playerManager.setPlayerDest(0, Town.getTown('elvenhold'));
+    // Add all players
+    this.playerManager.addPlayer(p1);
+    this.playerManager.addPlayer(p2);
+    this.playerManager.addPlayer(p3);
+
+    // Set the local player for UI rendering purposes
+    this.playerManager.setLocalPlayer(p1);
   }
 
   private drawAdditionalCounters(): void {}

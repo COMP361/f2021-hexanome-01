@@ -38,13 +38,41 @@ export default class DrawCountersScene extends Phaser.Scene {
     container.add(brownPanel);
     container.add(drawCounterText);
 
-    let previousWidth: integer = gameWidth / 2 + 150;
-    for (let i = 0; i < 4; i++) {
-      previousWidth += 50;
+    let previousWidth: integer = gameWidth / 2 + 200;
+
+    // Render five face up counters
+    for (let i = 0; i < 5; i++) {
       this.generateCounter(previousWidth);
+      previousWidth += 50;
     }
+
+    // Render a face down counter pile
+    this.generateRandomCounter(previousWidth);
   }
 
+  generateRandomCounter(previousWidth: integer): void {
+    const currentItem = ItemManager.getInstance().getRandomItem();
+    const itemSprite = this.add
+      .sprite(previousWidth, 110, 'unknown-counter')
+      .setScale(0.25)
+      .setInteractive()
+      .on('pointerdown', () => {
+        itemSprite.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        itemSprite.clearTint();
+      })
+      .on('pointerup', () => {
+        itemSprite.clearTint();
+        PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
+        itemSprite.destroy();
+        this.generateRandomCounter(previousWidth);
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('playerturnscene').scene.restart();
+        this.scene.get('inventoryscene').scene.restart();
+        this.scene.get('playericonscene').scene.restart();
+      });
+  }
   generateCounter(previousWidth: integer): void {
     const currentItem = ItemManager.getInstance().getRandomItem();
     const itemSprite = this.add
@@ -62,10 +90,10 @@ export default class DrawCountersScene extends Phaser.Scene {
         PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
         itemSprite.destroy();
         this.generateCounter(previousWidth);
-        this.scene.stop('inventoryscene');
-        this.scene.launch('inventoryscene');
-        this.scene.stop('playericonscene');
-        this.scene.launch('playericonscene');
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('playerturnscene').scene.restart();
+        this.scene.get('inventoryscene').scene.restart();
+        this.scene.get('playericonscene').scene.restart();
       });
   }
 }

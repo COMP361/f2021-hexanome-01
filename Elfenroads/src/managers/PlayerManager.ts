@@ -5,6 +5,7 @@ export default class PlayerManager {
   private static instance: PlayerManager;
   private currentPlayerIndex: number;
   private players: Array<Player>;
+  private localPlayer!: Player;
 
   private constructor() {
     this.currentPlayerIndex = 0;
@@ -38,6 +39,14 @@ export default class PlayerManager {
 
   public getCurrentPlayer(): Player {
     return this.players[this.currentPlayerIndex];
+  }
+
+  public getLocalPlayer(): Player {
+    return this.localPlayer;
+  }
+
+  public setLocalPlayer(pPlayer: Player): void {
+    this.localPlayer = pPlayer;
   }
 
   public setCurrentPlayerIndex(playerIndex: number): void {

@@ -171,8 +171,8 @@ export default class InventoryScene extends Phaser.Scene {
     this.inventories.push(itemInventory);
 
     // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
-    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
-    const playerItems = currentPlayer.getItems();
+    const localPlayer = PlayerManager.getInstance().getLocalPlayer();
+    const playerItems = localPlayer.getItems();
 
     // display all the Items on screen
     playerItems.forEach(item => {
@@ -187,8 +187,8 @@ export default class InventoryScene extends Phaser.Scene {
     this.inventories.push(cardInventory);
 
     // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
-    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
-    const playerCards = currentPlayer.getCards();
+    const localPlayer = PlayerManager.getInstance().getLocalPlayer();
+    const playerCards = localPlayer.getCards();
 
     // display all the cards on screen
     playerCards.forEach(card => {
