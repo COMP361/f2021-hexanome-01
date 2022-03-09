@@ -1,15 +1,13 @@
 import Phaser from 'phaser';
 import CardInventory from '../../classes/CardInventory';
 import ItemInventory from '../../classes/ItemInventory';
-import {ObstacleType} from '../../enums/ObstacleType';
-import RoadManager from '../../managers/RoadManager';
 import PlayerManager from '../../managers/PlayerManager';
 
 export default class InventoryScene extends Phaser.Scene {
-  inventoryOpen = true;
-  inventories: Array<any> = [];
-  static items: Array<any> = [];
-  static cards: Array<any> = [];
+  private inventoryOpen = true;
+  private inventories: Array<any> = [];
+  public static itemSprites: Array<Phaser.GameObjects.Sprite> = [];
+  public static cardSprites: Array<Phaser.GameObjects.Sprite> = [];
 
   constructor() {
     super('inventoryscene');
@@ -56,7 +54,6 @@ export default class InventoryScene extends Phaser.Scene {
     const itemInventory = new ItemInventory(this);
 
     this.inventories.push(itemInventory);
-    InventoryScene.items = itemInventory.getSprites();
 
     // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
     const localPlayer = PlayerManager.getInstance().getLocalPlayer();
@@ -66,6 +63,8 @@ export default class InventoryScene extends Phaser.Scene {
     playerItems.forEach(item => {
       itemInventory.renderItem(item.getName());
     });
+
+    InventoryScene.itemSprites = itemInventory.getSprites();
   }
 
   createCardInventory() {
@@ -73,7 +72,6 @@ export default class InventoryScene extends Phaser.Scene {
     const cardInventory = new CardInventory(this);
 
     this.inventories.push(cardInventory);
-    InventoryScene.cards = cardInventory.getSprites();
 
     // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
     const localPlayer = PlayerManager.getInstance().getLocalPlayer();
@@ -83,5 +81,7 @@ export default class InventoryScene extends Phaser.Scene {
     playerCards.forEach(card => {
       cardInventory.renderCard(card.getName());
     });
+
+    InventoryScene.cardSprites = cardInventory.getSprites();
   }
 }
