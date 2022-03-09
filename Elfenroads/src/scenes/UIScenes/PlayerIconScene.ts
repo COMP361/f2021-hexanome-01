@@ -11,8 +11,9 @@ export default class PlayerIconScene extends Phaser.Scene {
     const icons: Array<PlayerIcon> = [];
     const players: Array<Player> = PlayerManager.getInstance().getPlayers();
     let bootX = 0;
-    // need to change this later
-    const localPlayer: Player = PlayerManager.getInstance().getCurrentPlayer();
+
+    // For rendering purposes, we want to display all counters face up for local player
+    const localPlayer: Player = PlayerManager.getInstance().getLocalPlayer();
 
     for (let i = 0; i < players.length; i++) {
       const icon: PlayerIcon = new PlayerIcon(

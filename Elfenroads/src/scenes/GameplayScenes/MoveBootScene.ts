@@ -3,7 +3,6 @@ import Phaser from 'phaser';
 
 import eventsCenter from '../../classes/EventsCenter';
 import PlayerManager from '../../managers/PlayerManager';
-import RoadManager from '../../managers/RoadManager';
 import Town from '../../classes/Town';
 
 export default class BoardGame extends Phaser.Scene {
@@ -15,9 +14,9 @@ export default class BoardGame extends Phaser.Scene {
   }
   create() {
     // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
-    const Towns = RoadManager.getInstance().getTowns();
+    const allTowns = Town.getAllTowns();
     const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
-    const elvenhold: Town = Towns.get('elvenhold')!;
+    const elvenhold: Town = Town.getTown('elvenhold');
     elvenhold.addVisitingPlayer(currentPlayer);
 
     // Create text to notify that it is move boot phase
@@ -55,7 +54,7 @@ export default class BoardGame extends Phaser.Scene {
     const zoneHeight = (60 / 750) * this.cameras.main.height;
 
     // Initialize each town
-    for (const currentTown of Towns.values()) {
+    for (const currentTown of allTowns.values()) {
       const position: Array<integer> = currentTown.getPosition();
       if (position) {
         this.add
@@ -130,7 +129,7 @@ export default class BoardGame extends Phaser.Scene {
         gameObject.y = dragY;
         graphics.lineStyle(2, 0xffff00, 1);
         // highlight every draggable town
-        for (const currentTown of Towns.values()) {
+        for (const currentTown of allTowns.values()) {
           if (currentTown.getPosition()) {
             graphics.strokeRect(
               ((currentTown.getXposition() - 30) / 1600) *
@@ -153,7 +152,7 @@ export default class BoardGame extends Phaser.Scene {
         gameObject: {x: any; y: any},
         dropZone: {x: number; y: number}
       ) => {
-        for (const currentTown of Towns.values()) {
+        for (const currentTown of allTowns.values()) {
           if (
             (currentTown.getXposition() / 1600) * this.cameras.main.width ===
               dropZone.x &&
@@ -169,6 +168,7 @@ export default class BoardGame extends Phaser.Scene {
               currentPlayer.setScore(score);
               eventsCenter.emit('update-points', score);
             }
+            currentPlayer.setCurrentLocation(currentTown);
           }
         }
         gameObject.x = dropZone.x;
@@ -201,7 +201,7 @@ export default class BoardGame extends Phaser.Scene {
   }
 
   updateVis() {
-    const Towns = RoadManager.getInstance().getTowns();
+    const Towns = Town.getAllTowns();
     for (const currentTownName of Towns.keys()) {
       if (currentTownName) {
         const townPiece: Phaser.GameObjects.Arc | undefined =
