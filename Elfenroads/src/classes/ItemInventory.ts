@@ -1,56 +1,49 @@
 import Phaser from 'phaser';
 
-export default class CardInventory {
+export default class ItemInventory {
   sprites: Array<Phaser.GameObjects.Sprite> = [];
   scene: Phaser.Scene;
   container: Phaser.GameObjects.Container;
   isOpen: boolean;
-  numCards: number;
+  numItems: number;
 
   constructor(scene: Phaser.Scene) {
     // Initialize hand
     this.scene = scene;
-    this.numCards = 0;
+    this.numItems = 0;
 
-    // Get height and width to determing card placement
+    // Get height and width to determing item placement
     const {height} = this.scene.scale;
     const {width} = this.scene.scale;
 
-    // Size of card when faced up
-    const CARD_UP = height / 1.12;
-
     // Initialize container to group elements
-    this.container = scene.add.container(width / 4.2, CARD_UP);
+    this.container = scene.add.container(width / 2, height / 1.12);
 
     // Initialize/make settings menu hidden
     this.isOpen = true;
   }
 
-  // Method to render a card from Map of cards, and it to this Phaser Container.
-  renderCard(cardName: string) {
-    const CARD_SIZE = 0.2;
-
-    // If card is in map add it to Phaser container
-    if (cardName) {
-      // Render sprite to this Phaser Scene and offset based on the other cards
-      const card = this.scene.add.sprite(this.numCards * 30, 0, cardName);
-      card
+  // Method to render a item from Map of Items, and it to this Phaser Container.
+  renderItem(itemName: string) {
+    // If item is in map add it to Phaser container
+    if (itemName) {
+      // Render sprite to this Phaser Scene and offset based on the other Items
+      const item = this.scene.add.sprite(this.numItems * 60, 0, itemName);
+      item
         .setData({
-          name: cardName,
+          name: itemName,
         })
-        .setScale(CARD_SIZE);
-
-      // Add card sprite to Phaser container so that it do the hide/show group animation
-      this.container.add(card);
-      this.sprites.push(card);
-      this.numCards++;
+        .setScale(0.25);
+      // Add item sprite to Phaser container so that it do the hide/show group animation
+      this.container.add(item);
+      this.sprites.push(item);
+      this.numItems++;
     }
   }
 
   getSprites(): Array<Phaser.GameObjects.Sprite> {
     return this.sprites;
   }
-
   // Show entire settings menu
   show() {
     if (this.isOpen) {
@@ -59,10 +52,10 @@ export default class CardInventory {
 
     // Vertical animation
     const {height} = this.scene.scale;
-    const CARD_UP = height / 1.12;
+    const item_UP = height / 1.12;
     this.scene.tweens.add({
       targets: this.container,
-      y: CARD_UP,
+      y: item_UP,
       duration: 300,
       ease: Phaser.Math.Easing.Sine.InOut,
     });
