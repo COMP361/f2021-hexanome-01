@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 
 export default class CardInventory {
-  sprites: Array<Phaser.GameObjects.Sprite> = [];
   scene: Phaser.Scene;
   container: Phaser.GameObjects.Container;
   isOpen: boolean;
@@ -27,7 +26,7 @@ export default class CardInventory {
   }
 
   // Method to render a card from Map of cards, and it to this Phaser Container.
-  renderCard(cardName: string) {
+  addCard(cardName: string) {
     const CARD_SIZE = 0.2;
 
     // If card is in map add it to Phaser container
@@ -42,13 +41,18 @@ export default class CardInventory {
 
       // Add card sprite to Phaser container so that it do the hide/show group animation
       this.container.add(card);
-      this.sprites.push(card);
       this.numCards++;
     }
   }
 
-  getSprites(): Array<Phaser.GameObjects.Sprite> {
-    return this.sprites;
+  // Not finished yet
+  removeCard(cardName: string) {
+    const children = this.scene.children;
+    const child = children.getByName(cardName);
+    if (child !== null) {
+      child.destroy(true);
+      this.numCards--;
+    }
   }
 
   // Show entire settings menu
