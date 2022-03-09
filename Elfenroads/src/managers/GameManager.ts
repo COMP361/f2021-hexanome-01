@@ -7,6 +7,7 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
+import Town from '../classes/Town';
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;
@@ -136,22 +137,18 @@ export default class GameManager {
     // Add our player/players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     this.playerManager.addPlayer(
-      new Player(
-        BootColour.Green,
-        this.roadManager.getTowns().get('elvenhold')!
-      )
+      new Player(BootColour.Green, Town.getTown('elvenhold'))
     );
 
     this.playerManager.addPlayer(
-      new Player(BootColour.Red, this.roadManager.getTowns().get('elvenhold')!)
+      new Player(BootColour.Red, Town.getTown('elvenhold'))
     );
 
     this.playerManager.addPlayer(
-      new Player(
-        BootColour.Black,
-        this.roadManager.getTowns().get('elvenhold')!
-      )
+      new Player(BootColour.Black, Town.getTown('elvenhold'))
     );
+
+    this.playerManager.setPlayerDest(0, Town.getTown('elvenhold'));
   }
 
   private drawAdditionalCounters(): void {}

@@ -722,7 +722,6 @@ export default class RoadManager {
         adjList.set(edge.getSrcTown(), adjTowns);
       }
     }
-    console.log(adjList);
     let currTown = t1;
     let neighbours: Town[] | undefined;
     const queue: Town[] = [];
@@ -743,7 +742,6 @@ export default class RoadManager {
       }
       currTown = queue.shift()!;
     }
-    console.log(dist);
     return dist.get(t2)!;
   }
 }
