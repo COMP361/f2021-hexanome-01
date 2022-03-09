@@ -23,6 +23,7 @@ import InventoryScene from '../../scenes/UIScenes/InventoryScene';
 import PlayerIconScene from '../../scenes/UIScenes/PlayerIconScene';
 import PlayerTurnScene from '../../scenes/UIScenes/PlayerTurnScene';
 import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
+import PlanRouteScene from '../../scenes/GameplayScenes/PlanRouteScene';
 
 // Phaser Game config
 const game = {
@@ -49,6 +50,7 @@ const game = {
     PlayerIconScene,
     PlayerTurnScene,
     DrawCountersScene,
+    PlanRouteScene,
   ],
 };
 

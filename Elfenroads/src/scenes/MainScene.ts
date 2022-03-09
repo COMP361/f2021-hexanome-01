@@ -1,3 +1,4 @@
+// prettier-ignore
 import Phaser from 'phaser';
 import GameManager from '../managers/GameManager';
 
@@ -19,3 +20,4 @@ export default class MainScene extends Phaser.Scene {
     GameManager.getInstance().playGame(this);
   }
 }
+// prettier-ignore

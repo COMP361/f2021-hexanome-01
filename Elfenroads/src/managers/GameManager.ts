@@ -51,6 +51,7 @@ export default class GameManager {
      * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
      */
     mainScene.scene.launch('movebootscene');
+    mainScene.scene.launch('planroutescene');
 
     const width = mainScene.cameras.main.width;
     const toggleMoveBootButton = mainScene.add.sprite(
