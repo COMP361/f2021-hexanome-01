@@ -175,6 +175,7 @@ export class GameSessionService {
         ),
       )
       .then(() => {
+        this.sessionPlayers.delete(session_id);
         return 'succeed';
       });
   }
