@@ -260,6 +260,32 @@ export const launchSession = (accessToken: any, sessionId: any) =>
     }
   );
 
+export const changeColor = (colour: any, accessToken: any, name: any) =>
+  axios.post(
+    URL,
+    {
+      query: `
+    mutation modifyLSUserColor($colour: String!, $access_token: String!, $name: String!) {
+        modifyLSUserColor(
+            colour: $colour
+            access_token: $access_token
+            name: $name
+        )
+    }
+    `,
+      variables: {
+        colour: colour,
+        access_token: accessToken,
+        name: name,
+      },
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
 export const createTowns = (sessionId: any) =>
   axios.post(
     URL,

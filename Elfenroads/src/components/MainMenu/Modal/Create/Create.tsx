@@ -1,4 +1,4 @@
-import {createSession} from '../../../../utils/queryUtils';
+import {changeColor, createSession} from '../../../../utils/queryUtils';
 import {v4 as uuidv4} from 'uuid';
 import './Create.scss';
 import {getUser, storeSessionId} from '../../../../utils/storageUtils';
@@ -11,13 +11,24 @@ export default function Create({wait}: any) {
   const handleFormSubmit = (e: any) => {
     e.preventDefault();
     const game = e.target.game.value;
+    const boot = e.target.boot.value;
 
     if (game) {
-      createSession(accessToken, name, game)
-        .then(res => res.data.data)
-        .then(data =>
-          storeSessionId(data.createSession.gameSession.sessionid, game, wait)
-        )
+      changeColor(boot, accessToken, name)
+        .then(() => {
+          console.log(createSession);
+          createSession(accessToken, name, game)
+            .then(res => res.data.data)
+            .then(data => {
+              console.log(data);
+              return storeSessionId(
+                data.createSession.gameSession.sessionid,
+                game,
+                wait
+              );
+            })
+            .catch(console.log);
+        })
         .catch(console.log);
     }
   };
@@ -50,6 +61,23 @@ export default function Create({wait}: any) {
             <input type="radio" id="Elfengold" name="game" value="elfengold" />
             <label htmlFor="Elfengold">Elfengold</label>
           </div>
+        </div>
+        <div
+          className="form__group"
+          style={{
+            padding: '0.5rem',
+            marginBottom: '0.5rem',
+          }}
+        >
+          <h3 style={{paddingRight: '0.5rem'}}>Boot Color</h3>
+          <select id="boot">
+            <option value="008000">Green</option>
+            <option value="0000FF">Blue</option>
+            <option value="800080">Purple</option>
+            <option value="FF0000">Red</option>
+            <option value="FFFF00">Yellow</option>
+            <option value="000000">Black</option>
+          </select>
         </div>
         <button className="form__button form__button--create">Create</button>
       </form>
