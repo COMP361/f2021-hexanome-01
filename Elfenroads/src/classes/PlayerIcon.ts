@@ -89,7 +89,6 @@ export default class PlayerIcon {
       ypos,
       store.getActor(color)
     );
-
     const panel: Phaser.GameObjects.RenderTexture = this.scene.add
       .nineslice(0, 0, 120, 60, store.getPanel(color), 24)
       .setOrigin(0, 0);
