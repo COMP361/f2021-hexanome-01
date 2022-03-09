@@ -1,3 +1,4 @@
+import internal from 'stream';
 import {BootColour} from '../enums/BootColour';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
@@ -12,6 +13,7 @@ export default class Player {
   private myItems: Array<ItemUnit>;
   private myCards: Array<CardUnit>;
   private visitedTowns: Array<Town>;
+  private destinationTown: Town;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
     this.bootColour = pBootColour;
@@ -22,14 +24,37 @@ export default class Player {
     this.myItems = [];
     this.myCards = [];
     this.visitedTowns = [];
+    this.destinationTown = Town.getTown('null');
   }
 
   public getGold(): integer {
     return this.gold;
   }
 
+  public setDestinationTown(town: Town): void {
+    this.destinationTown = town;
+  }
+
+  public getDestinationTown(): Town {
+    return this.destinationTown;
+  }
+
   public getScore(): integer {
     return this.score;
+  }
+
+  public getActualScore(): integer {
+    if (this.destinationTown.isNull()) {
+      return this.score;
+    } else {
+      return (
+        this.score -
+        RoadManager.getInstance().getDistance(
+          this.currentLocation,
+          this.destinationTown
+        )
+      );
+    }
   }
 
   public getBootColour(): BootColour {
