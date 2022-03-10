@@ -128,6 +128,12 @@ export default class Preloader extends Phaser.Scene {
 
     // Assets for card and edge selection
     this.load.image('check', 'assets/ui/iconpack/PNG/White/2x/checkmark.png');
+
+    // music
+    this.load.audio('medieval-music', 'audio/medieval-music.mp3');
+    this.load.audio('pass', 'audio/pass.wav');
+    this.load.audio('place', 'audio/place.wav');
+    this.load.audio('collect', 'audio/collect.wav');
   }
 
   create() {

@@ -18,11 +18,11 @@ export default function Create({wait}: any) {
         .then(() => {
           console.log(createSession);
           createSession(accessToken, name, game)
-            .then(res => res.data.data)
+            .then(res => res.data)
             .then(data => {
               console.log(data);
               return storeSessionId(
-                data.createSession.gameSession.sessionid,
+                data.data.createSession.gameSession.sessionid,
                 game,
                 wait
               );

@@ -7,6 +7,15 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
+import {getSession, getUser} from '../utils/storageUtils';
+const colorMap: any = {
+  '008000': BootColour.Green,
+  '0000FF': BootColour.Blue,
+  '800080': BootColour.Purple,
+  FF0000: BootColour.Red,
+  FFFF00: BootColour.Yellow,
+  '000000': BootColour.Black,
+};
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;
@@ -93,28 +102,23 @@ export default class GameManager {
   private initializePlayers(): void {
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
-    const p1: Player = new Player(
-      BootColour.Yellow,
-      this.roadManager.getTowns().get('elvenhold')!
-    );
+    const {name} = getUser();
 
-    const p2: Player = new Player(
-      BootColour.Red,
-      this.roadManager.getTowns().get('elvenhold')!
-    );
+    const session = getSession();
+    session.users.forEach((user: any) => {
+      const player = new Player(
+        colorMap[user.preferredColour],
+        this.roadManager.getTowns().get('elvenhold')!
+      );
 
-    const p3: Player = new Player(
-      BootColour.Black,
-      this.roadManager.getTowns().get('elvenhold')!
-    );
+      // Add current player
+      this.playerManager.addPlayer(player);
 
-    // Add all players
-    this.playerManager.addPlayer(p1);
-    this.playerManager.addPlayer(p2);
-    this.playerManager.addPlayer(p3);
-
-    // Set the local player for UI rendering purposes
-    this.playerManager.setLocalPlayer(p1);
+      // Set the local player
+      if (user.name === name) {
+        this.playerManager.setLocalPlayer(player);
+      }
+    });
   }
 
   private drawAdditionalCounters(): void {}

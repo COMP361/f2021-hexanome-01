@@ -20,4 +20,13 @@ export const storeSessionId = (id: any, game: any, cb: any) => {
   if (cb) cb();
 };
 
+export const storeSession = (session: any, cb: any) => {
+  console.log(session);
+  localStorage.setItem('session', JSON.stringify(session));
+  if (cb) cb();
+};
+
+export const getSession = () =>
+  JSON.parse(localStorage.getItem('session') || '');
+
 export const colors = ['green', 'blue', 'purple', 'red', 'yellow', 'black'];
