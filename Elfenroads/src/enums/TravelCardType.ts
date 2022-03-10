@@ -1,8 +1,8 @@
 export enum TravelCardType {
   Dragon = 'dragon-card',
-  GiantPig = 'giant-pig-card',
-  ElfCycle = 'elf-cycle-card',
-  MagicCloud = 'magic-cloud-card',
+  GiantPig = 'pig-card',
+  ElfCycle = 'elfcycle-card',
+  MagicCloud = 'cloud-card',
   Uicorn = 'unicorn-card',
   TrollWagon = 'troll-wagon-card',
   Raft = 'raft-card',

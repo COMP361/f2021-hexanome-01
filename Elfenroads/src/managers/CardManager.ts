@@ -1,4 +1,8 @@
 import {CardUnit, TravelCard} from '../classes/CardUnit';
+import Edge from '../classes/Edge';
+import {Counter} from '../classes/ItemUnit';
+import Player from '../classes/Player';
+import {EdgeType} from '../enums/EdgeType';
 import {TravelCardType} from '../enums/TravelCardType';
 
 export class CardManager {
@@ -37,5 +41,86 @@ export class CardManager {
     const card = this.cardPile[index];
     this.cardPile.splice(index, 1);
     return card;
+  }
+
+  public addToPile(player: Player, card: CardUnit): void {
+    player.removeCard(card);
+    this.cardPile.push(card);
+  }
+
+  public playCards(
+    player: Player,
+    cards: Array<CardUnit>,
+    edge: Edge
+  ): boolean {
+    const edgeType = edge.getType();
+    if (edgeType === EdgeType.River) {
+      cards.forEach(card => {
+        if (card.getName() !== TravelCardType.Raft) {
+          // not the right card
+          return false;
+        }
+      });
+      // 1 raft if traveling with current
+      if (player.getCurrentLocation() === edge.getSrcTown()) {
+        // only need 1 raft
+        if (cards.length !== 1) {
+          return false;
+        }
+      }
+      // against current
+      else if (cards.length !== 2) {
+        return false;
+      }
+    } else if (edgeType === EdgeType.Lake) {
+      cards.forEach(card => {
+        if (card.getName() !== TravelCardType.Raft) {
+          // not the right card
+          return false;
+        }
+      });
+      if (cards.length !== 2) {
+        return false;
+      }
+    }
+    // we have counters since we are on land
+    else {
+      const edgeItems = edge.getItems();
+      edgeItems.forEach(item => {
+        // need to change this later for elfengold
+        if (item instanceof Counter) {
+          const map = item.getCardsNeeded();
+          const numOfCards = map.get(edgeType);
+          cards.forEach(card => {
+            // ex. pig-card includes pig
+            if (!card.getName().includes(item.getName())) {
+              // not the right card
+              return false;
+            }
+          });
+          if (
+            (edgeItems.length === 1 && cards.length !== numOfCards) ||
+            (numOfCards &&
+              edgeItems.length === 2 &&
+              cards.length !== numOfCards + 1)
+          ) {
+            return false;
+          }
+        }
+      });
+      return false;
+    }
+    // the cards were legal
+    cards.forEach(card => {
+      // put cards back to pile
+      this.addToPile(player, card);
+    });
+    // set player to new town
+    [edge.getSrcTown(), edge.getDestTown()].forEach(town => {
+      if (town !== player.getCurrentLocation()) {
+        player.setCurrentLocation(town);
+      }
+    });
+    return true;
   }
 }
