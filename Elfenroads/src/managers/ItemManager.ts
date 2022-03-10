@@ -7,10 +7,12 @@ import {ObstacleType} from '../enums/ObstacleType';
 export default class ItemManager {
   private static itemManagerInstance: ItemManager;
   private itemPile: Array<ItemUnit>;
+  private faceUpPile: Array<ItemUnit>;
 
   private constructor() {
     // contains item for elfenroads
     this.itemPile = [];
+    this.faceUpPile = [];
     //Elfcycle
     const elfMap: Map<EdgeType, number> = new Map();
     elfMap.set(EdgeType.Plain, 1);
@@ -109,12 +111,23 @@ export default class ItemManager {
   public getItemPile(): Array<ItemUnit> {
     return this.itemPile;
   }
+  getFaceUpPile(): Array<ItemUnit> {
+    return this.faceUpPile;
+  }
 
-  public getRandomItem(): ItemUnit {
+  getRandomItem(): ItemUnit {
     const index = Math.floor(Math.random() * this.itemPile.length);
     const item = this.itemPile[index];
     this.itemPile.splice(index, 1);
     return item;
+  }
+
+  flipCounters(): Array<ItemUnit> {
+    for (let i = 0; i < 5; i++) {
+      this.faceUpPile.push(this.getRandomItem());
+    }
+    console.log(this.faceUpPile);
+    return this.faceUpPile;
   }
 
   public addToPile(player: Player, item: ItemUnit): void {

@@ -8,6 +8,18 @@ import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import Town from '../classes/Town';
+import {getSession, getSessionId, getUser} from '../utils/storageUtils';
+import {singleSession} from '../utils/queryUtils';
+import {io} from 'socket.io-client';
+
+const colorMap: any = {
+  '008000': BootColour.Green,
+  '0000FF': BootColour.Blue,
+  '800080': BootColour.Purple,
+  FF0000: BootColour.Red,
+  FFFF00: BootColour.Yellow,
+  '000000': BootColour.Black,
+};
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;
@@ -15,6 +27,8 @@ export default class GameManager {
   private cardManager: CardManager;
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
+  private socket: any;
+  private received: Array<any>;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -22,6 +36,17 @@ export default class GameManager {
     this.cardManager = CardManager.getInstance();
     this.playerManager = PlayerManager.getInstance();
     this.roadManager = RoadManager.getInstance();
+    // Connect to the socket and join the lobby
+    this.socket = io('http://elfenroads.westus3.cloudapp.azure.com:3455/');
+    this.socket.emit('joinLobby', {
+      game: 'ElfenlandVer1',
+      session_id: getSessionId(),
+    });
+    this.received = [];
+    this.socket.emit('chat', {
+      game: 'ElfenlandVer1',
+      session_id: getSessionId(),
+    });
   }
 
   public static getInstance(): GameManager {
@@ -37,6 +62,8 @@ export default class GameManager {
   public playGame(mainScene: Phaser.Scene): void {
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
+
+    console.log(this.playerManager);
 
     // Step 2: Get number of rounds
     const numRounds: integer = 1;
@@ -111,15 +138,56 @@ export default class GameManager {
 
   private playRound(mainScene: Phaser.Scene): void {
     // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
-    this.dealCardsAndCounter();
+    this.socket.on('statusChange', (data: any) => {
+      console.log('Received data');
+      const managers = data.msg.data;
+      if (managers.itemManager) {
+        this.itemManager = managers.itemManager;
+      }
+      if (managers.cardManager) {
+        this.cardManager = managers.cardManager;
+      }
+      if (managers.playerManager) {
+        this.cardManager = managers.playerManager;
+      }
+      if (managers.roadManager) {
+        this.roadManager = managers.roadManager;
+      }
 
-    // Phase 3: Draw additional Transportation counters
-    mainScene.scene.launch('drawcountersscene');
+      // Phase 3: Draw additional Transportation counters
+      if (!ItemManager.getInstance().getFaceUpPile())
+        ItemManager.getInstance().flipCounters();
+      console.log(ItemManager.getInstance());
+      mainScene.scene.launch('drawcountersscene');
 
-    // Phase 4: Plan route
-
-    // Phase 5: Move Boot
-    mainScene.scene.launch('movebootscene');
+      // Phase 5: Move Boot
+      mainScene.scene.launch('movebootscene');
+    });
+    if (getUser().name === getSession().gameSession.creator) {
+      this.dealCardsAndCounter();
+      this.socket.emit('statusChange', {
+        game: 'ElfenlandVer1',
+        session_id: getSessionId(),
+        data: {
+          itemManager: ItemManager.getInstance(),
+          cardManager: CardManager.getInstance(),
+          playerManager: PlayerManager.getInstance(),
+          roadManager: RoadManager.getInstance(),
+        },
+      });
+      this.socket.on('chat', () => {
+        this.socket.emit('statusChange', {
+          game: 'ElfenlandVer1',
+          session_id: getSessionId(),
+          data: {
+            itemManager: ItemManager.getInstance(),
+            cardManager: CardManager.getInstance(),
+            playerManager: PlayerManager.getInstance(),
+            roadManager: RoadManager.getInstance(),
+          },
+        });
+      });
+    }
   }
 
   private dealCardsAndCounter(): void {
@@ -140,28 +208,23 @@ export default class GameManager {
   private initializePlayers(): void {
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
-    const p1: Player = new Player(
-      BootColour.Green,
-      this.roadManager.getTowns().get('elvenhold')!
-    );
+    const {name} = getUser();
 
-    const p2: Player = new Player(
-      BootColour.Red,
-      this.roadManager.getTowns().get('elvenhold')!
-    );
+    const session = getSession();
+    session.users.forEach((user: any) => {
+      const player = new Player(
+        colorMap[user.preferredColour],
+        this.roadManager.getTowns().get('elvenhold')!
+      );
 
-    const p3: Player = new Player(
-      BootColour.Black,
-      this.roadManager.getTowns().get('elvenhold')!
-    );
+      // Add current player
+      this.playerManager.addPlayer(player);
 
-    // Add all players
-    this.playerManager.addPlayer(p1);
-    this.playerManager.addPlayer(p2);
-    this.playerManager.addPlayer(p3);
-
-    // Set the local player for UI rendering purposes
-    this.playerManager.setLocalPlayer(p1);
+      // Set the local player
+      if (user.name === name) {
+        this.playerManager.setLocalPlayer(player);
+      }
+    });
   }
 
   private drawAdditionalCounters(): void {}

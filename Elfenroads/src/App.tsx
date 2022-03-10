@@ -31,7 +31,7 @@ export default function App() {
 
   return (
     <div className="App">
-      {socket ? <Game socket={socket} /> : <MainMenu setSocket={setSocket} />}
+      {!socket ? <Game socket={socket} /> : <MainMenu setSocket={setSocket} />}
     </div>
   );
 }

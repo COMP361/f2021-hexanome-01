@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {Counter} from '../../classes/ItemUnit';
 import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 
@@ -38,16 +39,47 @@ export default class DrawCountersScene extends Phaser.Scene {
     container.add(brownPanel);
     container.add(drawCounterText);
 
-    let previousWidth: integer = gameWidth / 2 + 200;
+    const previousWidth: integer = gameWidth / 2 + 200;
 
     // Render five face up counters
-    for (let i = 0; i < 5; i++) {
-      this.generateCounter(previousWidth);
-      previousWidth += 50;
-    }
+    // for (let i = 0; i < 5; i++) {
+    //   this.generateCounter(previousWidth);
+    //   previousWidth += 50;
+    // }
+    this.renderCounters();
 
     // Render a face down counter pile
     this.generateRandomCounter(previousWidth);
+  }
+
+  renderCounters(): void {
+    const counters = ItemManager.getInstance().getFaceUpPile();
+    console.log(counters);
+    const gameWidth: number = this.cameras.main.width;
+
+    for (let i = 0; i < counters.length; i++) {
+      const previousWidth: integer = gameWidth / 2 + 200;
+      const itemSprite = this.add
+        .sprite(previousWidth, 110, counters[i].getName())
+        .setScale(0.25)
+        .setInteractive()
+        .on('pointerdown', () => {
+          itemSprite.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          itemSprite.clearTint();
+        })
+        .on('pointerup', () => {
+          // itemSprite.clearTint();
+          // PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
+          // itemSprite.destroy();
+          // this.generateCounter(previousWidth);
+          // PlayerManager.getInstance().setNextPlayer();
+          // this.scene.get('playerturnscene').scene.restart();
+          // this.scene.get('inventoryscene').scene.restart();
+          // this.scene.get('playericonscene').scene.restart();
+        });
+    }
   }
 
   generateRandomCounter(previousWidth: integer): void {
