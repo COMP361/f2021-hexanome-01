@@ -9,7 +9,6 @@ import PlayerManager from './PlayerManager';
 export class CardManager {
   private static cardManagerInstance: CardManager;
   private cardPile: Array<CardUnit>;
-  private selected: Map<Player, Array<CardUnit>>;
 
   private constructor() {
     // the pile contains elfenroads cards
@@ -25,7 +24,6 @@ export class CardManager {
       }
       new TravelCard(TravelCardType.Raft);
     }
-    this.selected = new Map();
   }
 
   public static getInstance(): CardManager {
@@ -46,21 +44,16 @@ export class CardManager {
     return card;
   }
 
-  public addSelectedCard(name: string): boolean {
-    const currPlayer: Player = PlayerManager.getInstance().getCurrentPlayer();
+  public getSelectedCard(
+    currPlayer: Player,
+    name: string
+  ): CardUnit | undefined {
     for (const card of currPlayer.getCards()) {
       if (card.getName() === name) {
-        const selectedCards = this.selected.get(currPlayer);
-        if (selectedCards === undefined) {
-          this.selected.set(currPlayer, [card]);
-        } else {
-          selectedCards.push(card);
-          this.selected.set(currPlayer, selectedCards);
-        }
-        return true;
+        return card;
       }
     }
-    return false;
+    return;
   }
 
   public addToPile(player: Player, card: CardUnit): void {

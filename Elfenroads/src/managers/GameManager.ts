@@ -64,6 +64,7 @@ export default class GameManager {
 
         PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
         // Phase 5: Move Boot
+        mainScene.scene.launch('selectionscene');
         mainScene.scene.launch('movebootscene');
       });
     });
