@@ -15,8 +15,8 @@ export default class CardInventory {
     this.numCards = 0;
 
     // Get height and width to determing card placement
-    const {height} = this.scene.scale;
-    const {width} = this.scene.scale;
+    const width = this.scene.cameras.main.width;
+    const height = this.scene.cameras.main.height;
 
     // Size of card when faced up
     const CARD_UP = height / 1.12;
@@ -28,11 +28,7 @@ export default class CardInventory {
     this.isOpen = true;
 
     // Create confirm button at bottom right corner to confirm selection.
-    const confirmButton = this.scene.add.sprite(
-      height,
-      height - 30,
-      'brown-box'
-    );
+    const confirmButton = this.scene.add.sprite(30, height - 80, 'brown-box');
     this.scene.add
       .image(confirmButton.x, confirmButton.y, 'check')
       .setScale(0.5);

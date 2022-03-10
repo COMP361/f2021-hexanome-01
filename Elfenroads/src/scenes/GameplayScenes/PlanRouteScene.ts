@@ -48,7 +48,12 @@ export default class PlanRouteScene extends Phaser.Scene {
      */
     // Create small button with the "next" icon
     const width = this.cameras.main.width;
-    const passTurnButton = this.add.sprite(width - 30, 150, 'brown-box');
+    const height = this.cameras.main.height;
+    const passTurnButton = this.add.sprite(
+      width - 30,
+      height - 30,
+      'brown-box'
+    );
     this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
 
     // Add interactive pointer options for passTurnButton
