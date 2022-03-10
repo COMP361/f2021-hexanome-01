@@ -53,7 +53,7 @@ export default class GameManager {
     this.initializePlayers();
 
     // Step 2: Get number of rounds
-    const numRounds: integer = 3;
+    const numRounds: integer = 1;
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
