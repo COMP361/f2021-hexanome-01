@@ -99,7 +99,7 @@ export default class DrawCountersScene extends Phaser.Scene {
         PlayerManager.getInstance()
           .getPlayers()
           .forEach(player => {
-            if (player.getItems().length === 3) {
+            if (player.getItems().length === 4) {
               finishedPlayers++;
             }
           });
@@ -140,7 +140,7 @@ export default class DrawCountersScene extends Phaser.Scene {
         PlayerManager.getInstance()
           .getPlayers()
           .forEach(player => {
-            if (player.getItems().length === 3) {
+            if (player.getItems().length === 4) {
               finishedPlayers++;
             }
           });
