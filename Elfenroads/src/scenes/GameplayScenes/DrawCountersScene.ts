@@ -66,6 +66,7 @@ export default class DrawCountersScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         itemSprite.clearTint();
+        this.sound.play('collect');
         PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
         itemSprite.destroy();
         this.generateCounter(previousWidth);

@@ -69,6 +69,7 @@ export default class PlanRouteScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         passTurnButton.clearTint();
+        this.sound.play('pass');
         PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
         this.scene.get('playerturnscene').scene.restart();
@@ -132,6 +133,7 @@ export default class PlanRouteScene extends Phaser.Scene {
           .setInteractive()
           .on('pointerup', () => {
             if (this.selectedItemSprite) {
+              this.sound.play('place');
               graphics.clear();
               edge.addItem(this.selectedItem);
               this.selectedItemSprite.destroy();
