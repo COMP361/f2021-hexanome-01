@@ -14,7 +14,7 @@ export default function Login({next}: any) {
       .then(res => res.data.data)
       .then(data => {
         if (data?.verifyLSUser) {
-          storeUser(data.verifyLSUser);
+          storeUser(data.verifyLSUser, password);
           next(data.verifyLSUser);
         } else {
           setLoginError('Incorrect username and/or password.');

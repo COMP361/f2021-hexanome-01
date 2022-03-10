@@ -13,6 +13,7 @@ import ChooseBoot from './ChooseBoot';
 
 export default function Modal({setSocket}: any) {
   const [frame, setFrame] = useState('login');
+  const [pass, setPass] = useState(null);
   const [_socket, _setSocket]: [any, any] = useState(null);
 
   const welcome = () => setFrame('welcome');
@@ -25,11 +26,11 @@ export default function Modal({setSocket}: any) {
 
   return (
     <div className="modal">
-      {frame === 'login' && <Login next={welcome} />}
+      {frame === 'login' && <Login next={welcome} setPass={setPass} />}
       {frame === 'welcome' && <Welcome create={create} join={join} />}
-      {!_socket && frame === 'create' && <Create wait={wait} />}
-      {!_socket && frame === 'join' && <Join choose={choose} />}
-      {!_socket && frame === 'choose' && <ChooseBoot wait={wait} />}
+      {!_socket && frame === 'create' && <Create wait={wait} pass={pass} />}
+      {!_socket && frame === 'join' && <Join choose={choose} pass={pass} />}
+      {!_socket && frame === 'choose' && <ChooseBoot wait={wait} pass={pass} />}
       {_socket && <Wait socket={_socket} setSocket={setSocket} />}
     </div>
   );

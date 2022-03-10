@@ -41,7 +41,6 @@ const colors = [
 ];
 export default function ChooseBoot({wait}: any) {
   const [session, setSession]: [any, any] = useState(null);
-  const {accessToken, name} = getUser();
   const sessionId = getSessionId();
 
   const colorInUse = (color: any) => {
@@ -71,6 +70,7 @@ export default function ChooseBoot({wait}: any) {
   }, []);
 
   const attemptJoin = (color: any) => {
+    const {accessToken, name} = getUser();
     changeColor(color, accessToken, name)
       .then(() => joinSession(accessToken, name, sessionId))
       .then(wait)

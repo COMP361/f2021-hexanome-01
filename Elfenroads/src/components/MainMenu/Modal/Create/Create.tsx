@@ -6,12 +6,12 @@ import React from 'react';
 
 export default function Create({wait}: any) {
   // const id = uuidv4();
-  const {accessToken, name} = getUser();
 
   const handleFormSubmit = (e: any) => {
     e.preventDefault();
     const game = e.target.game.value;
     const boot = e.target.boot.value;
+    const {accessToken, name} = getUser();
 
     if (game) {
       changeColor(boot, accessToken, name)
