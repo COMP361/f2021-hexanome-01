@@ -17,8 +17,6 @@ export default function Wait({socket, setSocket}: any) {
   const [session, setSession]: [any, any] = useState(null);
   const [sessionId, setSessionId]: [any, any] = useState(getSessionId());
 
-  const {accessToken, name} = getUser();
-
   // Initially, we need to find the session by searching for the incorrect session
   // id, then we can update our sessionId to be the correct one and use getSession
   // moving forward.
@@ -74,7 +72,10 @@ export default function Wait({socket, setSocket}: any) {
     return () => clearInterval(interval);
   }, [sessionId]);
 
-  const startGame = () => launchSession(accessToken, sessionId);
+  const startGame = () => {
+    const {accessToken} = getUser();
+    launchSession(accessToken, sessionId);
+  };
 
   return (
     <section className="wait">
@@ -102,14 +103,14 @@ export default function Wait({socket, setSocket}: any) {
             ))}
           </ul>
           <div className="wait__footer">
-            {name === session.gameSession.creator &&
+            {getUser().name === session.gameSession.creator &&
               session.users.length >=
                 session.gameSession.gameParameters.minSessionPlayers && (
                 <button className="wait__button" onClick={startGame}>
                   Start
                 </button>
               )}
-            {name !== session.gameSession.creator && (
+            {getUser().name !== session.gameSession.creator && (
               <p>
                 Waiting for
                 <b> {session.gameSession.creator} </b>

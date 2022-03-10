@@ -1,9 +1,13 @@
 export const getUser = () => JSON.parse(localStorage.getItem('user') || '');
 
-export const storeUser = (user: any) => {
+export const storeUser = (user: any, password: any) => {
   localStorage.setItem(
     'user',
-    JSON.stringify({accessToken: user.access_token, name: user.lsUser.name})
+    JSON.stringify({
+      accessToken: user.access_token,
+      name: user.lsUser.name,
+      password: password,
+    })
   );
 };
 
