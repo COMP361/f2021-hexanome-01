@@ -54,33 +54,34 @@ export class CardManager {
     edge: Edge
   ): boolean {
     const edgeType = edge.getType();
+    let isLegal = true;
     if (edgeType === EdgeType.River) {
       cards.forEach(card => {
         if (card.getName() !== TravelCardType.Raft) {
           // not the right card
-          return false;
+          isLegal = false;
         }
       });
       // 1 raft if traveling with current
       if (player.getCurrentLocation() === edge.getSrcTown()) {
         // only need 1 raft
         if (cards.length !== 1) {
-          return false;
+          isLegal = false;
         }
       }
       // against current
       else if (cards.length !== 2) {
-        return false;
+        isLegal = false;
       }
     } else if (edgeType === EdgeType.Lake) {
       cards.forEach(card => {
         if (card.getName() !== TravelCardType.Raft) {
           // not the right card
-          return false;
+          isLegal = false;
         }
       });
       if (cards.length !== 2) {
-        return false;
+        isLegal = false;
       }
     }
     // we have counters since we are on land
@@ -95,7 +96,7 @@ export class CardManager {
             // ex. pig-card includes pig
             if (!card.getName().includes(item.getName())) {
               // not the right card
-              return false;
+              isLegal = false;
             }
           });
           if (
@@ -104,23 +105,25 @@ export class CardManager {
               edgeItems.length === 2 &&
               cards.length !== numOfCards + 1)
           ) {
-            return false;
+            isLegal = false;
           }
         }
       });
-      return false;
+      isLegal = false;
     }
     // the cards were legal
-    cards.forEach(card => {
-      // put cards back to pile
-      this.addToPile(player, card);
-    });
-    // set player to new town
-    [edge.getSrcTown(), edge.getDestTown()].forEach(town => {
-      if (town !== player.getCurrentLocation()) {
-        player.setCurrentLocation(town);
-      }
-    });
-    return true;
+    if (isLegal) {
+      cards.forEach(card => {
+        // put cards back to pile
+        this.addToPile(player, card);
+      });
+      // set player to new town
+      [edge.getSrcTown(), edge.getDestTown()].forEach(town => {
+        if (town !== player.getCurrentLocation()) {
+          player.setCurrentLocation(town);
+        }
+      });
+    }
+    return isLegal;
   }
 }
