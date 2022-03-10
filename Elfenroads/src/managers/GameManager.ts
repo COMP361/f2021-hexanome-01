@@ -9,6 +9,7 @@ import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
+import DrawCountersScene from '../scenes/GameplayScenes/DrawCountersScene';
 const colorMap: any = {
   '008000': BootColour.Green,
   '0000FF': BootColour.Blue,
@@ -25,7 +26,7 @@ export default class GameManager {
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
   private socket: any;
-  private rendered: boolean;
+  private initialized: boolean;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -41,9 +42,9 @@ export default class GameManager {
     this.socket.emit('chat', {
       game: 'ElfenlandVer1',
       session_id: getSessionId(),
-      msg: getUser().name,
+      data: getUser().name,
     });
-    this.rendered = false;
+    this.initialized = false;
   }
 
   public static getInstance(): GameManager {
@@ -72,9 +73,9 @@ export default class GameManager {
   }
 
   private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
-    // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
+    this.dealCardsAndCounter();
     if (getUser().name === getSession().gameSession.creator) {
-      this.dealCardsAndCounter();
+      ItemManager.getInstance().flipCounters();
       this.socket.emit('statusChange', {
         game: 'ElfenlandVer1',
         session_id: getSessionId(),
@@ -85,17 +86,26 @@ export default class GameManager {
           roadManager: RoadManager.getInstance(),
         },
       });
+      this.socket.on('chat', () => {
+        this.socket.emit('statusChange', {
+          game: 'ElfenlandVer1',
+          session_id: getSessionId(),
+          data: {
+            itemManager: ItemManager.getInstance(),
+            cardManager: CardManager.getInstance(),
+            playerManager: PlayerManager.getInstance(),
+            roadManager: RoadManager.getInstance(),
+          },
+        });
+      });
     }
     this.socket.on('statusChange', (data: any) => {
-      if (!this.rendered) {
+      if (!this.initialized) {
         const managers = data.msg.data;
         ItemManager.getInstance().update(managers.itemManager);
+        this.initialized = true;
 
-        this.playerManager.setCurrentPlayerIndex(pStartingPlayer);
-        console.log(ItemManager.getInstance());
-        this.itemManager.flipCounters();
-        console.log(this.itemManager.getFaceUpPile());
-
+        PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
         // Phase 3: Draw additional Transportation counters
         mainScene.scene.launch('drawcountersscene', () => {
           mainScene.scene.stop('drawcountersscene');
@@ -110,7 +120,6 @@ export default class GameManager {
             mainScene.scene.launch('movebootscene');
           });
         });
-        this.rendered = true;
       }
     });
   }

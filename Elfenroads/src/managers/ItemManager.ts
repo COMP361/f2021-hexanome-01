@@ -138,7 +138,14 @@ export default class ItemManager {
   }
 
   update(manager: any): void {
-    this.itemPile = manager.itemPile;
-    this.faceUpPile = manager.faceUpPile;
+    this.itemPile = manager.itemPile.map(
+      (counter: any) =>
+        new Counter(counter.name, counter.allowedEdges, counter.cardsNeeded)
+    );
+    this.faceUpPile = manager.faceUpPile.map(
+      (counter: any) =>
+        new Counter(counter.name, counter.allowedEdges, counter.cardsNeeded)
+    );
+    console.log(this.itemPile);
   }
 }
