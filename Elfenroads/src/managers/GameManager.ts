@@ -7,7 +7,9 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
-import {getSession, getUser} from '../utils/storageUtils';
+import {getSession, getSessionId, getUser} from '../utils/storageUtils';
+import {io} from 'socket.io-client';
+import DrawCountersScene from '../scenes/GameplayScenes/DrawCountersScene';
 const colorMap: any = {
   '008000': BootColour.Green,
   '0000FF': BootColour.Blue,
@@ -23,6 +25,8 @@ export default class GameManager {
   private cardManager: CardManager;
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
+  private socket: any;
+  private initialized: boolean;
   private round: integer;
 
   private constructor() {
@@ -31,6 +35,17 @@ export default class GameManager {
     this.cardManager = CardManager.getInstance();
     this.playerManager = PlayerManager.getInstance();
     this.roadManager = RoadManager.getInstance();
+    this.socket = io('http://elfenroads.westus3.cloudapp.azure.com:3455/');
+    this.socket.emit('joinLobby', {
+      game: 'ElfenlandVer1',
+      session_id: getSessionId(),
+    });
+    this.socket.emit('chat', {
+      game: 'ElfenlandVer1',
+      session_id: getSessionId(),
+      data: getUser().name,
+    });
+    this.initialized = false;
     this.round = 1;
   }
 
@@ -62,25 +77,56 @@ export default class GameManager {
 
     // Step 4: Determine winner
   }
+
   private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
-    // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
     this.dealCardsAndCounter();
-
-    PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
-    // Phase 3: Draw additional Transportation counters
-    mainScene.scene.launch('drawcountersscene', () => {
-      mainScene.scene.stop('drawcountersscene');
-
-      PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
-      // Phase 4: Plan route
-      mainScene.scene.launch('planroutescene', () => {
-        mainScene.scene.stop('planroutescene');
+    if (getUser().name === getSession().gameSession.creator) {
+      ItemManager.getInstance().flipCounters();
+      this.socket.emit('statusChange', {
+        game: 'ElfenlandVer1',
+        session_id: getSessionId(),
+        data: {
+          itemManager: ItemManager.getInstance(),
+          cardManager: CardManager.getInstance(),
+          playerManager: PlayerManager.getInstance(),
+          roadManager: RoadManager.getInstance(),
+        },
+      });
+      this.socket.on('chat', () => {
+        this.socket.emit('statusChange', {
+          game: 'ElfenlandVer1',
+          session_id: getSessionId(),
+          data: {
+            itemManager: ItemManager.getInstance(),
+            cardManager: CardManager.getInstance(),
+            playerManager: PlayerManager.getInstance(),
+            roadManager: RoadManager.getInstance(),
+          },
+        });
+      });
+    }
+    this.socket.on('statusChange', (data: any) => {
+      if (!this.initialized) {
+        const managers = data.msg.data;
+        ItemManager.getInstance().update(managers.itemManager);
+        this.initialized = true;
 
         PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
-        // Phase 5: Move Boot
-        mainScene.scene.launch('movebootscene');
-        this.round++;
-      });
+        // Phase 3: Draw additional Transportation counters
+        mainScene.scene.launch('drawcountersscene', () => {
+          mainScene.scene.stop('drawcountersscene');
+
+          PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+          // Phase 4: Plan route
+          mainScene.scene.launch('planroutescene', () => {
+            mainScene.scene.stop('planroutescene');
+
+            PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+            // Phase 5: Move Boot
+            mainScene.scene.launch('movebootscene');
+          });
+        });
+      }
     });
   }
 
