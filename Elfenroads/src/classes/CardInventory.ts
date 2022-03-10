@@ -83,8 +83,6 @@ export default class CardInventory {
         .on('pointerdown', () => {
           card.setTint(0x808080);
           const index: number = this.isSeleted(card);
-          console.log(index);
-          console.log(card.name);
           if (index === -1) {
             card.y -= 50;
             this.selected.push(card);
