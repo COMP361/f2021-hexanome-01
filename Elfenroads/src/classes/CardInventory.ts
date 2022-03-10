@@ -71,7 +71,9 @@ export default class CardInventory {
     // If card is in map add it to Phaser container
     if (cardName) {
       // Render sprite to this Phaser Scene and offset based on the other cards
-      const card = this.scene.add.sprite(this.numCards * 40, 0, cardName);
+      const card = this.scene.add
+        .sprite(this.numCards * 40, 0, cardName)
+        .setData('instance');
       card.name = cardName;
       card.setScale(CARD_SIZE);
 

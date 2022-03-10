@@ -80,32 +80,6 @@ export default class GameManager {
     //   });
 
     // // BLOCK END
-
-    //   /**
-    //    * SHOWCASE FOR CHANGING PLAYER TURN
-    //    */
-    //   // Create small button with the "next" icon
-    //   const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
-    //   mainScene.add
-    //     .image(passTurnButton.x, passTurnButton.y, 'next')
-    //     .setScale(0.7);
-
-    //   // Add interactive pointer options for passTurnButton
-    //   // After click, currentPlayer is updated via playerManager
-    //   // PlayerTurnScene is rerendered to show whose turn it is
-    //   passTurnButton
-    //     .setInteractive()
-    //     .on('pointerdown', () => {
-    //       passTurnButton.setTint(0xd3d3d3);
-    //     })
-    //     .on('pointerout', () => {
-    //       passTurnButton.clearTint();
-    //     })
-    //     .on('pointerup', () => {
-    //       passTurnButton.clearTint();
-    //       this.playerManager.setNextPlayer();
-    //       mainScene.scene.get('playerturnscene').scene.restart();
-    //     });
   }
 
   private playRound(mainScene: Phaser.Scene): void {

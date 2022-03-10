@@ -1,14 +1,20 @@
-import {ObstacleType} from '../../enums/ObstacleType';
+import {exit} from 'process';
+import {ItemUnit} from '../../classes/ItemUnit';
+import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
 import InventoryScene from '../UIScenes/InventoryScene';
 
 export default class PlanRouteScene extends Phaser.Scene {
+  selectedItemSprite!: Phaser.GameObjects.Sprite;
+  selectedItem!: ItemUnit;
+
   constructor() {
     super('planroutescene');
   }
 
   create() {
     // Create text to notify that it is draw counter phase
+
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
       6,
@@ -36,7 +42,53 @@ export default class PlanRouteScene extends Phaser.Scene {
     container.add(brownPanel);
     container.add(drawCounterText);
 
+    /**
+     * SHOWCASE FOR CHANGING PLAYER TURN
+     */
+    // Create small button with the "next" icon
+    const width = this.cameras.main.width;
+    const passTurnButton = this.add.sprite(width - 30, 150, 'brown-box');
+    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
+
+    // Add interactive pointer options for passTurnButton
+    // After click, currentPlayer is updated via playerManager
+    // PlayerTurnScene is rerendered to show whose turn it is
+    passTurnButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        passTurnButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        passTurnButton.clearTint();
+      })
+      .on('pointerup', () => {
+        passTurnButton.clearTint();
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('playerturnscene').scene.restart();
+        this.scene.restart();
+      });
+
     this.planRoute();
+  }
+
+  drawAllowedEdges(
+    item: Phaser.GameObjects.Sprite,
+    graphics: any,
+    zoneRadius: number
+  ) {
+    graphics.lineStyle(8, 0x8a6440, 0.7);
+    // highlight every draggable counter
+    RoadManager.getInstance()
+      .getEdges()
+      .forEach(edge => {
+        if (item.data.values.allowedEdges.includes(edge.getType())) {
+          graphics.strokeCircle(
+            (edge.getPosition()[0] / 1600) * this.cameras.main.width,
+            (edge.getPosition()[1] / 750) * this.cameras.main.height,
+            zoneRadius / 3
+          );
+        }
+      });
   }
 
   planRoute() {
@@ -47,20 +99,30 @@ export default class PlanRouteScene extends Phaser.Scene {
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
-        const zone = this.add
+        this.add
           .zone(
             (edge.getPosition()[0] / 1600) * this.cameras.main.width,
             (edge.getPosition()[1] / 750) * this.cameras.main.height,
-            1,
-            1
+            10,
+            10
           )
-          .setCircleDropZone(zoneRadius);
-        // assign edge object to each zone
-        zone.setData(edge);
+          .setData(edge)
+          .setInteractive()
+          .on('pointerup', () => {
+            if (this.selectedItemSprite) {
+              graphics.clear();
+              edge.addItem(this.selectedItem);
+              this.selectedItemSprite.destroy();
+              PlayerManager.getInstance().setNextPlayer();
+              this.scene.get('renderedgescene').scene.restart();
+              this.scene.get('playerturnscene').scene.restart();
+              this.scene.get('inventoryscene').scene.restart();
+              this.scene.get('playericonscene').scene.restart();
+            }
+          });
       });
 
     // make items draggable
-    console.log(InventoryScene.itemSprites);
     InventoryScene.itemSprites.forEach(item => {
       item
         .setInteractive()
@@ -72,85 +134,22 @@ export default class PlanRouteScene extends Phaser.Scene {
         })
         .on('pointerup', () => {
           item.clearTint();
+          graphics.clear();
+          this.drawAllowedEdges(item, graphics, zoneRadius);
+          this.selectedItemSprite = item;
+          const playerItems: Array<ItemUnit> = PlayerManager.getInstance()
+            .getCurrentPlayer()
+            .getItems();
+
+          for (let i = 0; i < playerItems.length; i++) {
+            const item: ItemUnit = playerItems[i];
+            if (item.getName() === this.selectedItemSprite.data.values.name) {
+              PlayerManager.getInstance().getCurrentPlayer().removeItem(item);
+              this.selectedItem = item;
+              break;
+            }
+          }
         });
-      this.input.setDraggable(item);
-    });
-
-    this.input.on(
-      'dragstart',
-      (pointer: any, gameObject: {setTint: (arg0: number) => void}) => {
-        gameObject.setTint(0x808080);
-      }
-    );
-
-    this.input.on(
-      'drag',
-      (pointer: any, gameObject: any, dragX: any, dragY: any) => {
-        // cannot drag placed counters
-        if (gameObject.active) {
-          gameObject.x = dragX;
-          gameObject.y = dragY;
-          graphics.lineStyle(8, 0x8a6440, 0.7);
-          // highlight every draggable counter
-          RoadManager.getInstance()
-            .getEdges()
-            .forEach(edge => {
-              if (gameObject.data.list.allowedEdges.includes(edge.getType())) {
-                graphics.strokeCircle(
-                  (edge.getPosition()[0] / 1600) * this.cameras.main.width,
-                  (edge.getPosition()[1] / 750) * this.cameras.main.height,
-                  zoneRadius / 3
-                );
-              }
-            });
-        }
-      }
-    );
-
-    // if the counter is dragged to the drop zone, it will stay in it
-    this.input.on('drop', (pointer: any, gameObject: any, dropZone: any) => {
-      if (
-        gameObject.data.values.allowedEdges.includes(
-          dropZone.data.values.edgeType
-        ) &&
-        dropZone.data.values.items.length === 0 &&
-        gameObject.data.values.obstacleType !== ObstacleType.Tree &&
-        gameObject.active
-      ) {
-        gameObject.x = dropZone.x;
-        gameObject.y = dropZone.y;
-        gameObject.data.values = {
-          ...dropZone.data.values,
-          ...gameObject.data.values,
-        };
-        gameObject.setActive(false);
-      } else if (
-        gameObject.data.values.obstacleType === ObstacleType.Tree &&
-        dropZone.data.values.items.length === 1 &&
-        gameObject.active
-      ) {
-        gameObject.x = dropZone.x - 30;
-        gameObject.y = dropZone.y;
-        gameObject.data.values = {
-          ...dropZone.data.values,
-          ...gameObject.data.values,
-        };
-        gameObject.setActive(false);
-      } else {
-        gameObject.x = gameObject.input.dragStartX;
-        gameObject.y = gameObject.input.dragStartY;
-      }
-    });
-
-    this.input.on('dragend', (pointer: any, gameObject: any, dropped: any) => {
-      gameObject.clearTint();
-      // otherwise the counter will be back to original position
-      if (!dropped) {
-        gameObject.x = gameObject.input.dragStartX;
-        gameObject.y = gameObject.input.dragStartY;
-      }
-      // clear edges highlight
-      graphics.clear();
     });
   }
 }

@@ -24,6 +24,7 @@ import PlayerIconScene from '../../scenes/UIScenes/PlayerIconScene';
 import PlayerTurnScene from '../../scenes/UIScenes/PlayerTurnScene';
 import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
 import PlanRouteScene from '../../scenes/GameplayScenes/PlanRouteScene';
+import RenderEdgeScene from '../../scenes/UIScenes/RenderEdgesScene';
 
 // Phaser Game config
 const game = {
@@ -51,6 +52,7 @@ const game = {
     PlayerTurnScene,
     DrawCountersScene,
     PlanRouteScene,
+    RenderEdgeScene,
   ],
 };
 

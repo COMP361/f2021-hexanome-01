@@ -61,7 +61,7 @@ export default class InventoryScene extends Phaser.Scene {
 
     // display all the Items on screen
     playerItems.forEach(item => {
-      itemInventory.renderItem(item.getName());
+      itemInventory.renderItem(item);
     });
 
     InventoryScene.itemSprites = itemInventory.getSprites();
