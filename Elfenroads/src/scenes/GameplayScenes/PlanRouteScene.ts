@@ -7,6 +7,38 @@ export default class PlanRouteScene extends Phaser.Scene {
     super('planroutescene');
   }
 
+  create() {
+    // Create text to notify that it is draw counter phase
+    const drawCounterText: Phaser.GameObjects.Text = this.add.text(
+      10,
+      6,
+      'To Plan Route',
+      {
+        fontFamily: 'MedievalSharp',
+        fontSize: '30px',
+      }
+    );
+
+    const gameWidth: number = this.cameras.main.width;
+    // Create brown ui panel element relative to the size of the text
+    const brownPanel: Phaser.GameObjects.RenderTexture = this.add
+      .nineslice(0, 0, drawCounterText.width + 20, 40, 'brown-panel', 24)
+      .setOrigin(0, 0);
+
+    // Initialize container to group elements
+    // Need to center the container relative to the gameWidth and the size of the text box
+    const container: Phaser.GameObjects.Container = this.add.container(
+      gameWidth / 2 - brownPanel.width / 2,
+      90
+    );
+
+    // Render the brown panel and text
+    container.add(brownPanel);
+    container.add(drawCounterText);
+
+    this.planRoute();
+  }
+
   planRoute() {
     const graphics = this.add.graphics();
     const zoneRadius = (30 / 1600) * this.cameras.main.width;
@@ -120,10 +152,5 @@ export default class PlanRouteScene extends Phaser.Scene {
       // clear edges highlight
       graphics.clear();
     });
-  }
-
-  create() {
-    console.log('hi');
-    this.planRoute();
   }
 }

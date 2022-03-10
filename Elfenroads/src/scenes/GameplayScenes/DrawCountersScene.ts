@@ -5,11 +5,13 @@ import PlayerManager from '../../managers/PlayerManager';
 export default class DrawCountersScene extends Phaser.Scene {
   // Grab width of current game to center our container
 
+  public cb: any;
   constructor() {
     super('drawcountersscene');
   }
 
-  create() {
+  create(cb: any) {
+    this.cb = cb;
     // Create text to notify that it is draw counter phase
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -50,29 +52,6 @@ export default class DrawCountersScene extends Phaser.Scene {
     this.generateRandomCounter(previousWidth);
   }
 
-  generateRandomCounter(previousWidth: integer): void {
-    const currentItem = ItemManager.getInstance().getRandomItem();
-    const itemSprite = this.add
-      .sprite(previousWidth, 110, 'unknown-counter')
-      .setScale(0.25)
-      .setInteractive()
-      .on('pointerdown', () => {
-        itemSprite.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        itemSprite.clearTint();
-      })
-      .on('pointerup', () => {
-        itemSprite.clearTint();
-        PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
-        itemSprite.destroy();
-        this.generateRandomCounter(previousWidth);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('playerturnscene').scene.restart();
-        this.scene.get('inventoryscene').scene.restart();
-        this.scene.get('playericonscene').scene.restart();
-      });
-  }
   generateCounter(previousWidth: integer): void {
     const currentItem = ItemManager.getInstance().getRandomItem();
     const itemSprite = this.add
@@ -94,6 +73,60 @@ export default class DrawCountersScene extends Phaser.Scene {
         this.scene.get('playerturnscene').scene.restart();
         this.scene.get('inventoryscene').scene.restart();
         this.scene.get('playericonscene').scene.restart();
+
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getItems().length === 3) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.cb();
+        }
+      });
+  }
+
+  generateRandomCounter(previousWidth: integer): void {
+    const currentItem = ItemManager.getInstance().getRandomItem();
+    const itemSprite = this.add
+      .sprite(previousWidth, 110, 'unknown-counter')
+      .setScale(0.25)
+      .setInteractive()
+      .on('pointerdown', () => {
+        itemSprite.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        itemSprite.clearTint();
+      })
+      .on('pointerup', () => {
+        itemSprite.clearTint();
+        PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
+        itemSprite.destroy();
+        this.generateRandomCounter(previousWidth);
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('playerturnscene').scene.restart();
+        this.scene.get('inventoryscene').scene.restart();
+        this.scene.get('playericonscene').scene.restart();
+
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getItems().length === 3) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.cb();
+        }
       });
   }
 }

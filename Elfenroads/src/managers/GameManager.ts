@@ -7,7 +7,6 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
-import Town from '../classes/Town';
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;
@@ -114,13 +113,17 @@ export default class GameManager {
     this.dealCardsAndCounter();
 
     // Phase 3: Draw additional Transportation counters
-    // mainScene.scene.launch('drawcountersscene');
+    mainScene.scene.launch('drawcountersscene', () => {
+      mainScene.scene.stop('drawcountersscene');
+      mainScene.scene.launch('planroutescene');
+    });
+    // mainScene.scene.stop('drawcountersscene');
 
     // Phase 4: Plan route
-    mainScene.scene.launch('planroutescene');
+    // mainScene.scene.launch('planroutescene');
 
     // Phase 5: Move Boot
-    //mainScene.scene.launch('movebootscene');
+    // mainScene.scene.launch('movebootscene');
   }
 
   private dealCardsAndCounter(): void {
@@ -132,9 +135,9 @@ export default class GameManager {
       }
 
       // Deal the random facedown counter from the counter pile.
-      const random1: ItemUnit = this.itemManager.getRandomItem();
-      random1.setHidden(true);
-      player.addItem(random1);
+      const randomItem: ItemUnit = this.itemManager.getRandomItem();
+      randomItem.setHidden(true);
+      player.addItem(randomItem);
     }
   }
 
@@ -142,7 +145,7 @@ export default class GameManager {
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     const p1: Player = new Player(
-      BootColour.Green,
+      BootColour.Yellow,
       this.roadManager.getTowns().get('elvenhold')!
     );
 
