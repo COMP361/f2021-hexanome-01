@@ -4,37 +4,51 @@ import './Game.scss';
 import {IonPhaser} from '@ion-phaser/react';
 import Phaser from 'phaser';
 import React from 'react';
+
+// Plug in for using Web fonts
+// eslint-disable-next-line node/no-unpublished-import
+import {WebFontLoaderPlugin} from 'phaser3-webfont-loader';
+
 // Plug in for better image scaling
 import {Plugin as NineSlicePlugin} from 'phaser3-nineslice';
 import {useRef, useState} from 'react';
 
 // All of our scenes in Phaser Game
-import BoardScene from '../../scenes/BoardScene';
+import BoardScene from '../../scenes/UIScenes/BoardScene';
 import MainScene from '../../scenes/MainScene';
-import MoveBootScene from '../../scenes/MoveBootScene';
+import MoveBootScene from '../../scenes/GameplayScenes/MoveBootScene';
 import Preloader from '../../scenes/Preloader';
-import UpperUIScene from '../../scenes/UpperUIScene';
-import UIScene from '../../scenes/UIScene';
-import TownPieceScene from '../../scenes/TownPieceScene';
-import InventoryScene from '../../scenes/InventoryScene';
-import PlayerIconScene from '../../scenes/PlayerIconScene';
+import UpperUIScene from '../../scenes/UIScenes/UpperUIScene';
+import InventoryScene from '../../scenes/UIScenes/InventoryScene';
+import PlayerIconScene from '../../scenes/UIScenes/PlayerIconScene';
+import PlayerTurnScene from '../../scenes/UIScenes/PlayerTurnScene';
+import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
 
 // Phaser Game config
 const game = {
   type: Phaser.AUTO,
   width: '100%',
   height: '100%',
-  plugins: {global: [NineSlicePlugin.DefaultCfg]},
+  plugins: {
+    global: [
+      NineSlicePlugin.DefaultCfg,
+      {
+        key: 'WebFontLoader',
+        plugin: WebFontLoaderPlugin,
+        start: true,
+      },
+    ],
+  },
   scene: [
     Preloader,
     MainScene,
     BoardScene,
-    UIScene,
     MoveBootScene,
     UpperUIScene,
-    TownPieceScene,
     InventoryScene,
     PlayerIconScene,
+    PlayerTurnScene,
+    DrawCountersScene,
   ],
 };
 

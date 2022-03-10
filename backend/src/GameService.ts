@@ -98,6 +98,19 @@ export default class GameService {
       });
   }
 
+  private async deleteGameService(
+    service: string,
+    username: string,
+    password: string,
+  ): Promise<void> {
+    await this.getOAuthToken(username, password);
+    await this.instance.delete(
+      encodeURI(
+        `api/gameservices/${service}?access_token=${this.token}`,
+      ).replace(/\+/g, '%2B'),
+    );
+  }
+
   private async registerGameService(
     service: string,
     username: string,
@@ -140,6 +153,17 @@ export default class GameService {
 
   async registerGameServices(): Promise<void> {
     await this.createLSUsers();
+    await this.deleteGameService(
+      'ElfenlandVer1',
+      'ElfenlandVer1',
+      'f2021-EFLDV1',
+    );
+
+    await this.deleteGameService(
+      'ElfenlandVer2',
+      'ElfenlandVer2',
+      'f2021-EFLDV2',
+    );
     await this.registerGameService(
       'ElfenlandVer1',
       'ElfenlandVer1',

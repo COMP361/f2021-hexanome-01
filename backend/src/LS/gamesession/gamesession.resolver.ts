@@ -85,4 +85,15 @@ export class GameSessionResolver {
       access_token,
     );
   }
+
+  @Mutation(() => String)
+  async removeSession(
+    @Args('session_id') session_id: string,
+    @Args('access_token') access_token: string,
+  ) {
+    return await this.gameSessionService.removeSession(
+      session_id,
+      access_token,
+    );
+  }
 }

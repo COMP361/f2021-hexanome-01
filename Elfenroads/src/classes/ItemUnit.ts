@@ -4,47 +4,79 @@ import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
 
 export abstract class ItemUnit {
-  name: string;
-  allowedEdges: Array<EdgeType>;
+  private name: string;
+  private allowedEdges: Array<EdgeType>;
+  private isHidden: boolean;
 
-  constructor(name: string, allowedEdges: Array<EdgeType>) {
+  constructor(name: string, allowedEdges: Array<EdgeType>, isHidden = false) {
     this.name = name;
     this.allowedEdges = allowedEdges;
+    this.isHidden = isHidden;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getAllowedEdges(): Array<EdgeType> {
+    return this.allowedEdges;
+  }
+
+  public getHidden(): boolean {
+    return this.isHidden;
+  }
+
+  public setHidden(state: boolean): void {
+    this.isHidden = state;
   }
 }
 
 export class Spell extends ItemUnit {
-  spellType: SpellType;
-
-  constructor(spellType: SpellType, allowedEdges: Array<EdgeType>) {
-    super(spellType, allowedEdges);
-    this.spellType = spellType;
+  constructor(
+    spellType: SpellType,
+    allowedEdges: Array<EdgeType>,
+    isHidden = false
+  ) {
+    super(spellType, allowedEdges, isHidden);
   }
 }
 
 export class Counter extends ItemUnit {
-  counterType: CounterType;
+  private cardsNeeded: Map<EdgeType, number>;
+  constructor(
+    counterType: CounterType,
+    allowedEdges: Array<EdgeType>,
+    cardsNeeded: Map<EdgeType, number>,
+    isHidden = false
+  ) {
+    super(counterType, allowedEdges, isHidden);
+    this.cardsNeeded = cardsNeeded;
+  }
 
-  constructor(counterType: CounterType, allowedEdges: Array<EdgeType>) {
-    super(counterType, allowedEdges);
-    this.counterType = counterType;
+  public getCardsNeeded(): Map<EdgeType, number> {
+    return this.cardsNeeded;
   }
 }
 
 export class GoldPiece extends ItemUnit {
-  amount: number;
+  private amount: number;
 
-  constructor(amount: number, allowedEdges: Array<EdgeType>) {
-    super('gold-piece', allowedEdges);
+  constructor(amount: number, allowedEdges: Array<EdgeType>, isHidden = false) {
+    super('gold-piece', allowedEdges, isHidden);
     this.amount = amount;
+  }
+
+  public getAmount(): number {
+    return this.amount;
   }
 }
 
 export class Obstacle extends ItemUnit {
-  obstacleType: ObstacleType;
-
-  constructor(obstacleType: ObstacleType, allowedEdges: Array<EdgeType>) {
-    super(obstacleType, allowedEdges);
-    this.obstacleType = obstacleType;
+  constructor(
+    obstacleType: ObstacleType,
+    allowedEdges: Array<EdgeType>,
+    isHidden = false
+  ) {
+    super(obstacleType, allowedEdges, isHidden);
   }
 }

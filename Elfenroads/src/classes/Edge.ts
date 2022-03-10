@@ -3,22 +3,46 @@ import {ItemUnit} from './ItemUnit';
 import Town from './Town';
 
 export default class Edge {
-  town1: Town;
-  town2: Town;
-  edgeType: EdgeType;
-  position: Array<number>;
-  items: Array<ItemUnit>;
+  private srcTown: Town;
+  private destTown: Town;
+  private edgeType: EdgeType;
+  private position: Array<number>;
+  private items: Array<ItemUnit>;
 
   constructor(
-    town1: Town,
-    town2: Town,
+    srcTown: Town,
+    destTown: Town,
     edgeType: EdgeType,
     position: Array<number>
   ) {
-    this.town1 = town1;
-    this.town2 = town2;
+    this.srcTown = srcTown;
+    this.destTown = destTown;
     this.edgeType = edgeType;
     this.position = position;
     this.items = [];
+  }
+
+  public getSrcTown(): Town {
+    return this.srcTown;
+  }
+
+  public getDestTown(): Town {
+    return this.destTown;
+  }
+
+  public getPosition(): Array<number> {
+    return this.position;
+  }
+
+  public getType(): EdgeType {
+    return this.edgeType;
+  }
+
+  public addItem(item: ItemUnit): void {
+    this.items.push(item);
+  }
+
+  public getItems(): Array<ItemUnit> {
+    return this.items;
   }
 }

@@ -1,9 +1,10 @@
 import Phaser from 'phaser';
 
-import CheatSheetMenu from '../classes/CheatSheetMenu';
-import SettingsMenu from '../classes/SettingsMenu';
+import CheatSheetMenu from '../../classes/CheatSheetMenu';
+import eventsCenter from '../../classes/EventsCenter';
+import SettingsMenu from '../../classes/SettingsMenu';
 
-export default class UpperUI extends Phaser.Scene {
+export default class UpperUIScene extends Phaser.Scene {
   // Global array to store buttons in this scene
   buttons: Array<any>;
 
@@ -15,6 +16,7 @@ export default class UpperUI extends Phaser.Scene {
   create() {
     this.createSettings();
     this.createCheatSheet();
+    this.createTownPieceToggle();
   }
 
   // Method to create Settings menu
@@ -86,6 +88,28 @@ export default class UpperUI extends Phaser.Scene {
           });
           cheatSheetMenu.show();
         }
+      });
+  }
+
+  createTownPieceToggle() {
+    const {width} = this.scale;
+    /* toggles town piece visibility */
+    const townPieceButton = this.add.sprite(width - 130, 30, 'brown-box');
+    this.add
+      .image(townPieceButton.x, townPieceButton.y, 'information')
+      .setScale(0.7);
+
+    // Add interactivity
+    townPieceButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        townPieceButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        townPieceButton.clearTint();
+      })
+      .on('pointerup', () => {
+        eventsCenter.emit('update-town-piece-vis', true);
       });
   }
 }

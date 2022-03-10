@@ -1,7 +1,10 @@
 import {BootColour} from '../enums/BootColour';
+import {EdgeType} from '../enums/EdgeType';
+import ItemManager from '../managers/ItemManager';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
-import {Counter} from './ItemUnit';
+import Edge from './Edge';
+import {Counter, ItemUnit} from './ItemUnit';
 import Town from './Town';
 
 export default class Player {
@@ -9,9 +12,10 @@ export default class Player {
   private score: integer;
   private bootColour: BootColour;
   private currentLocation: Town;
-  private myCounters: Array<Counter>;
+  private myItems: Array<ItemUnit>;
   private myCards: Array<CardUnit>;
   private visitedTowns: Array<Town>;
+  private destinationTown: Town;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
     this.bootColour = pBootColour;
@@ -19,17 +23,40 @@ export default class Player {
 
     this.gold = 0;
     this.score = 0;
-    this.myCounters = [];
+    this.myItems = [];
     this.myCards = [];
     this.visitedTowns = [];
+    this.destinationTown = Town.getTown('null');
   }
 
   public getGold(): integer {
     return this.gold;
   }
 
+  public setDestinationTown(town: Town): void {
+    this.destinationTown = town;
+  }
+
+  public getDestinationTown(): Town {
+    return this.destinationTown;
+  }
+
   public getScore(): integer {
     return this.score;
+  }
+
+  public getActualScore(): integer {
+    if (this.destinationTown.isNull()) {
+      return this.score;
+    } else {
+      return (
+        this.score -
+        RoadManager.getInstance().getDistance(
+          this.currentLocation,
+          this.destinationTown
+        )
+      );
+    }
   }
 
   public getBootColour(): BootColour {
@@ -45,8 +72,8 @@ export default class Player {
   }
 
   // Not well encapsulated...
-  public getCounters(): Array<Counter> {
-    return this.myCounters;
+  public getItems(): Array<ItemUnit> {
+    return this.myItems;
   }
 
   public getCards(): Array<CardUnit> {
@@ -65,12 +92,26 @@ export default class Player {
     this.currentLocation = pTown;
   }
 
-  public addCounter(pCounter: Counter): void {
-    this.myCounters.push(pCounter);
+  public addItem(pItem: ItemUnit): void {
+    this.myItems.push(pItem);
+  }
+
+  public removeItem(pItem: ItemUnit): void {
+    const index = this.myItems.indexOf(pItem);
+    if (index !== -1) {
+      this.myItems.splice(index, 1);
+    }
   }
 
   public addCard(pCard: CardUnit): void {
     this.myCards.push(pCard);
+  }
+
+  public removeCard(pCard: CardUnit): void {
+    const index = this.myCards.indexOf(pCard);
+    if (index !== -1) {
+      this.myCards.splice(index, 1);
+    }
   }
 
   public addVisitedTown(pTown: Town): void {
@@ -78,10 +119,12 @@ export default class Player {
   }
 
   public resetPlayer(): void {
-    this.currentLocation = RoadManager.getInstance().getTowns().elvenhold;
+    this.currentLocation = RoadManager.getInstance()
+      .getTowns()
+      .get('elvenhold')!;
     this.gold = 0;
     this.score = 0;
-    this.myCounters = [];
+    this.myItems = [];
     this.visitedTowns = [];
   }
 }

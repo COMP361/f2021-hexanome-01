@@ -57,4 +57,5 @@ type Mutation {
   LaunchSession(access_token: String!, session_id: String!): String!
   joinSession(access_token: String!, name: String!, session_id: String!): SessionInfo!
   exitSession(access_token: String!, name: String!, session_id: String!): String!
+  removeSession(access_token: String!, session_id: String!): String!
 }

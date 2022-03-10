@@ -9,6 +9,4 @@ services:
     ports:
       - "3454:3000"
       - "3455:3001"
-    depends_on:
-      - db
     restart: unless-stopped

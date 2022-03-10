@@ -1,5 +1,5 @@
-import GameInstance from './GameInstance';
-import LaunchInfo from './LaunchInfo';
+import GameInstance from '../GameInstance';
+import LaunchInfo from '../model/LaunchInfo';
 
 export default class GameManager {
   private static _instance: GameManager = new GameManager();
@@ -25,10 +25,9 @@ export default class GameManager {
   }
 
   addGame(game: string, game_id: string, launchInfo: LaunchInfo): GameInstance {
-    if (this.gameInstances.get(game).has(game_id)) {
-      throw Error('game already launched');
+    if (!this.gameInstances.has(game)) {
+      this.gameInstances.set(game, new Map());
     }
-
     this.gameInstances.get(game).set(game_id, new GameInstance(launchInfo));
 
     return this.getGame(game, game_id);
