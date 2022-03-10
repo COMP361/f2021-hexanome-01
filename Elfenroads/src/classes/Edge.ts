@@ -37,4 +37,12 @@ export default class Edge {
   public getType(): EdgeType {
     return this.edgeType;
   }
+
+  public addItem(item: ItemUnit): void {
+    this.items.push(item);
+  }
+
+  public getItems(): Array<ItemUnit> {
+    return this.items;
+  }
 }

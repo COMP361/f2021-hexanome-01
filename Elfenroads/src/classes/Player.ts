@@ -1,7 +1,10 @@
 import {BootColour} from '../enums/BootColour';
+import {EdgeType} from '../enums/EdgeType';
+import ItemManager from '../managers/ItemManager';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
-import {ItemUnit} from './ItemUnit';
+import Edge from './Edge';
+import {Counter, ItemUnit} from './ItemUnit';
 import Town from './Town';
 
 export default class Player {
@@ -93,8 +96,22 @@ export default class Player {
     this.myItems.push(pItem);
   }
 
+  public removeItem(pItem: ItemUnit): void {
+    const index = this.myItems.indexOf(pItem);
+    if (index !== -1) {
+      this.myItems.splice(index, 1);
+    }
+  }
+
   public addCard(pCard: CardUnit): void {
     this.myCards.push(pCard);
+  }
+
+  public removeCard(pCard: CardUnit): void {
+    const index = this.myCards.indexOf(pCard);
+    if (index !== -1) {
+      this.myCards.splice(index, 1);
+    }
   }
 
   public addVisitedTown(pTown: Town): void {
