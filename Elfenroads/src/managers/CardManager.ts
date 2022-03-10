@@ -109,7 +109,6 @@ export class CardManager {
           }
         }
       });
-      isLegal = false;
     }
     // the cards were legal
     if (isLegal) {
