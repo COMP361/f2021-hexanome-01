@@ -125,6 +125,9 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('raft-card', 'assets/boardgame/T07.png');
     this.load.image('witch-card', 'assets/boardgame/witch.png');
     this.load.image('gold-card', 'assets/boardgame/Gold.png');
+
+    // Assets for card and edge selection
+    this.load.image('check', 'assets/ui/iconpack/PNG/White/2x/checkmark.png');
   }
 
   create() {
