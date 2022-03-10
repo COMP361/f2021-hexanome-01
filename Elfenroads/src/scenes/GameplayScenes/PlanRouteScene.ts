@@ -1,4 +1,3 @@
-import {exit} from 'process';
 import {ItemUnit} from '../../classes/ItemUnit';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
@@ -7,12 +6,14 @@ import InventoryScene from '../UIScenes/InventoryScene';
 export default class PlanRouteScene extends Phaser.Scene {
   selectedItemSprite!: Phaser.GameObjects.Sprite;
   selectedItem!: ItemUnit;
+  cb: any;
 
   constructor() {
     super('planroutescene');
   }
 
-  create() {
+  create(cb: any) {
+    this.cb = cb;
     // Create text to notify that it is draw counter phase
 
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
@@ -63,9 +64,25 @@ export default class PlanRouteScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         passTurnButton.clearTint();
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
         this.scene.get('playerturnscene').scene.restart();
-        this.scene.restart();
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getPassedTurn() === true) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.cb();
+        } else {
+          this.scene.restart();
+        }
       });
 
     this.planRoute();
@@ -123,33 +140,38 @@ export default class PlanRouteScene extends Phaser.Scene {
       });
 
     // make items draggable
-    InventoryScene.itemSprites.forEach(item => {
-      item
-        .setInteractive()
-        .on('pointerdown', () => {
-          item.setTint(0xd3d3d3);
-        })
-        .on('pointerout', () => {
-          item.clearTint();
-        })
-        .on('pointerup', () => {
-          item.clearTint();
-          graphics.clear();
-          this.drawAllowedEdges(item, graphics, zoneRadius);
-          this.selectedItemSprite = item;
-          const playerItems: Array<ItemUnit> = PlayerManager.getInstance()
-            .getCurrentPlayer()
-            .getItems();
+    if (
+      PlayerManager.getInstance().getCurrentPlayer() ===
+      PlayerManager.getInstance().getLocalPlayer()
+    ) {
+      InventoryScene.itemSprites.forEach(item => {
+        item
+          .setInteractive()
+          .on('pointerdown', () => {
+            item.setTint(0xd3d3d3);
+          })
+          .on('pointerout', () => {
+            item.clearTint();
+          })
+          .on('pointerup', () => {
+            item.clearTint();
+            graphics.clear();
+            this.drawAllowedEdges(item, graphics, zoneRadius);
+            this.selectedItemSprite = item;
+            const playerItems: Array<ItemUnit> = PlayerManager.getInstance()
+              .getCurrentPlayer()
+              .getItems();
 
-          for (let i = 0; i < playerItems.length; i++) {
-            const item: ItemUnit = playerItems[i];
-            if (item.getName() === this.selectedItemSprite.data.values.name) {
-              PlayerManager.getInstance().getCurrentPlayer().removeItem(item);
-              this.selectedItem = item;
-              break;
+            for (let i = 0; i < playerItems.length; i++) {
+              const item: ItemUnit = playerItems[i];
+              if (item.getName() === this.selectedItemSprite.data.values.name) {
+                PlayerManager.getInstance().getCurrentPlayer().removeItem(item);
+                this.selectedItem = item;
+                break;
+              }
             }
-          }
-        });
-    });
+          });
+      });
+    }
   }
 }

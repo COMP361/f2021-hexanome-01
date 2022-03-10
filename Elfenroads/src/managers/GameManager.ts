@@ -42,62 +42,31 @@ export default class GameManager {
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
-      this.playRound(mainScene);
+      this.playRound(mainScene, i - 1);
     }
 
     // Step 4: Determine winner
-
-    /**
-     * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
-     */
-
-    // const width = mainScene.cameras.main.width;
-    // const toggleMoveBootButton = mainScene.add.sprite(
-    //   width - 30,
-    //   100,
-    //   'brown-box'
-    // );
-    // mainScene.add
-    //   .image(toggleMoveBootButton.x, toggleMoveBootButton.y, 'power')
-    //   .setScale(0.7);
-
-    // // Add interactive pointer options for toggleMoveBootButton
-    // toggleMoveBootButton
-    //   .setInteractive()
-    //   .on('pointerdown', () => {
-    //     toggleMoveBootButton.setTint(0xd3d3d3);
-    //   })
-    //   .on('pointerout', () => {
-    //     toggleMoveBootButton.clearTint();
-    //   })
-    //   .on('pointerup', () => {
-    //     toggleMoveBootButton.clearTint();
-    //     if (mainScene.scene.isSleeping('movebootscene')) {
-    //       mainScene.scene.wake('movebootscene');
-    //     } else {
-    //       mainScene.scene.sleep('movebootscene');
-    //     }
-    //   });
-
-    // // BLOCK END
   }
 
-  private playRound(mainScene: Phaser.Scene): void {
+  private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
     // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
     this.dealCardsAndCounter();
 
+    PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
     // Phase 3: Draw additional Transportation counters
     mainScene.scene.launch('drawcountersscene', () => {
       mainScene.scene.stop('drawcountersscene');
-      mainScene.scene.launch('planroutescene');
+
+      PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+      // Phase 4: Plan route
+      mainScene.scene.launch('planroutescene', () => {
+        mainScene.scene.stop('planroutescene');
+
+        PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+        // Phase 5: Move Boot
+        mainScene.scene.launch('movebootscene');
+      });
     });
-    // mainScene.scene.stop('drawcountersscene');
-
-    // Phase 4: Plan route
-    // mainScene.scene.launch('planroutescene');
-
-    // Phase 5: Move Boot
-    // mainScene.scene.launch('movebootscene');
   }
 
   private dealCardsAndCounter(): void {
