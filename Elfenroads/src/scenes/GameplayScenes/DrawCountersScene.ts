@@ -80,6 +80,7 @@ export default class DrawCountersScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         itemSprite.clearTint();
+        this.sound.play('collect');
         PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
         itemSprite.destroy();
         ItemManager.getInstance().removeFaceUpItem(i);
@@ -103,6 +104,7 @@ export default class DrawCountersScene extends Phaser.Scene {
             }
           });
 
+        console.log(finishedPlayers);
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {

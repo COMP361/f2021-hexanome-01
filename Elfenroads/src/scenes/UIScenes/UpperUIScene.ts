@@ -3,6 +3,9 @@ import Phaser from 'phaser';
 import CheatSheetMenu from '../../classes/CheatSheetMenu';
 import eventsCenter from '../../classes/EventsCenter';
 import SettingsMenu from '../../classes/SettingsMenu';
+import Town from '../../classes/Town';
+import GameManager from '../../managers/GameManager';
+import PlayerManager from '../../managers/PlayerManager';
 
 export default class UpperUIScene extends Phaser.Scene {
   // Global array to store buttons in this scene
@@ -17,6 +20,8 @@ export default class UpperUIScene extends Phaser.Scene {
     this.createSettings();
     this.createCheatSheet();
     this.createTownPieceToggle();
+    this.createRoundCounter();
+    this.createDestinationTown();
   }
 
   // Method to create Settings menu
@@ -111,5 +116,51 @@ export default class UpperUIScene extends Phaser.Scene {
       .on('pointerup', () => {
         eventsCenter.emit('update-town-piece-vis', true);
       });
+  }
+
+  createRoundCounter() {
+    const {width} = this.scale;
+    const round = GameManager.getInstance().getRound();
+    const container: Phaser.GameObjects.Container = this.add.container(
+      width - 180,
+      0
+    );
+    const roundBG = this.add.sprite(0, 30, 'brown-box');
+    const roundText: Phaser.GameObjects.Text = this.add.text(
+      5,
+      15,
+      `${round}`,
+      {
+        fontFamily: 'MedievalSharp',
+        fontSize: '30px',
+      }
+    );
+
+    container.add(roundBG);
+    container.add(roundText);
+  }
+
+  createDestinationTown() {
+    const {width} = this.scale;
+    const towns = Array.from(Town.getAllTowns().keys());
+    const town = towns[Math.floor(Math.random() * towns.length)];
+    /*destination town*/
+    const destText: Phaser.GameObjects.Text = this.add.text(6, 10, `${town}`, {
+      fontFamily: 'MedievalSharp',
+      fontSize: '24px',
+    });
+
+    // Create brown ui panel element relative to the size of the text
+    const brownPanel: Phaser.GameObjects.RenderTexture = this.add
+      .nineslice(0, 0, destText.width + 20, 30, 'brown-panel', 24)
+      .setOrigin(0, 0);
+
+    const container: Phaser.GameObjects.Container = this.add.container(
+      width - 360,
+      8
+    );
+
+    container.add(brownPanel);
+    container.add(destText);
   }
 }

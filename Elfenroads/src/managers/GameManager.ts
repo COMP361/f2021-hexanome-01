@@ -27,6 +27,7 @@ export default class GameManager {
   private roadManager: RoadManager;
   private socket: any;
   private initialized: boolean;
+  private round: integer;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -45,6 +46,7 @@ export default class GameManager {
       data: getUser().name,
     });
     this.initialized = false;
+    this.round = 1;
   }
 
   public static getInstance(): GameManager {
@@ -52,6 +54,10 @@ export default class GameManager {
       GameManager.gameManagerInstance = new GameManager();
     }
     return GameManager.gameManagerInstance;
+  }
+
+  public getRound(): integer {
+    return this.round;
   }
 
   /**
