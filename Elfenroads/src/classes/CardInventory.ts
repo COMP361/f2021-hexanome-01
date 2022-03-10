@@ -15,8 +15,8 @@ export default class CardInventory {
     this.numCards = 0;
 
     // Get height and width to determing card placement
-    const {height} = this.scene.scale;
-    const {width} = this.scene.scale;
+    const width = this.scene.cameras.main.width;
+    const height = this.scene.cameras.main.height;
 
     // Size of card when faced up
     const CARD_UP = height / 1.12;
@@ -28,11 +28,7 @@ export default class CardInventory {
     this.isOpen = true;
 
     // Create confirm button at bottom right corner to confirm selection.
-    const confirmButton = this.scene.add.sprite(
-      height,
-      height - 30,
-      'brown-box'
-    );
+    const confirmButton = this.scene.add.sprite(30, height - 80, 'brown-box');
     this.scene.add
       .image(confirmButton.x, confirmButton.y, 'check')
       .setScale(0.5);
@@ -71,7 +67,9 @@ export default class CardInventory {
     // If card is in map add it to Phaser container
     if (cardName) {
       // Render sprite to this Phaser Scene and offset based on the other cards
-      const card = this.scene.add.sprite(this.numCards * 40, 0, cardName);
+      const card = this.scene.add
+        .sprite(this.numCards * 40, 0, cardName)
+        .setData('instance');
       card.name = cardName;
       card.setScale(CARD_SIZE);
 
@@ -85,8 +83,6 @@ export default class CardInventory {
         .on('pointerdown', () => {
           card.setTint(0x808080);
           const index: number = this.isSeleted(card);
-          console.log(index);
-          console.log(card.name);
           if (index === -1) {
             card.y -= 50;
             this.selected.push(card);

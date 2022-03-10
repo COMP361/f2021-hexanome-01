@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {ItemUnit} from './ItemUnit';
 
 export default class ItemInventory {
   sprites: Array<Phaser.GameObjects.Sprite> = [];
@@ -24,16 +25,16 @@ export default class ItemInventory {
   }
 
   // Method to render a item from Map of Items, and it to this Phaser Container.
-  renderItem(itemName: string) {
+  renderItem(pItem: ItemUnit) {
     // If item is in map add it to Phaser container
-    if (itemName) {
+    if (pItem) {
       // Render sprite to this Phaser Scene and offset based on the other Items
-      const item = this.scene.add.sprite(this.numItems * 60, 0, itemName);
-      item
-        .setData({
-          name: itemName,
-        })
-        .setScale(0.25);
+      const item = this.scene.add.sprite(
+        this.numItems * 60,
+        0,
+        pItem.getName()
+      );
+      item.setData(pItem).setScale(0.25);
       // Add item sprite to Phaser container so that it do the hide/show group animation
       this.container.add(item);
       this.sprites.push(item);

@@ -7,7 +7,6 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
-import Town from '../classes/Town';
 
 export default class GameManager {
   private static gameManagerInstance: GameManager;
@@ -43,83 +42,31 @@ export default class GameManager {
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
-      this.playRound(mainScene);
+      this.playRound(mainScene, i - 1);
     }
 
     // Step 4: Determine winner
-
-    /**
-     * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
-     */
-
-    // const width = mainScene.cameras.main.width;
-    // const toggleMoveBootButton = mainScene.add.sprite(
-    //   width - 30,
-    //   100,
-    //   'brown-box'
-    // );
-    // mainScene.add
-    //   .image(toggleMoveBootButton.x, toggleMoveBootButton.y, 'power')
-    //   .setScale(0.7);
-
-    // // Add interactive pointer options for toggleMoveBootButton
-    // toggleMoveBootButton
-    //   .setInteractive()
-    //   .on('pointerdown', () => {
-    //     toggleMoveBootButton.setTint(0xd3d3d3);
-    //   })
-    //   .on('pointerout', () => {
-    //     toggleMoveBootButton.clearTint();
-    //   })
-    //   .on('pointerup', () => {
-    //     toggleMoveBootButton.clearTint();
-    //     if (mainScene.scene.isSleeping('movebootscene')) {
-    //       mainScene.scene.wake('movebootscene');
-    //     } else {
-    //       mainScene.scene.sleep('movebootscene');
-    //     }
-    //   });
-
-    // // BLOCK END
-
-    // /**
-    //  * SHOWCASE FOR CHANGING PLAYER TURN
-    //  */
-    // // Create small button with the "next" icon
-    // const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
-    // mainScene.add
-    //   .image(passTurnButton.x, passTurnButton.y, 'next')
-    //   .setScale(0.7);
-
-    // // Add interactive pointer options for passTurnButton
-    // // After click, currentPlayer is updated via playerManager
-    // // PlayerTurnScene is rerendered to show whose turn it is
-    // passTurnButton
-    //   .setInteractive()
-    //   .on('pointerdown', () => {
-    //     passTurnButton.setTint(0xd3d3d3);
-    //   })
-    //   .on('pointerout', () => {
-    //     passTurnButton.clearTint();
-    //   })
-    //   .on('pointerup', () => {
-    //     passTurnButton.clearTint();
-    //     this.playerManager.setNextPlayer();
-    //     mainScene.scene.get('playerturnscene').scene.restart();
-    //   });
   }
 
-  private playRound(mainScene: Phaser.Scene): void {
+  private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
     // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
     this.dealCardsAndCounter();
 
+    PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
     // Phase 3: Draw additional Transportation counters
-    mainScene.scene.launch('drawcountersscene');
+    mainScene.scene.launch('drawcountersscene', () => {
+      mainScene.scene.stop('drawcountersscene');
 
-    // Phase 4: Plan route
+      PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+      // Phase 4: Plan route
+      mainScene.scene.launch('planroutescene', () => {
+        mainScene.scene.stop('planroutescene');
 
-    // Phase 5: Move Boot
-    mainScene.scene.launch('movebootscene');
+        PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+        // Phase 5: Move Boot
+        mainScene.scene.launch('movebootscene');
+      });
+    });
   }
 
   private dealCardsAndCounter(): void {
@@ -131,9 +78,9 @@ export default class GameManager {
       }
 
       // Deal the random facedown counter from the counter pile.
-      const random1: ItemUnit = this.itemManager.getRandomItem();
-      random1.setHidden(true);
-      player.addItem(random1);
+      const randomItem: ItemUnit = this.itemManager.getRandomItem();
+      randomItem.setHidden(true);
+      player.addItem(randomItem);
     }
   }
 
@@ -141,7 +88,7 @@ export default class GameManager {
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     const p1: Player = new Player(
-      BootColour.Green,
+      BootColour.Yellow,
       this.roadManager.getTowns().get('elvenhold')!
     );
 

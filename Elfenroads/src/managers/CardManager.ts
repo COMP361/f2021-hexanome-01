@@ -26,9 +26,6 @@ export class CardManager {
       new TravelCard(TravelCardType.Raft);
     }
     this.selected = new Map();
-    for (const player of PlayerManager.getInstance().getPlayers()) {
-      this.selected.set(player, []);
-    }
   }
 
   public static getInstance(): CardManager {
@@ -53,9 +50,13 @@ export class CardManager {
     const currPlayer: Player = PlayerManager.getInstance().getCurrentPlayer();
     for (const card of currPlayer.getCards()) {
       if (card.getName() === name) {
-        const selectedCards = this.selected.get(currPlayer)!;
-        selectedCards.push(card);
-        this.selected.set(currPlayer, selectedCards);
+        const selectedCards = this.selected.get(currPlayer);
+        if (selectedCards === undefined) {
+          this.selected.set(currPlayer, [card]);
+        } else {
+          selectedCards.push(card);
+          this.selected.set(currPlayer, selectedCards);
+        }
         return true;
       }
     }
