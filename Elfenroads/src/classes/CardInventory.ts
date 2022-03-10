@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {CardManager} from '../managers/CardManager';
 
 export default class CardInventory {
   sprites: Array<Phaser.GameObjects.Sprite> = [];
@@ -33,17 +34,33 @@ export default class CardInventory {
     // If card is in map add it to Phaser container
     if (cardName) {
       // Render sprite to this Phaser Scene and offset based on the other cards
-      const card = this.scene.add.sprite(this.numCards * 30, 0, cardName);
-      card
-        .setData({
-          name: cardName,
-        })
-        .setScale(CARD_SIZE);
-
+      const card = this.scene.add.sprite(this.numCards * 40, 0, cardName);
+      card.name = cardName;
+      card.setScale(CARD_SIZE);
       // Add card sprite to Phaser container so that it do the hide/show group animation
       this.container.add(card);
       this.sprites.push(card);
       this.numCards++;
+
+      // make it possible to select and check card
+      card
+        .setInteractive()
+        .on('pointerover', () => {
+          card.setTint(0xffffff);
+          card.y -= 50;
+        })
+        .on('pointerdown', () => {
+          card.setTint(0x808080);
+          card.y -= 50;
+          CardManager.getInstance().addSelectedCard(card.name);
+        })
+        .on('pointerout', () => {
+          card.clearTint();
+          card.y += 50;
+        })
+        .on('pointerup', () => {
+          card.clearTint();
+        });
     }
   }
 

@@ -4,6 +4,7 @@ import {TravelCardType} from '../enums/TravelCardType';
 export class CardManager {
   private static cardManagerInstance: CardManager;
   private cardPile: Array<CardUnit>;
+  private selected: Array<string>;
 
   private constructor() {
     // the pile contains elfenroads cards
@@ -19,6 +20,7 @@ export class CardManager {
       }
       new TravelCard(TravelCardType.Raft);
     }
+    this.selected = [];
   }
 
   public static getInstance(): CardManager {
@@ -37,5 +39,10 @@ export class CardManager {
     const card = this.cardPile[index];
     this.cardPile.splice(index, 1);
     return card;
+  }
+
+  public addSelectedCard(name: string): void {
+    this.selected.push(name);
+    console.log(this.selected);
   }
 }
