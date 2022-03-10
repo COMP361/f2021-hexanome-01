@@ -23,6 +23,7 @@ export default class GameManager {
   private cardManager: CardManager;
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
+  private round: integer;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -30,6 +31,7 @@ export default class GameManager {
     this.cardManager = CardManager.getInstance();
     this.playerManager = PlayerManager.getInstance();
     this.roadManager = RoadManager.getInstance();
+    this.round = 1;
   }
 
   public static getInstance(): GameManager {
@@ -37,6 +39,10 @@ export default class GameManager {
       GameManager.gameManagerInstance = new GameManager();
     }
     return GameManager.gameManagerInstance;
+  }
+
+  public getRound(): integer {
+    return this.round;
   }
 
   /**
@@ -47,7 +53,7 @@ export default class GameManager {
     this.initializePlayers();
 
     // Step 2: Get number of rounds
-    const numRounds: integer = 1;
+    const numRounds: integer = 3;
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
@@ -56,7 +62,6 @@ export default class GameManager {
 
     // Step 4: Determine winner
   }
-
   private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
     // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
     this.dealCardsAndCounter();
@@ -74,6 +79,7 @@ export default class GameManager {
         PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
         // Phase 5: Move Boot
         mainScene.scene.launch('movebootscene');
+        this.round++;
       });
     });
   }

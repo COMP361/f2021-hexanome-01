@@ -31,31 +31,35 @@ export default function Join({choose}: any) {
       <div className="join__table-wrapper">
         {games.length ? (
           <table className="join__table">
-            {games.map(
-              game =>
-                game &&
-                game.players.length < game.gameParameters.maxSessionPlayers && (
-                  <tr className="join__row" key={game.sessionid}>
-                    <td className="join__td">
-                      {game.gameParameters.displayName}
-                    </td>
-                    <td className="join__td">{game.creator}</td>
-                    <td className="join__td">
-                      {game.players.length +
-                        '/' +
-                        game.gameParameters.maxSessionPlayers}
-                    </td>
-                    <td className="join__td">
-                      <button
-                        onClick={() => attemptJoin(game.sessionid)}
-                        className="join__button"
-                      >
-                        Join Game
-                      </button>
-                    </td>
-                  </tr>
-                )
-            )}
+            {games
+              .slice()
+              .reverse()
+              .map(
+                game =>
+                  game &&
+                  game.players.length <
+                    game.gameParameters.maxSessionPlayers && (
+                    <tr className="join__row" key={game.sessionid}>
+                      <td className="join__td">
+                        {game.gameParameters.displayName}
+                      </td>
+                      <td className="join__td">{game.creator}</td>
+                      <td className="join__td">
+                        {game.players.length +
+                          '/' +
+                          game.gameParameters.maxSessionPlayers}
+                      </td>
+                      <td className="join__td">
+                        <button
+                          onClick={() => attemptJoin(game.sessionid)}
+                          className="join__button"
+                        >
+                          Join Game
+                        </button>
+                      </td>
+                    </tr>
+                  )
+              )}
           </table>
         ) : (
           <i>No games available.</i>

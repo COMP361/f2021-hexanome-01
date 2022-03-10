@@ -46,7 +46,15 @@ export default function Create({wait}: any) {
               name="game"
               value="ElfenlandVer1"
             />
-            <label htmlFor="Elfenland">Version 1</label>
+            <label htmlFor="Elfenland">Base Game</label>
+            <br />
+            <input
+              type="radio"
+              id="ElfenlandVer1"
+              name="game"
+              value="ElfenlandVer1"
+            />
+            <label htmlFor="Elfenland">4 rounds</label>
             <br />
             <input
               type="radio"
@@ -54,7 +62,7 @@ export default function Create({wait}: any) {
               name="game"
               value="ElfenlandVer2"
             />
-            <label htmlFor="Elfenland">Version 2</label>
+            <label htmlFor="Elfenland">Destination Town</label>
           </div>
           <div className="form__input form__input--radio">
             <h3>Elfengold</h3>
