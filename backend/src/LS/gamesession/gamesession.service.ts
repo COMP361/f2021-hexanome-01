@@ -132,8 +132,9 @@ export class GameSessionService {
         ).replace(/\+/g, '%2B'),
       )
       .then(async () => {
-        this.sessionPlayers.get(session_id).push(
-          await this.userService.getLSUser(access_token));
+        this.sessionPlayers
+          .get(session_id)
+          .push(await this.userService.getLSUser(access_token));
         return this.getSession(session_id);
       });
   }
@@ -151,9 +152,31 @@ export class GameSessionService {
       )
       .then(async (response) => {
         const user = await this.userService.getLSUser(access_token);
-            this.sessionPlayers.set(session_id, this.sessionPlayers.get(session_id).filter((player) => (player.name !== user.name)));
+        this.sessionPlayers.set(
+          session_id,
+          this.sessionPlayers
+            .get(session_id)
+            .filter((player) => player.name !== user.name),
+        );
 
         return response.data as string;
+      });
+  }
+
+  async removeSession(
+    session_id: string,
+    access_token: string,
+  ): Promise<string> {
+    return instance
+      .delete(
+        encodeURI(`${session_id}?access_token=${access_token}`).replace(
+          /\+/g,
+          '%2B',
+        ),
+      )
+      .then(() => {
+        this.sessionPlayers.delete(session_id);
+        return 'succeed';
       });
   }
 }

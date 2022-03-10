@@ -1,12 +1,11 @@
 import {useEffect, useState} from 'react';
-import {allSessions, joinSession} from '../../../../utils/queryUtils';
-import {getUser, storeSessionId} from '../../../../utils/storageUtils';
+import {allSessions} from '../../../../utils/queryUtils';
+import {storeSessionId} from '../../../../utils/storageUtils';
 import './Join.scss';
 import React from 'react';
 
-export default function Join({wait}: any) {
+export default function Join({choose}: any) {
   const [games, setGames]: [any[], any] = useState([]);
-  const {accessToken, name} = getUser();
 
   useEffect(() => {
     allSessions()
@@ -15,9 +14,7 @@ export default function Join({wait}: any) {
   }, []);
 
   const attemptJoin = (sessionId: any) => {
-    storeSessionId(sessionId, 'ElfenlandVer1', () =>
-      joinSession(accessToken, name, sessionId).then(wait).catch(console.log)
-    );
+    storeSessionId(sessionId, 'ElfenlandVer1', choose);
   };
 
   return (

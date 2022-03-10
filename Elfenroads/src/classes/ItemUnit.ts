@@ -42,12 +42,19 @@ export class Spell extends ItemUnit {
 }
 
 export class Counter extends ItemUnit {
+  private cardsNeeded: Map<EdgeType, number>;
   constructor(
     counterType: CounterType,
     allowedEdges: Array<EdgeType>,
+    cardsNeeded: Map<EdgeType, number>,
     isHidden = false
   ) {
     super(counterType, allowedEdges, isHidden);
+    this.cardsNeeded = cardsNeeded;
+  }
+
+  public getCardsNeeded(): Map<EdgeType, number> {
+    return this.cardsNeeded;
   }
 }
 

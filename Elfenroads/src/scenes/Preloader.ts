@@ -102,12 +102,12 @@ export default class Preloader extends Phaser.Scene {
 
     // Assets for CounterScene.js
     this.load.image('unknown-counter', 'assets/boardgame/M00.png');
-    this.load.image('pig-counter', 'assets/boardgame/M01.png');
-    this.load.image('elfcycle-counter', 'assets/boardgame/M02.png');
-    this.load.image('cloud-counter', 'assets/boardgame/M03.png');
-    this.load.image('unicorn-counter', 'assets/boardgame/M04.png');
-    this.load.image('troll-wagon-counter', 'assets/boardgame/M05.png');
-    this.load.image('dragon-counter', 'assets/boardgame/M06.png');
+    this.load.image('pig', 'assets/boardgame/M01.png');
+    this.load.image('elfcycle', 'assets/boardgame/M02.png');
+    this.load.image('cloud', 'assets/boardgame/M03.png');
+    this.load.image('unicorn', 'assets/boardgame/M04.png');
+    this.load.image('troll-wagon', 'assets/boardgame/M05.png');
+    this.load.image('dragon', 'assets/boardgame/M06.png');
     this.load.image('tree', 'assets/boardgame/M09.png');
     this.load.image('sea-monster', 'assets/boardgame/seamonster.png');
     this.load.image('bounce', 'assets/boardgame/bounce.png');
@@ -116,9 +116,9 @@ export default class Preloader extends Phaser.Scene {
 
     // Assests for CardScene.js
     this.load.image('open-box', 'assets/ui/iconpack/PNG/White/1x/video.png');
-    this.load.image('giant-pig-card', 'assets/boardgame/T01.png');
-    this.load.image('elf-cycle-card', 'assets/boardgame/T02.png');
-    this.load.image('magic-cloud-card', 'assets/boardgame/T03.png');
+    this.load.image('pig-card', 'assets/boardgame/T01.png');
+    this.load.image('elfcycle-card', 'assets/boardgame/T02.png');
+    this.load.image('cloud-card', 'assets/boardgame/T03.png');
     this.load.image('unicorn-card', 'assets/boardgame/T04.png');
     this.load.image('troll-wagon-card', 'assets/boardgame/T05.png');
     this.load.image('dragon-card', 'assets/boardgame/T06.png');
