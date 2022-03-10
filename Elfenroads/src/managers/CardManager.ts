@@ -9,7 +9,7 @@ import PlayerManager from './PlayerManager';
 export class CardManager {
   private static cardManagerInstance: CardManager;
   private cardPile: Array<CardUnit>;
-  private selected: Array<CardUnit>;
+  private selected: Map<Player, Array<CardUnit>>;
 
   private constructor() {
     // the pile contains elfenroads cards
@@ -25,7 +25,10 @@ export class CardManager {
       }
       new TravelCard(TravelCardType.Raft);
     }
-    this.selected = [];
+    this.selected = new Map();
+    for (const player of PlayerManager.getInstance().getPlayers()) {
+      this.selected.set(player, []);
+    }
   }
 
   public static getInstance(): CardManager {
@@ -47,11 +50,12 @@ export class CardManager {
   }
 
   public addSelectedCard(name: string): boolean {
-    for (const card of PlayerManager.getInstance()
-      .getCurrentPlayer()
-      .getCards()) {
+    const currPlayer: Player = PlayerManager.getInstance().getCurrentPlayer();
+    for (const card of currPlayer.getCards()) {
       if (card.getName() === name) {
-        this.selected.push(card);
+        const selectedCards = this.selected.get(currPlayer)!;
+        selectedCards.push(card);
+        this.selected.set(currPlayer, selectedCards);
         return true;
       }
     }
