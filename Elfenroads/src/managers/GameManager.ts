@@ -7,11 +7,7 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
-import Town from '../classes/Town';
-import {getSession, getSessionId, getUser} from '../utils/storageUtils';
-import {singleSession} from '../utils/queryUtils';
-import {io} from 'socket.io-client';
-
+import {getSession, getUser} from '../utils/storageUtils';
 const colorMap: any = {
   '008000': BootColour.Green,
   '0000FF': BootColour.Blue,
@@ -27,8 +23,6 @@ export default class GameManager {
   private cardManager: CardManager;
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
-  private socket: any;
-  private received: Array<any>;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -36,17 +30,6 @@ export default class GameManager {
     this.cardManager = CardManager.getInstance();
     this.playerManager = PlayerManager.getInstance();
     this.roadManager = RoadManager.getInstance();
-    // Connect to the socket and join the lobby
-    this.socket = io('http://elfenroads.westus3.cloudapp.azure.com:3455/');
-    this.socket.emit('joinLobby', {
-      game: 'ElfenlandVer1',
-      session_id: getSessionId(),
-    });
-    this.received = [];
-    this.socket.emit('chat', {
-      game: 'ElfenlandVer1',
-      session_id: getSessionId(),
-    });
   }
 
   public static getInstance(): GameManager {
@@ -63,131 +46,36 @@ export default class GameManager {
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
 
-    console.log(this.playerManager);
-
     // Step 2: Get number of rounds
     const numRounds: integer = 1;
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
-      this.playRound(mainScene);
+      this.playRound(mainScene, i - 1);
     }
 
     // Step 4: Determine winner
-
-    /**
-     * SHOWCASE FOR WAKEING AND SLEEPING PHASER SCENES
-     */
-
-    // const width = mainScene.cameras.main.width;
-    // const toggleMoveBootButton = mainScene.add.sprite(
-    //   width - 30,
-    //   100,
-    //   'brown-box'
-    // );
-    // mainScene.add
-    //   .image(toggleMoveBootButton.x, toggleMoveBootButton.y, 'power')
-    //   .setScale(0.7);
-
-    // // Add interactive pointer options for toggleMoveBootButton
-    // toggleMoveBootButton
-    //   .setInteractive()
-    //   .on('pointerdown', () => {
-    //     toggleMoveBootButton.setTint(0xd3d3d3);
-    //   })
-    //   .on('pointerout', () => {
-    //     toggleMoveBootButton.clearTint();
-    //   })
-    //   .on('pointerup', () => {
-    //     toggleMoveBootButton.clearTint();
-    //     if (mainScene.scene.isSleeping('movebootscene')) {
-    //       mainScene.scene.wake('movebootscene');
-    //     } else {
-    //       mainScene.scene.sleep('movebootscene');
-    //     }
-    //   });
-
-    // // BLOCK END
-
-    // /**
-    //  * SHOWCASE FOR CHANGING PLAYER TURN
-    //  */
-    // // Create small button with the "next" icon
-    // const passTurnButton = mainScene.add.sprite(width - 30, 150, 'brown-box');
-    // mainScene.add
-    //   .image(passTurnButton.x, passTurnButton.y, 'next')
-    //   .setScale(0.7);
-
-    // // Add interactive pointer options for passTurnButton
-    // // After click, currentPlayer is updated via playerManager
-    // // PlayerTurnScene is rerendered to show whose turn it is
-    // passTurnButton
-    //   .setInteractive()
-    //   .on('pointerdown', () => {
-    //     passTurnButton.setTint(0xd3d3d3);
-    //   })
-    //   .on('pointerout', () => {
-    //     passTurnButton.clearTint();
-    //   })
-    //   .on('pointerup', () => {
-    //     passTurnButton.clearTint();
-    //     this.playerManager.setNextPlayer();
-    //     mainScene.scene.get('playerturnscene').scene.restart();
-    //   });
   }
 
-  private playRound(mainScene: Phaser.Scene): void {
+  private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
     // Phase 1 & 2: Deal Travel Cards and one random facedown Counter
-    this.socket.on('statusChange', (data: any) => {
-      console.log('Received data');
-      const managers = data.msg.data;
-      if (managers.itemManager) {
-        this.itemManager = managers.itemManager;
-      }
-      if (managers.cardManager) {
-        this.cardManager = managers.cardManager;
-      }
-      if (managers.playerManager) {
-        this.cardManager = managers.playerManager;
-      }
-      if (managers.roadManager) {
-        this.roadManager = managers.roadManager;
-      }
+    this.dealCardsAndCounter();
 
-      // Phase 3: Draw additional Transportation counters
-      if (!ItemManager.getInstance().getFaceUpPile())
-        ItemManager.getInstance().flipCounters();
-      console.log(ItemManager.getInstance());
-      mainScene.scene.launch('drawcountersscene');
+    PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+    // Phase 3: Draw additional Transportation counters
+    mainScene.scene.launch('drawcountersscene', () => {
+      mainScene.scene.stop('drawcountersscene');
 
-      // Phase 5: Move Boot
-      mainScene.scene.launch('movebootscene');
+      PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+      // Phase 4: Plan route
+      mainScene.scene.launch('planroutescene', () => {
+        mainScene.scene.stop('planroutescene');
+
+        PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+        // Phase 5: Move Boot
+        mainScene.scene.launch('movebootscene');
+      });
     });
-    if (getUser().name === getSession().gameSession.creator) {
-      this.dealCardsAndCounter();
-      this.socket.emit('statusChange', {
-        game: 'ElfenlandVer1',
-        session_id: getSessionId(),
-        data: {
-          itemManager: ItemManager.getInstance(),
-          cardManager: CardManager.getInstance(),
-          playerManager: PlayerManager.getInstance(),
-          roadManager: RoadManager.getInstance(),
-        },
-      });
-      this.socket.on('chat', () => {
-        this.socket.emit('statusChange', {
-          game: 'ElfenlandVer1',
-          session_id: getSessionId(),
-          data: {
-            itemManager: ItemManager.getInstance(),
-            cardManager: CardManager.getInstance(),
-            playerManager: PlayerManager.getInstance(),
-            roadManager: RoadManager.getInstance(),
-          },
-        });
-      });
-    }
   }
 
   private dealCardsAndCounter(): void {
@@ -199,9 +87,9 @@ export default class GameManager {
       }
 
       // Deal the random facedown counter from the counter pile.
-      const random1: ItemUnit = this.itemManager.getRandomItem();
-      random1.setHidden(true);
-      player.addItem(random1);
+      const randomItem: ItemUnit = this.itemManager.getRandomItem();
+      randomItem.setHidden(true);
+      player.addItem(randomItem);
     }
   }
 

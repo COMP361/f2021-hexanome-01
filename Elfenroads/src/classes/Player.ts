@@ -1,10 +1,7 @@
 import {BootColour} from '../enums/BootColour';
-import {EdgeType} from '../enums/EdgeType';
-import ItemManager from '../managers/ItemManager';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
-import Edge from './Edge';
-import {Counter, ItemUnit} from './ItemUnit';
+import {ItemUnit} from './ItemUnit';
 import Town from './Town';
 
 export default class Player {
@@ -16,6 +13,7 @@ export default class Player {
   private myCards: Array<CardUnit>;
   private visitedTowns: Array<Town>;
   private destinationTown: Town;
+  private passedTurn: boolean;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
     this.bootColour = pBootColour;
@@ -27,14 +25,23 @@ export default class Player {
     this.myCards = [];
     this.visitedTowns = [];
     this.destinationTown = Town.getTown('null');
+    this.passedTurn = false;
   }
 
   public getGold(): integer {
     return this.gold;
   }
 
+  public getPassedTurn(): boolean {
+    return this.passedTurn;
+  }
+
   public setDestinationTown(town: Town): void {
     this.destinationTown = town;
+  }
+
+  public setPassedTurn(b: boolean): void {
+    this.passedTurn = b;
   }
 
   public getDestinationTown(): Town {
