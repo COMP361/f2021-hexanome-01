@@ -1,3 +1,4 @@
+import Edge from '../classes/Edge';
 import Player from '../classes/Player';
 import Town from '../classes/Town';
 
@@ -53,6 +54,10 @@ export default class PlayerManager {
     this.currentPlayerIndex = playerIndex;
   }
 
+  public getCurrentPlayerIndex(): number {
+    return this.currentPlayerIndex;
+  }
+
   public setNextPlayer(): void {
     if (this.currentPlayerIndex < this.players.length - 1) {
       this.currentPlayerIndex++;
@@ -101,5 +106,18 @@ export default class PlayerManager {
 
   public setPlayerDest(playerIndex: number, dest: Town): void {
     this.players[playerIndex].setDestinationTown(dest);
+  }
+
+  public movePlayer(player: Player, edge: Edge): void {
+    if (player !== this.getCurrentPlayer()) return;
+    if (edge.getDestTown() === player.getCurrentLocation()) {
+      this.players[this.currentPlayerIndex].setCurrentLocation(
+        edge.getSrcTown()
+      );
+    } else {
+      this.players[this.currentPlayerIndex].setCurrentLocation(
+        edge.getDestTown()
+      );
+    }
   }
 }

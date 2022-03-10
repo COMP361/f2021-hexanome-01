@@ -131,6 +131,30 @@ export default class SelectionScene extends Phaser.Scene {
               SelectionScene.seletedCards.push(c);
             }
           }
+          const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
+          const cards = SelectionScene.seletedCards;
+          const edge = SelectionScene.selectedEdge;
+          if (edge === undefined) return;
+          if (cards.length <= 0) return;
+          if (CardManager.getInstance().playCards(currPlayer, cards, edge)) {
+            PlayerManager.getInstance().movePlayer(currPlayer, edge);
+            for (const card of this.selected) {
+              const c = CardManager.getInstance().getSelectedCard(
+                PlayerManager.getInstance().getCurrentPlayer(),
+                card.name
+              );
+              if (c === undefined) {
+                this.selected.splice(this.selected.indexOf(card), 1);
+              } else {
+                card.destroy();
+                SelectionScene.seletedCards.splice(
+                  SelectionScene.seletedCards.indexOf(c),
+                  1
+                );
+              }
+            }
+            this.scene.get('playericonscene').scene.restart();
+          }
         }
       });
     // make every cards in hand selectable

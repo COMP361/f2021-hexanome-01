@@ -31,17 +31,15 @@ export default class PlayerIconScene extends Phaser.Scene {
         }
       }
       icons.push(icon);
-      if (players[i] !== localPlayer) {
-        icon.addBootImg(
-          (players[i].getCurrentLocation().getXposition() / 1600) *
-            this.cameras.main.width +
-            bootX,
-          (players[i].getCurrentLocation().getYposition() / 750) *
-            this.cameras.main.height,
-          this.cameras.main.width * 0.04,
-          this.cameras.main.height * 0.08
-        );
-      }
+      icon.addBootImg(
+        (players[i].getCurrentLocation().getXposition() / 1600) *
+          this.cameras.main.width +
+          bootX,
+        (players[i].getCurrentLocation().getYposition() / 750) *
+          this.cameras.main.height,
+        this.cameras.main.width * 0.04,
+        this.cameras.main.height * 0.08
+      );
       bootX += 15;
     }
     return icons;
