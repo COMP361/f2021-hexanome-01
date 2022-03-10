@@ -5,7 +5,7 @@ import eventsCenter from '../../classes/EventsCenter';
 import PlayerManager from '../../managers/PlayerManager';
 import Town from '../../classes/Town';
 
-export default class BoardGame extends Phaser.Scene {
+export default class MoveBootScene extends Phaser.Scene {
   private townPieces: Map<string, Phaser.GameObjects.Arc> = new Map();
   private townPieceHolders: Map<string, Phaser.GameObjects.Arc> = new Map();
 
@@ -13,12 +13,6 @@ export default class BoardGame extends Phaser.Scene {
     super('movebootscene');
   }
   create() {
-    // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
-    const allTowns = Town.getAllTowns();
-    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
-    const elvenhold: Town = Town.getTown('elvenhold');
-    elvenhold.addVisitingPlayer(currentPlayer);
-
     // Create text to notify that it is move boot phase
     const moveBootText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -48,6 +42,16 @@ export default class BoardGame extends Phaser.Scene {
     // Render the brown panel and text
     container.add(brownPanel);
     container.add(moveBootText);
+
+    // this.moveBoot();
+  }
+
+  moveBoot() {
+    // SIMULATING ONE SINGLE PLAYER. THIS IS NOT FINAL.
+    const allTowns = Town.getAllTowns();
+    const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
+    const elvenhold: Town = Town.getTown('elvenhold');
+    elvenhold.addVisitingPlayer(currentPlayer);
 
     const graphics = this.add.graphics();
     const zoneWidth = (60 / 1600) * this.cameras.main.width;

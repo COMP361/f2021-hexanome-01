@@ -9,7 +9,7 @@ export default class ItemManager {
   private itemPile: Array<ItemUnit>;
   private faceUpPile: Array<ItemUnit>;
 
-  private constructor() {
+  constructor() {
     // contains item for elfenroads
     this.itemPile = [];
     this.faceUpPile = [];
@@ -101,18 +101,15 @@ export default class ItemManager {
     }
   }
 
-  public static getInstance(): ItemManager {
+  static getInstance(): ItemManager {
     if (!ItemManager.itemManagerInstance) {
       ItemManager.itemManagerInstance = new ItemManager();
     }
     return ItemManager.itemManagerInstance;
   }
 
-  public getItemPile(): Array<ItemUnit> {
+  getItemPile(): Array<ItemUnit> {
     return this.itemPile;
-  }
-  getFaceUpPile(): Array<ItemUnit> {
-    return this.faceUpPile;
   }
 
   getRandomItem(): ItemUnit {
@@ -122,16 +119,26 @@ export default class ItemManager {
     return item;
   }
 
-  flipCounters(): Array<ItemUnit> {
+  flipCounters(): void {
     for (let i = 0; i < 5; i++) {
       this.faceUpPile.push(this.getRandomItem());
     }
-    console.log(this.faceUpPile);
+  }
+  getFaceUpPile(): Array<ItemUnit> {
     return this.faceUpPile;
   }
 
-  public addToPile(player: Player, item: ItemUnit): void {
+  removeFaceUpItem(i: any): void {
+    this.faceUpPile[i] = this.getRandomItem();
+  }
+
+  addToPile(player: Player, item: ItemUnit): void {
     player.removeItem(item);
     this.itemPile.push(item);
+  }
+
+  update(manager: any): void {
+    this.itemPile = manager.itemPile;
+    this.faceUpPile = manager.faceUpPile;
   }
 }
