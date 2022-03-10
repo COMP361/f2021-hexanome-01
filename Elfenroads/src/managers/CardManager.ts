@@ -4,11 +4,12 @@ import {Counter} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {EdgeType} from '../enums/EdgeType';
 import {TravelCardType} from '../enums/TravelCardType';
+import PlayerManager from './PlayerManager';
 
 export class CardManager {
   private static cardManagerInstance: CardManager;
   private cardPile: Array<CardUnit>;
-  private selected: Array<string>;
+  private selected: Array<CardUnit>;
 
   private constructor() {
     // the pile contains elfenroads cards
@@ -45,8 +46,16 @@ export class CardManager {
     return card;
   }
 
-  public addSelectedCard(name: string): void {
-    this.selected.push(name);
+  public addSelectedCard(name: string): boolean {
+    for (const card of PlayerManager.getInstance()
+      .getCurrentPlayer()
+      .getCards()) {
+      if (card.getName() === name) {
+        this.selected.push(card);
+        return true;
+      }
+    }
+    return false;
   }
 
   public addToPile(player: Player, card: CardUnit): void {
