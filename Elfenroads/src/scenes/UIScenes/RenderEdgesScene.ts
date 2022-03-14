@@ -13,8 +13,10 @@ export default class RenderEdgeScene extends Phaser.Scene {
       .forEach(edge => {
         const x = (edge.getPosition()[0] / 1600) * this.cameras.main.width;
         const y = (edge.getPosition()[1] / 750) * this.cameras.main.height;
+        let xOffset = 0;
         edge.getItems().forEach(item => {
-          this.renderItem(x, y, item, this);
+          this.renderItem(x + xOffset, y, item, this);
+          xOffset += 30;
         });
       });
   }

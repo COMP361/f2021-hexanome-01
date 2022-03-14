@@ -1,4 +1,7 @@
+import {GameObjects} from 'phaser';
+import Edge from '../../classes/Edge';
 import {ItemUnit} from '../../classes/ItemUnit';
+import {ObstacleType} from '../../enums/ObstacleType';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
 import InventoryScene from '../UIScenes/InventoryScene';
@@ -114,6 +117,53 @@ export default class PlanRouteScene extends Phaser.Scene {
       });
   }
 
+  selectItem(
+    item: Phaser.GameObjects.Sprite,
+    zoneRadius: number,
+    graphics: GameObjects.Graphics
+  ) {
+    item.clearTint();
+    graphics.clear();
+    this.drawAllowedEdges(item, graphics, zoneRadius);
+    this.selectedItemSprite = item;
+    const playerItems: Array<ItemUnit> = PlayerManager.getInstance()
+      .getCurrentPlayer()
+      .getItems();
+
+    for (let i = 0; i < playerItems.length; i++) {
+      const item: ItemUnit = playerItems[i];
+      if (item.getName() === this.selectedItemSprite.data.values.name) {
+        this.selectedItem = item;
+        break;
+      }
+    }
+  }
+
+  placeItem(edge: Edge, graphics: GameObjects.Graphics) {
+    if (this.selectedItemSprite) {
+      if (
+        (this.selectedItem.getAllowedEdges().includes(edge.getType()) &&
+          edge.getItems().length === 0 &&
+          this.selectedItem.getName() !== ObstacleType.Tree) ||
+        (this.selectedItem.getName() === ObstacleType.Tree &&
+          edge.getItems().length === 1)
+      ) {
+        this.sound.play('place');
+        graphics.clear();
+        PlayerManager.getInstance()
+          .getCurrentPlayer()
+          .removeItem(this.selectedItem);
+        edge.addItem(this.selectedItem);
+        this.selectedItemSprite.destroy();
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('renderedgescene').scene.restart();
+        this.scene.get('playerturnscene').scene.restart();
+        this.scene.get('inventoryscene').scene.restart();
+        this.scene.get('playericonscene').scene.restart();
+      }
+    }
+  }
+
   planRoute() {
     const graphics = this.add.graphics();
     const zoneRadius = (30 / 1600) * this.cameras.main.width;
@@ -132,17 +182,7 @@ export default class PlanRouteScene extends Phaser.Scene {
           .setData(edge)
           .setInteractive()
           .on('pointerup', () => {
-            if (this.selectedItemSprite) {
-              this.sound.play('place');
-              graphics.clear();
-              edge.addItem(this.selectedItem);
-              this.selectedItemSprite.destroy();
-              PlayerManager.getInstance().setNextPlayer();
-              this.scene.get('renderedgescene').scene.restart();
-              this.scene.get('playerturnscene').scene.restart();
-              this.scene.get('inventoryscene').scene.restart();
-              this.scene.get('playericonscene').scene.restart();
-            }
+            this.placeItem(edge, graphics);
           });
       });
 
@@ -161,22 +201,7 @@ export default class PlanRouteScene extends Phaser.Scene {
             item.clearTint();
           })
           .on('pointerup', () => {
-            item.clearTint();
-            graphics.clear();
-            this.drawAllowedEdges(item, graphics, zoneRadius);
-            this.selectedItemSprite = item;
-            const playerItems: Array<ItemUnit> = PlayerManager.getInstance()
-              .getCurrentPlayer()
-              .getItems();
-
-            for (let i = 0; i < playerItems.length; i++) {
-              const item: ItemUnit = playerItems[i];
-              if (item.getName() === this.selectedItemSprite.data.values.name) {
-                PlayerManager.getInstance().getCurrentPlayer().removeItem(item);
-                this.selectedItem = item;
-                break;
-              }
-            }
+            this.selectItem(item, zoneRadius, graphics);
           });
       });
     }
