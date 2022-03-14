@@ -133,7 +133,6 @@ export default class PlanRouteScene extends Phaser.Scene {
     for (let i = 0; i < playerItems.length; i++) {
       const item: ItemUnit = playerItems[i];
       if (item.getName() === this.selectedItemSprite.data.values.name) {
-        PlayerManager.getInstance().getCurrentPlayer().removeItem(item);
         this.selectedItem = item;
         break;
       }
@@ -143,18 +142,17 @@ export default class PlanRouteScene extends Phaser.Scene {
   placeItem(edge: Edge, graphics: GameObjects.Graphics) {
     if (this.selectedItemSprite) {
       if (
-        (this.selectedItemSprite.data.values.allowedEdges.includes(
-          edge.getType()
-        ) &&
+        (this.selectedItem.getAllowedEdges().includes(edge.getType()) &&
           edge.getItems().length === 0 &&
-          this.selectedItemSprite.data.values.obstacleType !==
-            ObstacleType.Tree) ||
-        (this.selectedItemSprite.data.values.obstacleType ===
-          ObstacleType.Tree &&
+          this.selectedItem.getName() !== ObstacleType.Tree) ||
+        (this.selectedItem.getName() === ObstacleType.Tree &&
           edge.getItems().length === 1)
       ) {
         this.sound.play('place');
         graphics.clear();
+        PlayerManager.getInstance()
+          .getCurrentPlayer()
+          .removeItem(this.selectedItem);
         edge.addItem(this.selectedItem);
         this.selectedItemSprite.destroy();
         PlayerManager.getInstance().setNextPlayer();
