@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GameManager from '../../managers/GameManager';
 
 export default class BoardScene extends Phaser.Scene {
   constructor() {
@@ -33,5 +34,20 @@ export default class BoardScene extends Phaser.Scene {
       24
     );
     brownPanel.setDepth(1);
+
+    // Create Round Card
+
+    // Get current round
+    const currentRoundNumber: number = GameManager.getInstance().getRound();
+
+    // Render card based on the position of the map and current round
+    this.add
+      .sprite(
+        map.getTopRight().x - 90,
+        map.getTopRight().y + 85,
+        `R${currentRoundNumber}`
+      )
+      .setDepth(3)
+      .setScale(0.165);
   }
 }
