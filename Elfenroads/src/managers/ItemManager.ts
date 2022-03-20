@@ -46,16 +46,6 @@ export default class ItemManager {
     pigMap.set(EdgeType.Wood, 1);
 
     for (let i = 0; i < 8; i++) {
-      if (i < 6) {
-        this.itemPile.push(
-          new Obstacle(ObstacleType.Tree, [
-            EdgeType.Plain,
-            EdgeType.Wood,
-            EdgeType.Mountain,
-            EdgeType.Desert,
-          ])
-        );
-      }
       this.itemPile.push(
         new Counter(
           CounterType.ElfCycle,
@@ -117,6 +107,15 @@ export default class ItemManager {
     const item = this.itemPile[index];
     this.itemPile.splice(index, 1);
     return item;
+  }
+
+  getTreeObstacle(): Obstacle {
+    return new Obstacle(ObstacleType.Tree, [
+      EdgeType.Plain,
+      EdgeType.Wood,
+      EdgeType.Mountain,
+      EdgeType.Desert,
+    ]);
   }
 
   flipCounters(): void {

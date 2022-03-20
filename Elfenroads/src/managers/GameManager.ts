@@ -1,5 +1,5 @@
 import {CardUnit} from '../classes/CardUnit';
-import {ItemUnit} from '../classes/ItemUnit';
+import {ItemUnit, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {BootColour} from '../enums/BootColour';
 import {CardManager} from './CardManager';
@@ -142,6 +142,8 @@ export default class GameManager {
       const randomItem: ItemUnit = this.itemManager.getRandomItem();
       randomItem.setHidden(true);
       player.addItem(randomItem);
+      const tree: Obstacle = this.itemManager.getTreeObstacle();
+      player.addItem(tree);
     }
   }
 
