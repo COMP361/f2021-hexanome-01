@@ -7,10 +7,12 @@ import {ObstacleType} from '../enums/ObstacleType';
 export default class ItemManager {
   private static itemManagerInstance: ItemManager;
   private itemPile: Array<ItemUnit>;
+  private faceUpPile: Array<ItemUnit>;
 
-  private constructor() {
+  constructor() {
     // contains item for elfenroads
     this.itemPile = [];
+    this.faceUpPile = [];
     //Elfcycle
     const elfMap: Map<EdgeType, number> = new Map();
     elfMap.set(EdgeType.Plain, 1);
@@ -44,16 +46,6 @@ export default class ItemManager {
     pigMap.set(EdgeType.Wood, 1);
 
     for (let i = 0; i < 8; i++) {
-      if (i < 6) {
-        this.itemPile.push(
-          new Obstacle(ObstacleType.Tree, [
-            EdgeType.Plain,
-            EdgeType.Wood,
-            EdgeType.Mountain,
-            EdgeType.Desert,
-          ])
-        );
-      }
       this.itemPile.push(
         new Counter(
           CounterType.ElfCycle,
@@ -99,26 +91,60 @@ export default class ItemManager {
     }
   }
 
-  public static getInstance(): ItemManager {
+  static getInstance(): ItemManager {
     if (!ItemManager.itemManagerInstance) {
       ItemManager.itemManagerInstance = new ItemManager();
     }
     return ItemManager.itemManagerInstance;
   }
 
-  public getItemPile(): Array<ItemUnit> {
+  getItemPile(): Array<ItemUnit> {
     return this.itemPile;
   }
 
-  public getRandomItem(): ItemUnit {
+  getRandomItem(): ItemUnit {
     const index = Math.floor(Math.random() * this.itemPile.length);
     const item = this.itemPile[index];
     this.itemPile.splice(index, 1);
     return item;
   }
 
-  public addToPile(player: Player, item: ItemUnit): void {
+  getTreeObstacle(): Obstacle {
+    return new Obstacle(ObstacleType.Tree, [
+      EdgeType.Plain,
+      EdgeType.Wood,
+      EdgeType.Mountain,
+      EdgeType.Desert,
+    ]);
+  }
+
+  flipCounters(): void {
+    for (let i = 0; i < 5; i++) {
+      this.faceUpPile.push(this.getRandomItem());
+    }
+  }
+  getFaceUpPile(): Array<ItemUnit> {
+    return this.faceUpPile;
+  }
+
+  removeFaceUpItem(i: any): void {
+    this.faceUpPile[i] = this.getRandomItem();
+  }
+
+  addToPile(player: Player, item: ItemUnit): void {
     player.removeItem(item);
     this.itemPile.push(item);
+  }
+
+  update(manager: any): void {
+    this.itemPile = manager.itemPile.map(
+      (counter: any) =>
+        new Counter(counter.name, counter.allowedEdges, counter.cardsNeeded)
+    );
+    this.faceUpPile = manager.faceUpPile.map(
+      (counter: any) =>
+        new Counter(counter.name, counter.allowedEdges, counter.cardsNeeded)
+    );
+    console.log(this.itemPile);
   }
 }

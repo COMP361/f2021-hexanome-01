@@ -9,6 +9,7 @@ import {
 import {
   getSessionId,
   getUser,
+  storeSession,
   storeSessionId,
 } from '../../../../utils/storageUtils';
 import './Wait.scss';
@@ -53,7 +54,7 @@ export default function Wait({socket, setSocket}: any) {
       .then(res => res.data.data)
       .then(data => {
         if (data.Session.gameSession.launched) {
-          setSocket(socket);
+          storeSession(data.Session, () => setSocket(socket));
         } else {
           setSession(data.Session);
         }

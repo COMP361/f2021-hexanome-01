@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {Counter, ItemUnit} from '../../classes/ItemUnit';
 import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 
@@ -6,12 +7,14 @@ export default class DrawCountersScene extends Phaser.Scene {
   // Grab width of current game to center our container
 
   public cb: any;
+  public sprites: any;
   constructor() {
     super('drawcountersscene');
   }
 
   create(cb: any) {
     this.cb = cb;
+    this.sprites = [];
     // Create text to notify that it is draw counter phase
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -40,20 +43,31 @@ export default class DrawCountersScene extends Phaser.Scene {
     container.add(brownPanel);
     container.add(drawCounterText);
 
+    // Render five face up counters
+    this.renderCounters();
+  }
+
+  renderCounters() {
+    const gameWidth: number = this.cameras.main.width;
     let previousWidth: integer = gameWidth / 2 + 200;
 
+    while (this.sprites.length) {
+      this.sprites[0].destroy();
+      this.sprites.splice(0, 1);
+    }
+
     // Render five face up counters
+    const counters: Array<ItemUnit> = ItemManager.getInstance().getFaceUpPile();
     for (let i = 0; i < 5; i++) {
-      this.generateCounter(previousWidth);
+      this.generateCounter(previousWidth, counters[i], i);
       previousWidth += 50;
     }
 
     // Render a face down counter pile
     this.generateRandomCounter(previousWidth);
   }
-
-  generateCounter(previousWidth: integer): void {
-    const currentItem = ItemManager.getInstance().getRandomItem();
+  generateCounter(previousWidth: integer, counter: ItemUnit, i: number): void {
+    const currentItem = counter;
     const itemSprite = this.add
       .sprite(previousWidth, 110, currentItem.getName())
       .setScale(0.25)
@@ -66,9 +80,16 @@ export default class DrawCountersScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         itemSprite.clearTint();
+        this.sound.play('collect');
         PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
         itemSprite.destroy();
-        this.generateCounter(previousWidth);
+        ItemManager.getInstance().removeFaceUpItem(i);
+        this.generateCounter(
+          previousWidth,
+          ItemManager.getInstance().getFaceUpPile()[i],
+          i
+        );
+        // this.generateCounter(previousWidth);
         PlayerManager.getInstance().setNextPlayer();
         this.scene.get('playerturnscene').scene.restart();
         this.scene.get('inventoryscene').scene.restart();
@@ -78,17 +99,19 @@ export default class DrawCountersScene extends Phaser.Scene {
         PlayerManager.getInstance()
           .getPlayers()
           .forEach(player => {
-            if (player.getItems().length === 3) {
+            if (player.getItems().length === 4) {
               finishedPlayers++;
             }
           });
 
+        console.log(finishedPlayers);
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
           this.cb();
         }
       });
+    this.sprites.push(itemSprite);
   }
 
   generateRandomCounter(previousWidth: integer): void {
@@ -117,7 +140,7 @@ export default class DrawCountersScene extends Phaser.Scene {
         PlayerManager.getInstance()
           .getPlayers()
           .forEach(player => {
-            if (player.getItems().length === 3) {
+            if (player.getItems().length === 4) {
               finishedPlayers++;
             }
           });

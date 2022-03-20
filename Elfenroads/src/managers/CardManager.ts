@@ -103,22 +103,30 @@ export class CardManager {
       edgeItems.forEach(item => {
         // need to change this later for elfengold
         if (item instanceof Counter) {
-          const map = item.getCardsNeeded();
-          const numOfCards = map.get(edgeType);
-          cards.forEach(card => {
-            // ex. pig-card includes pig
-            if (!card.getName().includes(item.getName())) {
-              // not the right card
-              isLegal = false;
-            }
-          });
+          // caravan
           if (
-            (edgeItems.length === 1 && cards.length !== numOfCards) ||
-            (numOfCards &&
-              edgeItems.length === 2 &&
-              cards.length !== numOfCards + 1)
+            (cards.length === 3 && edgeItems.length !== 1) ||
+            (cards.length === 4 && edgeItems.length !== 2)
           ) {
             isLegal = false;
+          } else {
+            const map = item.getCardsNeeded();
+            const numOfCards = map.get(edgeType);
+            cards.forEach(card => {
+              // ex. pig-card includes pig
+              if (!card.getName().includes(item.getName())) {
+                // not the right card
+                isLegal = false;
+              }
+            });
+            if (
+              (edgeItems.length === 1 && cards.length !== numOfCards) ||
+              (numOfCards &&
+                edgeItems.length === 2 &&
+                cards.length !== numOfCards + 1)
+            ) {
+              isLegal = false;
+            }
           }
         }
       });
@@ -130,11 +138,13 @@ export class CardManager {
         this.addToPile(player, card);
       });
       // set player to new town
-      [edge.getSrcTown(), edge.getDestTown()].forEach(town => {
-        if (town !== player.getCurrentLocation()) {
-          player.setCurrentLocation(town);
+      const towns = [edge.getSrcTown(), edge.getDestTown()];
+      for (let i = 0; i < towns.length; i++) {
+        if (towns[i] !== player.getCurrentLocation()) {
+          player.setCurrentLocation(towns[i]);
+          break;
         }
-      });
+      }
     }
     return isLegal;
   }
