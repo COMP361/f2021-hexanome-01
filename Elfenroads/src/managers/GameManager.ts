@@ -9,7 +9,7 @@ import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
-import DrawCountersScene from '../scenes/GameplayScenes/DrawCountersScene';
+
 const colorMap: any = {
   '008000': BootColour.Green,
   '0000FF': BootColour.Blue,
@@ -79,7 +79,10 @@ export default class GameManager {
   }
 
   private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
+    // Phase 1 & 2
     this.dealCardsAndCounter();
+
+    // Initialize session with managers
     if (getUser().name === getSession().gameSession.creator) {
       ItemManager.getInstance().flipCounters();
       this.socket.emit('statusChange', {
