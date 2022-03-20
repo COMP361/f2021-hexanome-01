@@ -46,7 +46,7 @@ export default class GameManager {
       data: getUser().name,
     });
     this.initialized = false;
-    this.round = 1;
+    this.round = 0;
   }
 
   public static getInstance(): GameManager {
@@ -72,6 +72,7 @@ export default class GameManager {
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
+      this.round = i;
       this.playRound(mainScene, i - 1);
     }
 
