@@ -13,7 +13,9 @@ import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
 
 export default class UIScene extends Phaser.Scene {
-  private menuButtons: Array<any>;
+  private width = 0;
+  private height = 0;
+  private menuButtons: Array<any> = [];
   private inventoryOpen = true;
   private inventories: Array<any> = [];
   public static itemSprites: Array<Phaser.GameObjects.Sprite> = [];
@@ -21,10 +23,14 @@ export default class UIScene extends Phaser.Scene {
 
   constructor() {
     super('uiscene');
-    this.menuButtons = [];
   }
 
+  // Default functon that is called when the Phaser Scene is launched.
   create() {
+    this.width = this.scale.width; // Initialize our global variable based on the scene width
+    this.height = this.scale.height; // Initialize our global variable based on the scene height
+
+    // Render all of the UI elements
     this.createBoard();
     this.createPlayerIcons();
     this.createPlayerTurnBanner();
@@ -33,25 +39,25 @@ export default class UIScene extends Phaser.Scene {
     this.createTownPieceToggle();
     this.createDestinationTownBanner();
     this.renderEdges();
+    this.renderBoots();
     this.createPlayerInventory();
   }
 
+  // Renders the background, board, and map.
   private createBoard(): void {
     // Send UIScene to back so that UI can sit on top.
     this.scene.sendToBack();
 
     // Create light brown background
-    const background = this.add.image(0, 0, 'brownBackground').setOrigin(0, 0);
-    background.displayWidth = this.sys.canvas.width;
-    background.displayHeight = this.sys.canvas.height;
+    this.add
+      .image(0, 0, 'brownBackground')
+      .setOrigin(0, 0)
+      .setDisplaySize(this.width, this.height);
 
     // Create map
     const map = this.add
-      .image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'map')
-      .setDisplaySize(
-        this.cameras.main.width * 0.6,
-        this.cameras.main.height * 0.7
-      )
+      .image(this.width / 2, this.height / 2, 'map')
+      .setDisplaySize(this.width * 0.6, this.height * 0.7)
       .setDepth(2);
 
     // Create dark brown board to go under map
@@ -81,9 +87,9 @@ export default class UIScene extends Phaser.Scene {
       .setScale(0.165);
   }
 
+  // Renders the Player icons on the left.
   private createPlayerIcons(): void {
     const players: Array<Player> = PlayerManager.getInstance().getPlayers();
-    let bootX = 0;
 
     // For rendering purposes, we want to display all counters face up for local player
     const localPlayer: Player = PlayerManager.getInstance().getLocalPlayer();
@@ -91,8 +97,8 @@ export default class UIScene extends Phaser.Scene {
     for (let i = 0; i < players.length; i++) {
       const icon: PlayerIcon = new PlayerIcon(
         this,
-        this.cameras.main.width / 7,
-        this.cameras.main.height / 4 + 70 * i,
+        this.width / 7,
+        this.height / 4 + 70 * i,
         players[i].getBootColour()
       );
       const items: Array<ItemUnit> = players[i].getItems();
@@ -103,21 +109,31 @@ export default class UIScene extends Phaser.Scene {
           icon.addItem(items[j].getName());
         }
       }
-      if (players[i] !== localPlayer) {
-        icon.addBootImg(
-          (players[i].getCurrentLocation().getXposition() / 1600) *
-            this.cameras.main.width +
-            bootX,
-          (players[i].getCurrentLocation().getYposition() / 750) *
-            this.cameras.main.height,
-          this.cameras.main.width * 0.04,
-          this.cameras.main.height * 0.08
-        );
-      }
-      bootX += 15;
     }
   }
 
+  // Renders the Player Boots across the map.
+  private renderBoots(): void {
+    let xOffset: integer = 0;
+
+    // Loop through players and render their boots based on current Town.
+    PlayerManager.getInstance()
+      .getPlayers()
+      .forEach(player => {
+        this.add
+          .sprite(
+            (player.getCurrentLocation().getXposition() / 1600) * this.width +
+              xOffset,
+            (player.getCurrentLocation().getYposition() / 750) * this.height,
+            player.getBootColour()
+          )
+          .setDepth(3)
+          .setScale(0.15);
+        xOffset += 10;
+      });
+  }
+
+  // Displays whose turn is it.
   private createPlayerTurnBanner(): void {
     // Get the currentPlayer because it is their turn
     const currentPlayer: Player =
@@ -145,7 +161,7 @@ export default class UIScene extends Phaser.Scene {
       .setOrigin(0, 0);
 
     // Grab width of current game to center our container
-    const gameWidth: number = this.cameras.main.width;
+    const gameWidth: number = this.width;
 
     // Initialize container to group elements
     // Need to center the container relative to the gameWidth and the size of the text box
@@ -159,9 +175,8 @@ export default class UIScene extends Phaser.Scene {
     container.add(playerText).setDepth(3);
   }
 
-  // Method to create elfenroads cheat sheet card/menu
+  // Creates the Elfenroads cheat sheet card/menu on the top right.
   private createCheatSheetMenu(): void {
-    const width = this.cameras.main.width;
     // Create menu that will slide out after clicking question mark button
     const cheatSheetMenu = new CheatSheetMenu(this);
 
@@ -169,7 +184,7 @@ export default class UIScene extends Phaser.Scene {
     this.menuButtons.push(cheatSheetMenu);
 
     // Create question mark button
-    const cheatsheetButton = this.add.sprite(width - 80, 30, 'brown-box');
+    const cheatsheetButton = this.add.sprite(this.width - 80, 30, 'brown-box');
     this.add
       .image(cheatsheetButton.x, cheatsheetButton.y, 'question')
       .setScale(0.7);
@@ -196,7 +211,7 @@ export default class UIScene extends Phaser.Scene {
       });
   }
 
-  // Method to create Settings menu
+  // Creates the settings menu on the top right.
   private createSettingsMenu(): void {
     // Create menu that will slide out after clicking settingsButton
     const settingsMenu = new SettingsMenu(this);
@@ -205,8 +220,7 @@ export default class UIScene extends Phaser.Scene {
     this.menuButtons.push(settingsMenu);
 
     // Create settingsButton (gear icon)
-    const width = this.cameras.main.width;
-    const settingsButton = this.add.sprite(width - 30, 30, 'brown-box');
+    const settingsButton = this.add.sprite(this.width - 30, 30, 'brown-box');
     this.add.image(settingsButton.x, settingsButton.y, 'gear').setScale(0.7);
 
     // Add interactive pointer options for settingsButton
@@ -231,10 +245,10 @@ export default class UIScene extends Phaser.Scene {
       });
   }
 
+  // Displays Player's current acquired town pieces.
   private createTownPieceToggle(): void {
-    const {width} = this.scale;
     /* toggles town piece visibility */
-    const townPieceButton = this.add.sprite(width - 130, 30, 'brown-box');
+    const townPieceButton = this.add.sprite(this.width - 130, 30, 'brown-box');
     this.add
       .image(townPieceButton.x, townPieceButton.y, 'information')
       .setScale(0.7);
@@ -253,8 +267,8 @@ export default class UIScene extends Phaser.Scene {
       });
   }
 
+  // Displays the local Player's secret town.
   private createDestinationTownBanner(): void {
-    const {width} = this.scale;
     const towns = Array.from(Town.getAllTowns().keys());
     const town = towns[Math.floor(Math.random() * towns.length)];
     /*destination town*/
@@ -269,7 +283,7 @@ export default class UIScene extends Phaser.Scene {
       .setOrigin(0, 0);
 
     const container: Phaser.GameObjects.Container = this.add.container(
-      width - 360,
+      this.width - 360,
       8
     );
 
@@ -277,12 +291,13 @@ export default class UIScene extends Phaser.Scene {
     container.add(destText);
   }
 
+  // Renders the current Counters/Items on each edge.
   private renderEdges(): void {
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
-        const x = (edge.getPosition()[0] / 1600) * this.cameras.main.width;
-        const y = (edge.getPosition()[1] / 750) * this.cameras.main.height;
+        const x = (edge.getPosition()[0] / 1600) * this.width;
+        const y = (edge.getPosition()[1] / 750) * this.height;
         let xOffset = 0;
         edge.getItems().forEach(item => {
           // If item is in map add it to Phaser container
@@ -299,6 +314,7 @@ export default class UIScene extends Phaser.Scene {
       });
   }
 
+  // Displays the local Player's current inventory.
   private createPlayerInventory(): void {
     // Create our ItemInventory.
     const itemInventory = new ItemInventory(this);
