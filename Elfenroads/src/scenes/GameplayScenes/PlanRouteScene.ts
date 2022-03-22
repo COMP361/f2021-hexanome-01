@@ -108,11 +108,12 @@ export default class PlanRouteScene extends Phaser.Scene {
       .getEdges()
       .forEach(edge => {
         if (item.data.values.allowedEdges.includes(edge.getType())) {
-          graphics.strokeCircle(
-            (edge.getPosition()[0] / 1600) * this.cameras.main.width,
-            (edge.getPosition()[1] / 750) * this.cameras.main.height,
-            zoneRadius / 3
+          const pos = UIScene.getResponsivePosition(
+            this,
+            edge.getPosition()[0],
+            edge.getPosition()[1]
           );
+          graphics.strokeCircle(pos[0], pos[1], zoneRadius / 3);
         }
       });
   }
@@ -163,19 +164,19 @@ export default class PlanRouteScene extends Phaser.Scene {
 
   planRoute() {
     const graphics = this.add.graphics();
-    const zoneRadius = (30 / 1600) * this.cameras.main.width;
+    const zoneRadius = UIScene.getResponsivePosition(this, 30, 30)[0];
 
     // creating all the dropzones for counters
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
+        const pos = UIScene.getResponsivePosition(
+          this,
+          edge.getPosition()[0],
+          edge.getPosition()[1]
+        );
         this.add
-          .zone(
-            (edge.getPosition()[0] / 1600) * this.cameras.main.width,
-            (edge.getPosition()[1] / 750) * this.cameras.main.height,
-            10,
-            10
-          )
+          .zone(pos[0], pos[1], 10, 10)
           .setData(edge)
           .setInteractive()
           .on('pointerup', () => {
