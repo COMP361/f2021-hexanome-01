@@ -84,11 +84,9 @@ export default class PlayerIcon {
     const store: ImgStore = ImgStore.instance();
 
     /* add player token */
-    const token: Phaser.GameObjects.Sprite = this.scene.add.sprite(
-      xpos,
-      ypos,
-      store.getActor(color)
-    );
+    const token: Phaser.GameObjects.Sprite = this.scene.add
+      .sprite(xpos, ypos, store.getActor(color))
+      .setDepth(3);
 
     const panel: Phaser.GameObjects.RenderTexture = this.scene.add
       .nineslice(0, 0, 120, 60, store.getPanel(color), 24)
@@ -97,10 +95,9 @@ export default class PlayerIcon {
 
     token.setScale(0.3);
 
-    const aContainer: Phaser.GameObjects.Container = this.scene.add.container(
-      xpos + 30,
-      ypos - 30
-    );
+    const aContainer: Phaser.GameObjects.Container = this.scene.add
+      .container(xpos + 30, ypos - 30)
+      .setDepth(3);
     this.container = aContainer;
     aContainer.add(panel);
     aContainer.setVisible(false);

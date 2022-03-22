@@ -4,7 +4,7 @@ import {ItemUnit} from '../../classes/ItemUnit';
 import {ObstacleType} from '../../enums/ObstacleType';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
-import InventoryScene from '../UIScenes/InventoryScene';
+import UIScene from '../UIScene';
 
 export default class PlanRouteScene extends Phaser.Scene {
   selectedItemSprite!: Phaser.GameObjects.Sprite;
@@ -75,7 +75,7 @@ export default class PlanRouteScene extends Phaser.Scene {
         this.sound.play('pass');
         PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('playerturnscene').scene.restart();
+        this.scene.get('uiscene').scene.restart();
         let finishedPlayers: integer = 0;
         PlayerManager.getInstance()
           .getPlayers()
@@ -156,10 +156,7 @@ export default class PlanRouteScene extends Phaser.Scene {
         edge.addItem(this.selectedItem);
         this.selectedItemSprite.destroy();
         PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('renderedgescene').scene.restart();
-        this.scene.get('playerturnscene').scene.restart();
-        this.scene.get('inventoryscene').scene.restart();
-        this.scene.get('playericonscene').scene.restart();
+        this.scene.get('uiscene').scene.restart();
       }
     }
   }
@@ -191,7 +188,7 @@ export default class PlanRouteScene extends Phaser.Scene {
       PlayerManager.getInstance().getCurrentPlayer() ===
       PlayerManager.getInstance().getLocalPlayer()
     ) {
-      InventoryScene.itemSprites.forEach(item => {
+      UIScene.itemSprites.forEach(item => {
         item
           .setInteractive()
           .on('pointerdown', () => {
