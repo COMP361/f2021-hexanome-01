@@ -3,7 +3,7 @@ import {BootColour} from '../enums/BootColour';
 import eventsCenter from './EventsCenter';
 
 // helper class for getting the right image
-class ImgStore {
+export class ImgStore {
   private actorStore: Map<BootColour, string> = new Map();
   private bootStore: Map<BootColour, string> = new Map();
   private panelStore: Map<BootColour, string> = new Map();
@@ -145,19 +145,5 @@ export default class PlayerIcon {
     this.numItems++;
     this.panel.setSize(60 * this.numItems, 60);
     this.container.add(item);
-  }
-
-  public addBootImg(
-    xpos: number,
-    ypos: number,
-    width: number,
-    height: number
-  ): void {
-    const boot: Phaser.GameObjects.Sprite = this.scene.add.sprite(
-      xpos,
-      ypos,
-      ImgStore.instance().getBoot(this.color)
-    );
-    boot.setDisplaySize(width, height);
   }
 }
