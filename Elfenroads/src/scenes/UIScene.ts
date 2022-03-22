@@ -43,6 +43,16 @@ export default class UIScene extends Phaser.Scene {
     this.createPlayerInventory();
   }
 
+  public static getResponsivePosition(
+    scene: Phaser.Scene,
+    xPos: number,
+    yPos: number
+  ) {
+    const x = (xPos / 1600) * scene.cameras.main.width;
+    const y = (yPos / 750) * scene.cameras.main.height;
+    return [x, y];
+  }
+
   // Renders the background, board, and map.
   private createBoard(): void {
     // Send UIScene to back so that UI can sit on top.
@@ -120,13 +130,13 @@ export default class UIScene extends Phaser.Scene {
     PlayerManager.getInstance()
       .getPlayers()
       .forEach(player => {
+        const pos = UIScene.getResponsivePosition(
+          this,
+          player.getCurrentLocation().getXposition(),
+          player.getCurrentLocation().getYposition()
+        );
         this.add
-          .sprite(
-            (player.getCurrentLocation().getXposition() / 1600) * this.width +
-              xOffset,
-            (player.getCurrentLocation().getYposition() / 750) * this.height,
-            player.getBootColour()
-          )
+          .sprite(pos[0] + xOffset, pos[1], player.getBootColour())
           .setDepth(3)
           .setScale(0.15);
         xOffset += 10;
@@ -296,15 +306,18 @@ export default class UIScene extends Phaser.Scene {
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
-        const x = (edge.getPosition()[0] / 1600) * this.width;
-        const y = (edge.getPosition()[1] / 750) * this.height;
+        const pos = UIScene.getResponsivePosition(
+          this,
+          edge.getPosition()[0],
+          edge.getPosition()[1]
+        );
         let xOffset = 0;
         edge.getItems().forEach(item => {
           // If item is in map add it to Phaser container
           if (item) {
             // Render sprite to this Phaser Scene and offset based on the other Items
             this.add
-              .sprite(x + xOffset, y, item.getName())
+              .sprite(pos[0] + xOffset, pos[1], item.getName())
               .setData(item)
               .setScale(0.25)
               .setDepth(3);
