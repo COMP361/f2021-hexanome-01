@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import {Counter, ItemUnit} from '../../classes/ItemUnit';
+import {ItemUnit} from '../../classes/ItemUnit';
 import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 
@@ -91,9 +91,7 @@ export default class DrawCountersScene extends Phaser.Scene {
         );
         // this.generateCounter(previousWidth);
         PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('playerturnscene').scene.restart();
-        this.scene.get('inventoryscene').scene.restart();
-        this.scene.get('playericonscene').scene.restart();
+        this.scene.get('uiscene').scene.restart();
 
         let finishedPlayers: integer = 0;
         PlayerManager.getInstance()
@@ -132,9 +130,7 @@ export default class DrawCountersScene extends Phaser.Scene {
         itemSprite.destroy();
         this.generateRandomCounter(previousWidth);
         PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('playerturnscene').scene.restart();
-        this.scene.get('inventoryscene').scene.restart();
-        this.scene.get('playericonscene').scene.restart();
+        this.scene.get('uiscene').scene.restart();
 
         let finishedPlayers: integer = 0;
         PlayerManager.getInstance()

@@ -22,7 +22,7 @@ export default class CardInventory {
     const CARD_UP = height / 1.12;
 
     // Initialize container to group elements
-    this.container = scene.add.container(width / 4.2, CARD_UP);
+    this.container = scene.add.container(width / 4.2, CARD_UP).setDepth(3);
 
     // Initialize/make settings menu hidden
     this.isOpen = true;

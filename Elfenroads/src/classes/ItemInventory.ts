@@ -18,7 +18,7 @@ export default class ItemInventory {
     const {width} = this.scene.scale;
 
     // Initialize container to group elements
-    this.container = scene.add.container(width / 2, height / 1.12);
+    this.container = scene.add.container(width / 2, height / 1.12).setDepth(3);
 
     // Initialize/make settings menu hidden
     this.isOpen = true;
