@@ -163,11 +163,9 @@ export default class SelectionScene extends Phaser.Scene {
       card
         .setInteractive()
         .on('pointerover', () => {
-          card.setTint(0xffffff);
-          card.y -= 50;
+          card.setTint(0xd3d3d3);
         })
         .on('pointerdown', () => {
-          card.setTint(0x808080);
           const index: number = this.isSeleted(card);
           if (index === -1) {
             card.y -= 50;
@@ -179,7 +177,6 @@ export default class SelectionScene extends Phaser.Scene {
         })
         .on('pointerout', () => {
           card.clearTint();
-          card.y += 50;
         })
         .on('pointerup', () => {
           card.clearTint();

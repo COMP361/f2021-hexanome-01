@@ -36,18 +36,6 @@ export default class CardInventory {
       card.name = cardName;
       card.setScale(CARD_SIZE);
 
-      // make it possible to  check card
-      card
-        .setInteractive()
-        .on('pointerover', () => {
-          card.setTint(0xffffff);
-          card.y -= 50;
-        })
-        .on('pointerout', () => {
-          card.clearTint();
-          card.y += 50;
-        });
-
       // Add card sprite to Phaser container so that it do the hide/show group animation
       this.container.add(card);
       this.sprites.push(card);
