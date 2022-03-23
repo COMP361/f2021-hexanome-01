@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import {CardManager} from '../managers/CardManager';
+import UIScene from '../scenes/UIScene';
 
 export default class CardInventory {
   sprites: Array<Phaser.GameObjects.Sprite> = [];
@@ -13,14 +15,9 @@ export default class CardInventory {
     this.numCards = 0;
 
     // Get height and width to determing card placement
-    const width = this.scene.cameras.main.width;
     const height = this.scene.cameras.main.height;
-
-    // Size of card when faced up
-    const CARD_UP = height / 1.12;
-
-    // Initialize container to group elements
-    this.container = scene.add.container(width / 4.2, CARD_UP);
+    const pos = UIScene.getResponsivePosition(this.scene, 250, 670);
+    this.container = scene.add.container(pos[0], pos[1]).setDepth(3);
 
     // Initialize/make settings menu hidden
     this.isOpen = true;

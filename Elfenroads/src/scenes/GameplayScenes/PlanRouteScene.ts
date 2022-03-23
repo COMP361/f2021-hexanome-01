@@ -4,7 +4,7 @@ import {ItemUnit} from '../../classes/ItemUnit';
 import {ObstacleType} from '../../enums/ObstacleType';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
-import InventoryScene from '../UIScenes/InventoryScene';
+import UIScene from '../UIScene';
 
 export default class PlanRouteScene extends Phaser.Scene {
   selectedItemSprite!: Phaser.GameObjects.Sprite;
@@ -75,7 +75,7 @@ export default class PlanRouteScene extends Phaser.Scene {
         this.sound.play('pass');
         PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('playerturnscene').scene.restart();
+        this.scene.get('uiscene').scene.restart();
         let finishedPlayers: integer = 0;
         PlayerManager.getInstance()
           .getPlayers()
@@ -108,11 +108,12 @@ export default class PlanRouteScene extends Phaser.Scene {
       .getEdges()
       .forEach(edge => {
         if (item.data.values.allowedEdges.includes(edge.getType())) {
-          graphics.strokeCircle(
-            (edge.getPosition()[0] / 1600) * this.cameras.main.width,
-            (edge.getPosition()[1] / 750) * this.cameras.main.height,
-            zoneRadius / 3
+          const pos = UIScene.getResponsivePosition(
+            this,
+            edge.getPosition()[0],
+            edge.getPosition()[1]
           );
+          graphics.strokeCircle(pos[0], pos[1], zoneRadius / 3);
         }
       });
   }
@@ -156,29 +157,26 @@ export default class PlanRouteScene extends Phaser.Scene {
         edge.addItem(this.selectedItem);
         this.selectedItemSprite.destroy();
         PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('renderedgescene').scene.restart();
-        this.scene.get('playerturnscene').scene.restart();
-        this.scene.get('inventoryscene').scene.restart();
-        this.scene.get('playericonscene').scene.restart();
+        this.scene.get('uiscene').scene.restart();
       }
     }
   }
 
   planRoute() {
     const graphics = this.add.graphics();
-    const zoneRadius = (30 / 1600) * this.cameras.main.width;
+    const zoneRadius = UIScene.getResponsivePosition(this, 30, 30)[0];
 
     // creating all the dropzones for counters
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
+        const pos = UIScene.getResponsivePosition(
+          this,
+          edge.getPosition()[0],
+          edge.getPosition()[1]
+        );
         this.add
-          .zone(
-            (edge.getPosition()[0] / 1600) * this.cameras.main.width,
-            (edge.getPosition()[1] / 750) * this.cameras.main.height,
-            10,
-            10
-          )
+          .zone(pos[0], pos[1], 10, 10)
           .setData(edge)
           .setInteractive()
           .on('pointerup', () => {
@@ -191,7 +189,7 @@ export default class PlanRouteScene extends Phaser.Scene {
       PlayerManager.getInstance().getCurrentPlayer() ===
       PlayerManager.getInstance().getLocalPlayer()
     ) {
-      InventoryScene.itemSprites.forEach(item => {
+      UIScene.itemSprites.forEach(item => {
         item
           .setInteractive()
           .on('pointerdown', () => {

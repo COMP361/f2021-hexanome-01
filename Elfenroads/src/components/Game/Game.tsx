@@ -14,18 +14,13 @@ import {Plugin as NineSlicePlugin} from 'phaser3-nineslice';
 import {useRef, useState} from 'react';
 
 // All of our scenes in Phaser Game
-import BoardScene from '../../scenes/UIScenes/BoardScene';
+import UIScene from '../../scenes/UIScene';
 import MainScene from '../../scenes/MainScene';
 import MoveBootScene from '../../scenes/GameplayScenes/MoveBootScene';
 import Preloader from '../../scenes/Preloader';
-import UpperUIScene from '../../scenes/UIScenes/UpperUIScene';
-import InventoryScene from '../../scenes/UIScenes/InventoryScene';
-import PlayerIconScene from '../../scenes/UIScenes/PlayerIconScene';
-import PlayerTurnScene from '../../scenes/UIScenes/PlayerTurnScene';
 import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
 import PlanRouteScene from '../../scenes/GameplayScenes/PlanRouteScene';
 import SelectionScene from '../../scenes/GameplayScenes/SelectCardnEdgeScene';
-import RenderEdgeScene from '../../scenes/UIScenes/RenderEdgesScene';
 
 // Phaser Game config
 const game = {
@@ -45,15 +40,10 @@ const game = {
   scene: [
     Preloader,
     MainScene,
-    BoardScene,
+    UIScene,
     MoveBootScene,
-    UpperUIScene,
-    InventoryScene,
-    PlayerIconScene,
-    PlayerTurnScene,
     DrawCountersScene,
     PlanRouteScene,
-    RenderEdgeScene,
     SelectionScene,
   ],
 };

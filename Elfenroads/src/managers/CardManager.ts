@@ -110,7 +110,9 @@ export class CardManager {
           ) {
             isLegal = false;
           } else {
+            console.log(item);
             const map = item.getCardsNeeded();
+            console.log(map);
             const numOfCards = map.get(edgeType);
             cards.forEach(card => {
               // ex. pig-card includes pig
@@ -138,13 +140,7 @@ export class CardManager {
         this.addToPile(player, card);
       });
       // set player to new town
-      const towns = [edge.getSrcTown(), edge.getDestTown()];
-      for (let i = 0; i < towns.length; i++) {
-        if (towns[i] !== player.getCurrentLocation()) {
-          player.setCurrentLocation(towns[i]);
-          break;
-        }
-      }
+      PlayerManager.getInstance().movePlayer(player, edge);
     }
     return isLegal;
   }

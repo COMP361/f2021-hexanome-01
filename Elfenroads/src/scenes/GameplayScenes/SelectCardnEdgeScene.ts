@@ -1,4 +1,4 @@
-import InventoryScene from '../UIScenes/InventoryScene';
+import UIScene from '../UIScene';
 import {CardManager} from '../../managers/CardManager';
 import RoadManager from '../../managers/RoadManager';
 import {CardUnit} from '../../classes/CardUnit';
@@ -137,7 +137,6 @@ export default class SelectionScene extends Phaser.Scene {
           if (edge === undefined) return;
           if (cards.length <= 0) return;
           if (CardManager.getInstance().playCards(currPlayer, cards, edge)) {
-            PlayerManager.getInstance().movePlayer(currPlayer, edge);
             for (const card of this.selected) {
               const c = CardManager.getInstance().getSelectedCard(
                 PlayerManager.getInstance().getCurrentPlayer(),
@@ -153,12 +152,13 @@ export default class SelectionScene extends Phaser.Scene {
                 );
               }
             }
-            this.scene.get('playericonscene').scene.restart();
+            this.scene.get('uiscene').scene.restart();
+            console.log('YOOOOO ITS WORKING!');
           }
         }
       });
     // make every cards in hand selectable
-    for (const card of InventoryScene.cardSprites) {
+    for (const card of UIScene.cardSprites) {
       // make it possible to select card
       card
         .setInteractive()

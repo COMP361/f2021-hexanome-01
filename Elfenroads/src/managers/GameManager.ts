@@ -9,7 +9,7 @@ import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
-import DrawCountersScene from '../scenes/GameplayScenes/DrawCountersScene';
+
 const colorMap: any = {
   '008000': BootColour.Green,
   '0000FF': BootColour.Blue,
@@ -46,7 +46,7 @@ export default class GameManager {
       data: getUser().name,
     });
     this.initialized = false;
-    this.round = 1;
+    this.round = 0;
   }
 
   public static getInstance(): GameManager {
@@ -72,6 +72,7 @@ export default class GameManager {
 
     // Step 3: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
+      this.round = i;
       this.playRound(mainScene, i - 1);
     }
 
@@ -79,7 +80,10 @@ export default class GameManager {
   }
 
   private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
+    // Phase 1 & 2
     this.dealCardsAndCounter();
+
+    // Initialize session with managers
     if (getUser().name === getSession().gameSession.creator) {
       ItemManager.getInstance().flipCounters();
       this.socket.emit('statusChange', {
@@ -108,7 +112,8 @@ export default class GameManager {
     this.socket.on('statusChange', (data: any) => {
       if (!this.initialized) {
         const managers = data.msg.data;
-        ItemManager.getInstance().update(managers.itemManager);
+
+        // ItemManager.getInstance().update(managers.itemManager);
         this.initialized = true;
 
         PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
@@ -123,7 +128,9 @@ export default class GameManager {
 
             PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
             // Phase 5: Move Boot
-            mainScene.scene.launch('movebootscene');
+            mainScene.scene.launch('selectionscene', () => {
+              mainScene.scene.launch('selectionscene');
+            });
           });
         });
       }

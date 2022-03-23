@@ -9,6 +9,14 @@ export default class Preloader extends Phaser.Scene {
     // /////////////////////////////////////////////////////////
     // ///// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
     // /////////////////////////////////////////////////////////
+
+    // Assets for Round
+    this.load.image('R1', 'assets/boardgame/R1.png');
+    this.load.image('R2', 'assets/boardgame/R2.png');
+    this.load.image('R3', 'assets/boardgame/R3.png');
+    this.load.image('R4', 'assets/boardgame/R4.png');
+
+    // Assets for font
     this.load.webfont(
       'MedievalSharp',
       'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'

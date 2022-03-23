@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import UIScene from '../scenes/UIScene';
 import {ItemUnit} from './ItemUnit';
 
 export default class ItemInventory {
@@ -13,12 +14,9 @@ export default class ItemInventory {
     this.scene = scene;
     this.numItems = 0;
 
-    // Get height and width to determing item placement
-    const {height} = this.scene.scale;
-    const {width} = this.scene.scale;
-
     // Initialize container to group elements
-    this.container = scene.add.container(width / 2, height / 1.12);
+    const pos = UIScene.getResponsivePosition(this.scene, 1000, 670);
+    this.container = scene.add.container(pos[0], pos[1]).setDepth(3);
 
     // Initialize/make settings menu hidden
     this.isOpen = true;
