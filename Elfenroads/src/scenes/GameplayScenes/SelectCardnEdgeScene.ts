@@ -1,21 +1,24 @@
 import UIScene from '../UIScene';
 import {CardManager} from '../../managers/CardManager';
-import RoadManager from '../../managers/RoadManager';
 import {CardUnit} from '../../classes/CardUnit';
 import Edge from '../../classes/Edge';
 import PlayerManager from '../../managers/PlayerManager';
+import EdgeMenu from '../../classes/EdgeMenu';
 
 export default class SelectionScene extends Phaser.Scene {
   private selected: Array<Phaser.GameObjects.Sprite> = [];
-  private checkSprites: Array<Phaser.GameObjects.Sprite> = [];
-  public static seletedCards: Array<CardUnit> = [];
-  public static selectedEdge: Edge;
+  private seletedCards: Array<CardUnit> = [];
+  private selectedEdge: Edge | undefined;
+  private edgeMenus: Array<EdgeMenu> = [];
+  private cb!: Function;
 
   constructor() {
     super('selectionscene');
   }
 
-  create() {
+  create(cb: Function) {
+    this.cb = cb;
+
     // Create text to notify that it is draw counter phase
     const selectCardnEdgeText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -44,119 +47,60 @@ export default class SelectionScene extends Phaser.Scene {
     container.add(brownPanel);
     container.add(selectCardnEdgeText);
 
-    this.makeCardsSelectable();
-    this.makeEdgeSelectable();
-  }
-
-  private removeChecksExcept(check: Phaser.GameObjects.Sprite) {
-    for (const s of this.checkSprites) {
-      if (s === check) continue;
-      this.checkSprites.splice(this.checkSprites.indexOf(s), 1);
-      s.destroy();
-    }
-  }
-
-  makeEdgeSelectable() {
-    const graphics = this.add.graphics();
-    graphics.lineStyle(8, 0xd3d3d3, 0.5);
-    // make a check sprite for each selectable edge
-    RoadManager.getInstance()
-      .getEdges()
-      .forEach(edge => {
-        if (edge.getItems().length > 0) {
-          const check = this.add.sprite(
-            (edge.getPosition()[0] / 1600) * this.cameras.main.width,
-            (edge.getPosition()[1] / 750) * this.cameras.main.height,
-            'check'
-          );
-          check.setScale(0.5);
-          check
-            .setInteractive()
-            .on('pointerdown', () => {
-              check.setTint(0xd3d3d3);
-            })
-            .on('pointerout', () => {
-              check.clearTint();
-            })
-            .on('pointerup', () => {
-              check.clearTint();
-              SelectionScene.selectedEdge = edge;
-              this.removeChecksExcept(check);
-            });
-          this.checkSprites.push(check);
-        }
-      });
-  }
-
-  private isSeleted(card: Phaser.GameObjects.Sprite): number {
-    for (let i = 0; i < this.selected.length; i++) {
-      if (this.selected[i] === card) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  makeCardsSelectable(): void {
-    const {height} = this.scale;
-    // Create confirm button at bottom right corner to confirm selection.
-    const confirmButton = this.add.sprite(
-      height + 25,
-      height - 40,
+    /**
+     * SHOWCASE FOR CHANGING PLAYER TURN
+     */
+    // Create small button with the "next" icon
+    const width = this.cameras.main.width;
+    const height = this.cameras.main.height;
+    const passTurnButton = this.add.sprite(
+      width - 30,
+      height - 30,
       'brown-box'
     );
-    this.add.image(confirmButton.x, confirmButton.y, 'check').setScale(0.5);
+    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
 
-    confirmButton
+    // Add interactive pointer options for passTurnButton
+    // After click, currentPlayer is updated via playerManager
+    // PlayerTurnScene is rerendered to show whose turn it is
+    passTurnButton
       .setInteractive()
       .on('pointerdown', () => {
-        confirmButton.setTint(0xd3d3d3);
+        passTurnButton.setTint(0xd3d3d3);
       })
       .on('pointerout', () => {
-        confirmButton.clearTint();
+        passTurnButton.clearTint();
       })
       .on('pointerup', () => {
-        confirmButton.clearTint();
-        if (this.selected.length > 0) {
-          for (const card of this.selected) {
-            const c = CardManager.getInstance().getSelectedCard(
-              PlayerManager.getInstance().getCurrentPlayer(),
-              card.name
-            );
-            if (c === undefined) {
-              card.y += 50;
-              this.selected.splice(this.selected.indexOf(card), 1);
-            } else {
-              card.removeInteractive();
-              SelectionScene.seletedCards.push(c);
+        passTurnButton.clearTint();
+        this.sound.play('pass');
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('uiscene').scene.restart();
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getPassedTurn() === true) {
+              finishedPlayers++;
             }
-          }
-          const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
-          const cards = SelectionScene.seletedCards;
-          const edge = SelectionScene.selectedEdge;
-          if (edge === undefined) return;
-          if (cards.length <= 0) return;
-          if (CardManager.getInstance().playCards(currPlayer, cards, edge)) {
-            for (const card of this.selected) {
-              const c = CardManager.getInstance().getSelectedCard(
-                PlayerManager.getInstance().getCurrentPlayer(),
-                card.name
-              );
-              if (c === undefined) {
-                this.selected.splice(this.selected.indexOf(card), 1);
-              } else {
-                card.destroy();
-                SelectionScene.seletedCards.splice(
-                  SelectionScene.seletedCards.indexOf(c),
-                  1
-                );
-              }
-            }
-            this.scene.get('uiscene').scene.restart();
-            console.log('YOOOOO ITS WORKING!');
-          }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.cb();
+        } else {
+          this.scene.restart();
         }
       });
+
+    this.makeCardsInteractive();
+    this.makeEdgesInteractive();
+    //this.confirmButton();
+  }
+
+  private makeCardsInteractive(): void {
     // make every cards in hand selectable
     for (const card of UIScene.cardSprites) {
       // make it possible to select card
@@ -182,5 +126,107 @@ export default class SelectionScene extends Phaser.Scene {
           card.clearTint();
         });
     }
+  }
+
+  private makeEdgesInteractive(): void {
+    // Make the itemSprites interactive
+    UIScene.itemSpritesOnEdges.forEach(itemSprite => {
+      const edgeMenu = new EdgeMenu(
+        itemSprite.getData('mainScene'),
+        itemSprite.getCenter().x,
+        itemSprite.getCenter().y,
+        this.isValid
+      );
+
+      this.edgeMenus.push(edgeMenu);
+
+      itemSprite
+        .setInteractive()
+        .on('pointerdown', () => {
+          itemSprite.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          itemSprite.clearTint();
+        })
+        .on('pointerup', () => {
+          itemSprite.clearTint();
+          if (edgeMenu.isOpen) {
+            edgeMenu.hide();
+          } else {
+            this.edgeMenus.forEach(menu => {
+              menu.hide();
+            });
+            edgeMenu.show();
+          }
+        });
+    });
+  }
+
+  private isValid(): void {
+    console.log('Checking if move is valid...');
+  }
+
+  private isSeleted(card: Phaser.GameObjects.Sprite): number {
+    for (let i = 0; i < this.selected.length; i++) {
+      if (this.selected[i] === card) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private confirmButton(): void {
+    const {height} = this.scale;
+    // Create confirm button at bottom right corner to confirm selection.
+    const confirmButton = this.add.sprite(30, height - 80, 'brown-box');
+    this.add.image(confirmButton.x, confirmButton.y, 'check').setScale(0.4);
+
+    confirmButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        confirmButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        confirmButton.clearTint();
+      })
+      .on('pointerup', () => {
+        confirmButton.clearTint();
+        if (this.selected.length > 0) {
+          for (const card of this.selected) {
+            const c = CardManager.getInstance().getSelectedCard(
+              PlayerManager.getInstance().getCurrentPlayer(),
+              card.name
+            );
+            if (c === undefined) {
+              card.y += 50;
+              this.selected.splice(this.selected.indexOf(card), 1);
+            } else {
+              card.removeInteractive();
+              this.seletedCards.push(c);
+            }
+          }
+          const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
+          const cards = this.seletedCards;
+          const edge = this.selectedEdge;
+          if (edge === undefined) return;
+          if (cards.length <= 0) return;
+          if (CardManager.getInstance().playCards(currPlayer, cards, edge)) {
+            for (const card of this.selected) {
+              const c = CardManager.getInstance().getSelectedCard(
+                PlayerManager.getInstance().getCurrentPlayer(),
+                card.name
+              );
+              if (c === undefined) {
+                this.selected.splice(this.selected.indexOf(card), 1);
+              } else {
+                card.destroy();
+                this.seletedCards.splice(this.seletedCards.indexOf(c), 1);
+              }
+            }
+            this.scene.get('uiscene').scene.restart();
+            console.log('YOOOOO ITS WORKING!');
+          }
+        }
+      });
   }
 }

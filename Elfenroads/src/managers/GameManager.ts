@@ -126,10 +126,47 @@ export default class GameManager {
           mainScene.scene.launch('planroutescene', () => {
             mainScene.scene.stop('planroutescene');
 
+            // Reinitialize players turn
+            PlayerManager.getInstance()
+              .getPlayers()
+              .forEach(player => player.setPassedTurn(false));
+
             PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+
             // Phase 5: Move Boot
             mainScene.scene.launch('selectionscene', () => {
-              mainScene.scene.launch('selectionscene');
+              mainScene.scene.stop('selectionscene');
+
+              // Create text to notify whose turn it is using boot color substring
+              const playerText: Phaser.GameObjects.Text = mainScene.add
+                .text(10, 5, 'GAMEOVER', {
+                  fontFamily: 'MedievalSharp',
+                  fontSize: '50px',
+                })
+                .setColor('white');
+
+              // Grab width of text to determine size of panel behind
+              const textWidth: number = playerText.width;
+
+              // Create brown ui panel element relative to the size of the text
+              const brownPanel: Phaser.GameObjects.RenderTexture = mainScene.add
+                .nineslice(0, 0, textWidth + 20, 60, 'brown-panel', 24)
+                .setOrigin(0, 0);
+
+              // Grab width of current game to center our container
+              const gameWidth: number = mainScene.scale.width;
+
+              // Initialize container to group elements
+              // Need to center the container relative to the gameWidth and the size of the text box
+              const container: Phaser.GameObjects.Container =
+                mainScene.add.container(
+                  gameWidth / 2 - brownPanel.width / 2,
+                  20
+                );
+
+              // Render the brown panel and text
+              container.add(brownPanel).setDepth(3);
+              container.add(playerText).setDepth(3);
             });
           });
         });

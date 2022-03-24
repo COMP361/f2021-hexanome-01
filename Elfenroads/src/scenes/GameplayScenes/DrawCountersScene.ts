@@ -66,6 +66,7 @@ export default class DrawCountersScene extends Phaser.Scene {
     // Render a face down counter pile
     this.generateRandomCounter(previousWidth);
   }
+
   generateCounter(previousWidth: integer, counter: ItemUnit, i: number): void {
     const currentItem = counter;
     const itemSprite = this.add

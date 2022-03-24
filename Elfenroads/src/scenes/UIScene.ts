@@ -18,8 +18,9 @@ export default class UIScene extends Phaser.Scene {
   private menuButtons: Array<any> = [];
   private inventoryOpen = true;
   private inventories: Array<any> = [];
-  public static itemSprites: Array<Phaser.GameObjects.Sprite> = [];
-  public static cardSprites: Array<Phaser.GameObjects.Sprite> = [];
+  public static itemSprites: Array<Phaser.GameObjects.Sprite>;
+  public static cardSprites: Array<Phaser.GameObjects.Sprite>;
+  public static itemSpritesOnEdges: Array<Phaser.GameObjects.Sprite>;
 
   constructor() {
     super('uiscene');
@@ -273,6 +274,7 @@ export default class UIScene extends Phaser.Scene {
         townPieceButton.clearTint();
       })
       .on('pointerup', () => {
+        townPieceButton.clearTint();
         eventsCenter.emit('update-town-piece-vis', true);
       });
   }
@@ -303,6 +305,8 @@ export default class UIScene extends Phaser.Scene {
 
   // Renders the current Counters/Items on each edge.
   private renderEdges(): void {
+    UIScene.itemSpritesOnEdges = [];
+
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
@@ -313,15 +317,14 @@ export default class UIScene extends Phaser.Scene {
         );
         let xOffset = 0;
         edge.getItems().forEach(item => {
-          // If item is in map add it to Phaser container
-          if (item) {
-            // Render sprite to this Phaser Scene and offset based on the other Items
-            this.add
-              .sprite(pos[0] + xOffset, pos[1], item.getName())
-              .setData(item)
-              .setScale(0.25)
-              .setDepth(3);
-          }
+          // Render sprite to this Phaser Scene and offset based on the other Items
+          const itemSprite = this.add
+            .sprite(pos[0] + xOffset, pos[1], item.getName())
+            .setData(item)
+            .setData({currentEdge: edge, mainScene: this})
+            .setScale(0.25)
+            .setDepth(4);
+          UIScene.itemSpritesOnEdges.push(itemSprite);
           xOffset += 30;
         });
       });
