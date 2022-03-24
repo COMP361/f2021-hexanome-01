@@ -22,28 +22,28 @@ export default class EdgeMenu {
     // Initialize/make settings menu hidden
     this.isOpen = false;
 
-    this.createSaveButton();
+    this.createConfirmButton();
   }
 
-  // Create toggle save button to be added to panel / container
-  createSaveButton() {
+  // Create toggle confirm button to be added to panel / container
+  createConfirmButton() {
     // Create grey ui button element
-    const toggleSave = this.scene.add.image(0, 0, 'green-box').setScale(0.7);
+    const toggleConfirm = this.scene.add.image(0, 0, 'green-box').setScale(0.7);
 
     // Add all elements to container for grouped animations
-    this.container.add(toggleSave);
+    this.container.add(toggleConfirm);
 
-    // interactive pointer options for toggleSave button
-    toggleSave
+    // interactive pointer options for toggleConfirm button
+    toggleConfirm
       .setInteractive()
       .on('pointerdown', () => {
-        toggleSave.setTint(0xd3d3d3);
+        toggleConfirm.setTint(0xd3d3d3);
       })
       .on('pointerout', () => {
-        toggleSave.clearTint();
+        toggleConfirm.clearTint();
       })
       .on('pointerup', () => {
-        toggleSave.clearTint();
+        toggleConfirm.clearTint();
         this.callback();
       });
   }
