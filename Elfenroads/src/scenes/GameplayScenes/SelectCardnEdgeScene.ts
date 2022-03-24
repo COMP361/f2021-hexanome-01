@@ -6,19 +6,83 @@ import PlayerManager from '../../managers/PlayerManager';
 import EdgeMenu from '../../classes/EdgeMenu';
 
 export default class SelectionScene extends Phaser.Scene {
-  private selected: Array<Phaser.GameObjects.Sprite> = [];
-  private seletedCards: Array<CardUnit> = [];
-  private selectedEdge: Edge | undefined;
-  private edgeMenus: Array<EdgeMenu> = [];
-  private cb!: Function;
+  private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
+  private selectedEdge!: Edge;
+  private edgeMenus!: Array<EdgeMenu>;
+  private callback!: Function;
 
   constructor() {
     super('selectionscene');
   }
 
-  create(cb: Function) {
-    this.cb = cb;
+  create(callback: Function) {
+    this.selectedCardSprites = [];
+    this.edgeMenus = [];
+    this.callback = callback;
+    this.createUIBanner();
+    this.createUIPassTurnButton();
 
+    // Only allow local player to interact with UI if its their turn
+    if (
+      PlayerManager.getInstance().getCurrentPlayer() ===
+      PlayerManager.getInstance().getLocalPlayer()
+    ) {
+      this.makeCardsInteractive();
+      this.makeEdgesInteractive();
+    }
+
+    //this.confirmButton();
+  }
+
+  // Button to skip turn
+  private createUIPassTurnButton(): void {
+    // Create small button with the "next" icon
+    const width = this.cameras.main.width;
+    const height = this.cameras.main.height;
+    const passTurnButton = this.add.sprite(
+      width - 30,
+      height - 30,
+      'brown-box'
+    );
+    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
+
+    // Add interactive pointer options for passTurnButton
+    // After click, currentPlayer is updated via playerManager
+    passTurnButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        passTurnButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        passTurnButton.clearTint();
+      })
+      .on('pointerup', () => {
+        passTurnButton.clearTint();
+        this.sound.play('pass');
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('uiscene').scene.restart();
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getPassedTurn() === true) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.callback();
+        } else {
+          this.scene.restart();
+        }
+      });
+  }
+
+  // UI banner that displays what Phase of Elfenroads is being played
+  private createUIBanner(): void {
     // Create text to notify that it is draw counter phase
     const selectCardnEdgeText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -46,96 +110,47 @@ export default class SelectionScene extends Phaser.Scene {
     // Render the brown panel and text
     container.add(brownPanel);
     container.add(selectCardnEdgeText);
-
-    /**
-     * SHOWCASE FOR CHANGING PLAYER TURN
-     */
-    // Create small button with the "next" icon
-    const width = this.cameras.main.width;
-    const height = this.cameras.main.height;
-    const passTurnButton = this.add.sprite(
-      width - 30,
-      height - 30,
-      'brown-box'
-    );
-    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
-
-    // Add interactive pointer options for passTurnButton
-    // After click, currentPlayer is updated via playerManager
-    // PlayerTurnScene is rerendered to show whose turn it is
-    passTurnButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        passTurnButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        passTurnButton.clearTint();
-      })
-      .on('pointerup', () => {
-        passTurnButton.clearTint();
-        this.sound.play('pass');
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
-
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          this.cb();
-        } else {
-          this.scene.restart();
-        }
-      });
-
-    this.makeCardsInteractive();
-    this.makeEdgesInteractive();
-    //this.confirmButton();
   }
 
+  // Sets interactive options for CurrentPlayer's Cards.
   private makeCardsInteractive(): void {
     // make every cards in hand selectable
-    for (const card of UIScene.cardSprites) {
-      // make it possible to select card
-      card
+    for (const cardSprite of UIScene.cardSprites) {
+      // make it possible to select cardSprite
+      cardSprite
         .setInteractive()
         .on('pointerover', () => {
-          card.setTint(0xd3d3d3);
+          cardSprite.setTint(0xd3d3d3);
         })
         .on('pointerdown', () => {
-          const index: number = this.isSeleted(card);
+          const index: number = this.selectedCardSprites.indexOf(cardSprite);
           if (index === -1) {
-            card.y -= 50;
-            this.selected.push(card);
+            cardSprite.y -= 50;
+            this.selectedCardSprites.push(cardSprite);
           } else {
-            card.y += 50;
-            this.selected.splice(index, 1);
+            cardSprite.y += 50;
+            this.selectedCardSprites.splice(index, 1);
           }
         })
         .on('pointerout', () => {
-          card.clearTint();
+          cardSprite.clearTint();
         })
         .on('pointerup', () => {
-          card.clearTint();
+          cardSprite.clearTint();
         });
     }
   }
 
+  // Sets interactive options for Items on the map's Edges.
   private makeEdgesInteractive(): void {
     // Make the itemSprites interactive
+
     UIScene.itemSpritesOnEdges.forEach(itemSprite => {
       const edgeMenu = new EdgeMenu(
         itemSprite.getData('mainScene'),
         itemSprite.getCenter().x,
         itemSprite.getCenter().y,
-        this.isValid
+        this.attemptMoveBoot
       );
 
       this.edgeMenus.push(edgeMenu);
@@ -150,6 +165,12 @@ export default class SelectionScene extends Phaser.Scene {
         })
         .on('pointerup', () => {
           itemSprite.clearTint();
+
+          this.selectedEdge = itemSprite.getData('currentEdge');
+          const args = [this.selectedCardSprites, this.selectedEdge, this];
+
+          edgeMenu.setArgs(args);
+
           if (edgeMenu.isOpen) {
             edgeMenu.hide();
           } else {
@@ -162,71 +183,54 @@ export default class SelectionScene extends Phaser.Scene {
     });
   }
 
-  private isValid(): void {
-    console.log('Checking if move is valid...');
-  }
-
-  private isSeleted(card: Phaser.GameObjects.Sprite): number {
-    for (let i = 0; i < this.selected.length; i++) {
-      if (this.selected[i] === card) {
-        return i;
+  // Function that attempts to move boot.
+  private attemptMoveBoot(
+    selectedCardSprites: Array<Phaser.GameObjects.Sprite>,
+    selectedEdge: Edge,
+    currentScene: Phaser.Scene
+  ): void {
+    console.log('Started the callback...');
+    console.log(selectedCardSprites);
+    console.log(selectedEdge);
+    console.log(currentScene);
+    const selectedCards: Array<CardUnit> = [];
+    if (selectedCardSprites.length > 0) {
+      for (const card of selectedCardSprites) {
+        const c = CardManager.getInstance().getSelectedCard(
+          PlayerManager.getInstance().getCurrentPlayer(),
+          card.name
+        );
+        if (c === undefined) {
+          card.y += 50;
+          selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
+        } else {
+          card.removeInteractive();
+          selectedCards.push(c);
+        }
       }
-    }
-    return -1;
-  }
-
-  private confirmButton(): void {
-    const {height} = this.scale;
-    // Create confirm button at bottom right corner to confirm selection.
-    const confirmButton = this.add.sprite(30, height - 80, 'brown-box');
-    this.add.image(confirmButton.x, confirmButton.y, 'check').setScale(0.4);
-
-    confirmButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        confirmButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        confirmButton.clearTint();
-      })
-      .on('pointerup', () => {
-        confirmButton.clearTint();
-        if (this.selected.length > 0) {
-          for (const card of this.selected) {
-            const c = CardManager.getInstance().getSelectedCard(
-              PlayerManager.getInstance().getCurrentPlayer(),
-              card.name
-            );
-            if (c === undefined) {
-              card.y += 50;
-              this.selected.splice(this.selected.indexOf(card), 1);
-            } else {
-              card.removeInteractive();
-              this.seletedCards.push(c);
-            }
-          }
-          const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
-          const cards = this.seletedCards;
-          const edge = this.selectedEdge;
-          if (edge === undefined) return;
-          if (cards.length <= 0) return;
-          if (CardManager.getInstance().playCards(currPlayer, cards, edge)) {
-            for (const card of this.selected) {
-              const c = CardManager.getInstance().getSelectedCard(
-                PlayerManager.getInstance().getCurrentPlayer(),
-                card.name
-              );
-              if (c === undefined) {
-                this.selected.splice(this.selected.indexOf(card), 1);
-              } else {
-                card.destroy();
-                this.seletedCards.splice(this.seletedCards.indexOf(c), 1);
-              }
-            }
-            this.scene.get('uiscene').scene.restart();
-            console.log('YOOOOO ITS WORKING!');
+      const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
+      const edge = selectedEdge;
+      if (edge === undefined) return;
+      if (selectedCards.length <= 0) return;
+      if (
+        CardManager.getInstance().playCards(currPlayer, selectedCards, edge)
+      ) {
+        for (const card of selectedCardSprites) {
+          const c = CardManager.getInstance().getSelectedCard(
+            PlayerManager.getInstance().getCurrentPlayer(),
+            card.name
+          );
+          if (c === undefined) {
+            selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
+          } else {
+            card.destroy();
+            selectedCards.splice(selectedCards.indexOf(c), 1);
           }
         }
-      });
+        currentScene.scene.get('uiscene').scene.restart();
+        console.log('YOOOOO ITS WORKING!');
+        currentScene.scene.restart();
+      }
+    }
   }
 }

@@ -7,12 +7,14 @@ export default class EdgeMenu {
   counterCenterX: number;
   counterCenterY: number;
   callback: Function;
+  args: Array<any>;
 
   constructor(scene: Phaser.Scene, x: number, y: number, callback: Function) {
     this.scene = scene;
     this.counterCenterX = x;
     this.counterCenterY = y;
     this.callback = callback;
+    this.args = [];
 
     // Initialize container to group elements
     this.container = scene.add
@@ -25,6 +27,9 @@ export default class EdgeMenu {
     this.createConfirmButton();
   }
 
+  setArgs(args: Array<any>) {
+    this.args = args;
+  }
   // Create toggle confirm button to be added to panel / container
   createConfirmButton() {
     // Create grey ui button element
@@ -44,7 +49,7 @@ export default class EdgeMenu {
       })
       .on('pointerup', () => {
         toggleConfirm.clearTint();
-        this.callback();
+        this.callback(this.args[0], this.args[1], this.args[2]);
       });
   }
 
