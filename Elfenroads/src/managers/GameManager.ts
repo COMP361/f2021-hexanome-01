@@ -192,16 +192,27 @@ export default class GameManager {
   }
 
   private initializePlayers(): void {
+    // Get all towns in Array format to initialize player's random destination town
+    const allTownsArray = RoadManager.getInstance().getAllTownsAsArray();
+
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     const {name} = getUser();
 
     const session = getSession();
+
+    // Initialize each player from session
     session.users.forEach((user: any) => {
       const player = new Player(
         colorMap[user.preferredColour],
         this.roadManager.getTowns().get('elvenhold')!
       );
+
+      // Set a random destination town to the current player
+      const randomIndex = Math.floor(Math.random() * allTownsArray.length);
+      const randomTown = allTownsArray[randomIndex];
+      allTownsArray.splice(randomIndex, 1);
+      player.setDestinationTown(randomTown);
 
       // Add current player
       this.playerManager.addPlayer(player);
