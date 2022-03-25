@@ -4,6 +4,9 @@ import {CardUnit} from '../../classes/CardUnit';
 import Edge from '../../classes/Edge';
 import PlayerManager from '../../managers/PlayerManager';
 import EdgeMenu from '../../classes/EdgeMenu';
+import PlanRouteScene from './PlanRouteScene';
+import RoadManager from '../../managers/RoadManager';
+import {EdgeType} from '../../enums/EdgeType';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -144,7 +147,6 @@ export default class SelectionScene extends Phaser.Scene {
   // Sets interactive options for Items on the map's Edges.
   private makeEdgesInteractive(): void {
     // Make the itemSprites interactive
-
     UIScene.itemSpritesOnEdges.forEach(itemSprite => {
       const edgeMenu = new EdgeMenu(
         itemSprite.getData('mainScene'),
@@ -181,6 +183,42 @@ export default class SelectionScene extends Phaser.Scene {
           }
         });
     });
+
+    // make river and lakes selectable
+    RoadManager.getInstance()
+      .getEdges()
+      .forEach(edge => {
+        if (
+          edge.getType() === EdgeType.River ||
+          edge.getType() === EdgeType.Lake
+        ) {
+          const pos = UIScene.getResponsivePosition(
+            this,
+            edge.getPosition()[0],
+            edge.getPosition()[1]
+          );
+          const confirmBtn = this.add
+            .image(pos[0], pos[1], 'green-box')
+            .setScale(0.7);
+          confirmBtn
+            .setInteractive()
+            .on('pointerdown', () => {
+              confirmBtn.setTint(0xd3d3d3);
+            })
+            .on('pointerout', () => {
+              confirmBtn.clearTint();
+            })
+            .on('pointerup', () => {
+              confirmBtn.clearTint();
+              this.selectedEdge = edge;
+              this.attemptMoveBoot(
+                this.selectedCardSprites,
+                this.selectedEdge,
+                this
+              );
+            });
+        }
+      });
   }
 
   // Function that attempts to move boot.
@@ -236,6 +274,10 @@ export default class SelectionScene extends Phaser.Scene {
             );
           }
         }
+        PlayerManager.getInstance().movePlayer(
+          PlayerManager.getInstance().getCurrentPlayer(),
+          edge
+        );
         currentScene.scene.get('uiscene').scene.restart();
         console.log('YOOOOO ITS WORKING!');
         currentScene.scene.restart();

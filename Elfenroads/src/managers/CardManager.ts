@@ -22,7 +22,7 @@ export class CardManager {
         this.cardPile.push(new TravelCard(TravelCardType.Uicorn));
         this.cardPile.push(new TravelCard(TravelCardType.TrollWagon));
       }
-      new TravelCard(TravelCardType.Raft);
+      this.cardPile.push(new TravelCard(TravelCardType.Raft));
     }
   }
 
@@ -135,7 +135,7 @@ export class CardManager {
       } else {
         let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
         if (numCardsRequired === undefined) return false;
-        if (obstacle === undefined) {
+        if (obstacle !== undefined) {
           numCardsRequired += 1;
         }
         if (cards.length < numCardsRequired) return false;
