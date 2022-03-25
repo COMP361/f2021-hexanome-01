@@ -195,6 +195,7 @@ export default class SelectionScene extends Phaser.Scene {
     console.log(currentScene);
     const selectedCards: Array<CardUnit> = [];
     if (selectedCardSprites.length > 0) {
+      // check if each card sprites are valid and collect each cards
       for (const card of selectedCardSprites) {
         const c = CardManager.getInstance().getSelectedCard(
           PlayerManager.getInstance().getCurrentPlayer(),
@@ -210,11 +211,12 @@ export default class SelectionScene extends Phaser.Scene {
       }
       const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
       const edge = selectedEdge;
-      if (edge === undefined) return;
-      if (selectedCards.length <= 0) return;
       if (
+        edge !== undefined &&
+        selectedCards.length > 0 &&
         CardManager.getInstance().playCards(currPlayer, selectedCards, edge)
       ) {
+        // remove all played cards sprite and update the player's hand
         for (const card of selectedCardSprites) {
           const c = CardManager.getInstance().getSelectedCard(
             PlayerManager.getInstance().getCurrentPlayer(),
@@ -224,12 +226,47 @@ export default class SelectionScene extends Phaser.Scene {
             selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
           } else {
             card.destroy();
-            selectedCards.splice(selectedCards.indexOf(c), 1);
+            CardManager.getInstance().addToPile(
+              PlayerManager.getInstance().getCurrentPlayer(),
+              c
+            );
           }
         }
         currentScene.scene.get('uiscene').scene.restart();
         console.log('YOOOOO ITS WORKING!');
         currentScene.scene.restart();
+      } else {
+        for (let i = 0; i < selectedCardSprites.length; i++) {
+          // remove selection of card
+          const card = selectedCardSprites[i];
+          card.y += 50;
+          selectedCardSprites.splice(i, 1);
+          // set the card be interactive again
+          card
+            .setInteractive()
+            .on('pointerover', () => {
+              card.setTint(0xd3d3d3);
+            })
+            .on('pointerdown', () => {
+              const index: number = this.selectedCardSprites.indexOf(card);
+              if (index === -1) {
+                card.y -= 50;
+                this.selectedCardSprites.push(card);
+              } else {
+                card.y += 50;
+                this.selectedCardSprites.splice(index, 1);
+              }
+            })
+            .on('pointerout', () => {
+              card.clearTint();
+            })
+            .on('pointerup', () => {
+              card.clearTint();
+            });
+          currentScene.scene.get('uiscene').scene.restart();
+          console.log('Selection not valid');
+          currentScene.scene.restart();
+        }
       }
     }
   }
