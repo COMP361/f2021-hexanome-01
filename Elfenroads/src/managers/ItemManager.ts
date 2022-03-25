@@ -131,8 +131,10 @@ export default class ItemManager {
     this.faceUpPile[i] = this.getRandomItem();
   }
 
-  addToPile(player: Player, item: ItemUnit): void {
-    player.removeItem(item);
+  addToPile(item: ItemUnit, player: Player | null = null): void {
+    if (player !== null) {
+      player.removeItem(item);
+    }
     this.itemPile.push(item);
   }
 
