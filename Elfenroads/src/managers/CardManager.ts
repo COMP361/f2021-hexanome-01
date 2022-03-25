@@ -1,6 +1,6 @@
 import {CardUnit, TravelCard} from '../classes/CardUnit';
 import Edge from '../classes/Edge';
-import {Counter} from '../classes/ItemUnit';
+import {Counter, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {EdgeType} from '../enums/EdgeType';
 import {TravelCardType} from '../enums/TravelCardType';
@@ -61,87 +61,86 @@ export class CardManager {
     this.cardPile.push(card);
   }
 
-  public playCards(
+  public isValidSelection(
     player: Player,
     cards: Array<CardUnit>,
     edge: Edge
   ): boolean {
+    // only for Elfenland
     const edgeType = edge.getType();
-    let isLegal = true;
+    // travel on river
     if (edgeType === EdgeType.River) {
-      cards.forEach(card => {
+      // check if all cards are raft card
+      for (const card of cards) {
+        // return false if a card is not raft card
         if (card.getName() !== TravelCardType.Raft) {
-          // not the right card
-          isLegal = false;
+          return false;
         }
-      });
+      }
       // 1 raft if traveling with current
       if (player.getCurrentLocation() === edge.getSrcTown()) {
         // only need 1 raft
         if (cards.length !== 1) {
-          isLegal = false;
+          return false;
         }
       }
       // against current
       else if (cards.length !== 2) {
-        isLegal = false;
-      }
-    } else if (edgeType === EdgeType.Lake) {
-      cards.forEach(card => {
-        if (card.getName() !== TravelCardType.Raft) {
-          // not the right card
-          isLegal = false;
-        }
-      });
-      if (cards.length !== 2) {
-        isLegal = false;
+        return false;
       }
     }
-    // we have counters since we are on land
+    // travel on lake
+    else if (edgeType === EdgeType.Lake) {
+      // check if all cards are raft card
+      for (const card of cards) {
+        // return false if a card is not raft card
+        if (card.getName() !== TravelCardType.Raft) {
+          return false;
+        }
+      }
+      if (cards.length !== 2) {
+        return false;
+      }
+    }
+    // travel on land
     else {
       const edgeItems = edge.getItems();
-      edgeItems.forEach(item => {
-        // need to change this later for elfengold
+      let travelcounter: Counter | undefined = undefined;
+      let obstacle: Obstacle | undefined = undefined;
+      for (const item of edgeItems) {
         if (item instanceof Counter) {
-          // caravan
-          if (
-            (cards.length === 3 && edgeItems.length !== 1) ||
-            (cards.length === 4 && edgeItems.length !== 2)
-          ) {
-            isLegal = false;
-          } else {
-            console.log(item);
-            const map = item.getCardsNeeded();
-            console.log(map);
-            const numOfCards = map.get(edgeType);
-            cards.forEach(card => {
-              // ex. pig-card includes pig
-              if (!card.getName().includes(item.getName())) {
-                // not the right card
-                isLegal = false;
-              }
-            });
-            if (
-              (edgeItems.length === 1 && cards.length !== numOfCards) ||
-              (numOfCards &&
-                edgeItems.length === 2 &&
-                cards.length !== numOfCards + 1)
-            ) {
-              isLegal = false;
-            }
-          }
+          travelcounter = <Counter>item;
         }
-      });
+        if (item instanceof Obstacle) {
+          obstacle = <Obstacle>item;
+        }
+      }
+      if (travelcounter === undefined) return false;
+
+      // check if it is the case of caravan
+      let isCaravan = false;
+      for (const card of cards) {
+        // check if the card type correspond to the counter type
+        if (!card.getName().includes(travelcounter.getName())) {
+          isCaravan = true;
+        }
+      }
+
+      if (isCaravan) {
+        if (obstacle === undefined) {
+          if (cards.length < 3) return false;
+        } else {
+          if (cards.length < 4) return false;
+        }
+      } else {
+        let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
+        if (numCardsRequired === undefined) return false;
+        if (obstacle === undefined) {
+          numCardsRequired += 1;
+        }
+        if (cards.length < numCardsRequired) return false;
+      }
     }
-    // the cards were legal
-    if (isLegal) {
-      cards.forEach(card => {
-        // put cards back to pile
-        this.addToPile(player, card);
-      });
-      // set player to new town
-      PlayerManager.getInstance().movePlayer(player, edge);
-    }
-    return isLegal;
+    return true;
   }
 }

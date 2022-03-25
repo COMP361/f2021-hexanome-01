@@ -214,7 +214,11 @@ export default class SelectionScene extends Phaser.Scene {
       if (
         edge !== undefined &&
         selectedCards.length > 0 &&
-        CardManager.getInstance().playCards(currPlayer, selectedCards, edge)
+        CardManager.getInstance().isValidSelection(
+          currPlayer,
+          selectedCards,
+          edge
+        )
       ) {
         // remove all played cards sprite and update the player's hand
         for (const card of selectedCardSprites) {
