@@ -279,24 +279,35 @@ export default class UIScene extends Phaser.Scene {
 
   // Displays the local Player's secret town.
   private createDestinationTownBanner(): void {
-    const towns = Array.from(Town.getAllTowns().keys());
-    const town = towns[Math.floor(Math.random() * towns.length)];
-    /*destination town*/
-    const destText: Phaser.GameObjects.Text = this.add.text(6, 10, `${town}`, {
-      fontFamily: 'MedievalSharp',
-      fontSize: '24px',
-    });
+    // Get local player's destination town name
+    const destinationTownName = PlayerManager.getInstance()
+      .getLocalPlayer()
+      .getDestinationTown()
+      .getName();
+
+    // Create the name of the local player's destination town
+    const destText: Phaser.GameObjects.Text = this.add.text(
+      10,
+      10,
+      `${destinationTownName}`,
+      {
+        fontFamily: 'MedievalSharp',
+        fontSize: '24px',
+      }
+    );
 
     // Create brown ui panel element relative to the size of the text
     const brownPanel: Phaser.GameObjects.RenderTexture = this.add
       .nineslice(0, 0, destText.width + 20, 30, 'brown-panel', 24)
       .setOrigin(0, 0);
 
+    // Create Phaser container to render the text and brown panel
     const container: Phaser.GameObjects.Container = this.add.container(
       this.width - 360,
       8
     );
 
+    // Add the text and brown panel to container to be displayed
     container.add(brownPanel);
     container.add(destText);
   }
