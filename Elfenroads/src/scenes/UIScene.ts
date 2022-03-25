@@ -279,8 +279,8 @@ export default class UIScene extends Phaser.Scene {
 
   // Displays the local Player's secret town.
   private createDestinationTownBanner(): void {
-    // Get local player's destination town
-    const destinationTown = PlayerManager.getInstance()
+    // Get local player's destination town name
+    const destinationTownName = PlayerManager.getInstance()
       .getLocalPlayer()
       .getDestinationTown()
       .getName();
@@ -289,7 +289,7 @@ export default class UIScene extends Phaser.Scene {
     const destText: Phaser.GameObjects.Text = this.add.text(
       10,
       10,
-      `${destinationTown}`,
+      `${destinationTownName}`,
       {
         fontFamily: 'MedievalSharp',
         fontSize: '24px',

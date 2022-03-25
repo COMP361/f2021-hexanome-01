@@ -745,8 +745,8 @@ export default class RoadManager {
     return dist.get(t2)!;
   }
 
+  // Returns an array of towns from our allTowns Map
   public getAllTownsAsArray(): Array<Town> {
-    // Return an array of towns from our allTowns Map
     return Array.from(this.allTowns.values());
   }
 }
