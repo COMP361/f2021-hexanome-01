@@ -35,6 +35,11 @@ export default class Preloader extends Phaser.Scene {
     );
     this.load.image('gear', 'assets/ui/iconpack/PNG/White/1x/gear.png');
     this.load.image(
+      'green-box',
+      'assets/ui/uipack_fixed/PNG/green_boxCheckmark.png'
+    );
+
+    this.load.image(
       'brown-box',
       'assets/ui/rpgpack/PNG/buttonSquare_brown_pressed.png'
     );

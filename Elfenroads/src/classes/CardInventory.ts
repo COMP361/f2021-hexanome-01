@@ -8,7 +8,6 @@ export default class CardInventory {
   container: Phaser.GameObjects.Container;
   isOpen: boolean;
   numCards: number;
-  selected: Array<Phaser.GameObjects.Sprite> = [];
 
   constructor(scene: Phaser.Scene) {
     // Initialize hand
@@ -22,40 +21,8 @@ export default class CardInventory {
 
     // Initialize/make settings menu hidden
     this.isOpen = true;
-
-    // Create confirm button at bottom right corner to confirm selection.
-    const confirmButton = this.scene.add.sprite(30, height - 80, 'brown-box');
-    this.scene.add
-      .image(confirmButton.x, confirmButton.y, 'check')
-      .setScale(0.5);
-
-    confirmButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        confirmButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        confirmButton.clearTint();
-      })
-      .on('pointerup', () => {
-        confirmButton.clearTint();
-        if (this.selected.length > 0) {
-          for (const card of this.selected) {
-            card.removeInteractive();
-            CardManager.getInstance().addSelectedCard(card.name);
-          }
-        }
-      });
   }
 
-  private isSeleted(card: Phaser.GameObjects.Sprite): number {
-    for (let i = 0; i < this.selected.length; i++) {
-      if (this.selected[i] === card) {
-        return i;
-      }
-    }
-    return -1;
-  }
   // Method to render a card from Map of cards, and it to this Phaser Container.
   renderCard(cardName: string) {
     const CARD_SIZE = 0.2;
@@ -68,32 +35,6 @@ export default class CardInventory {
         .setData('instance');
       card.name = cardName;
       card.setScale(CARD_SIZE);
-
-      // make it possible to select and check card
-      card
-        .setInteractive()
-        .on('pointerover', () => {
-          card.setTint(0xffffff);
-          card.y -= 50;
-        })
-        .on('pointerdown', () => {
-          card.setTint(0x808080);
-          const index: number = this.isSeleted(card);
-          if (index === -1) {
-            card.y -= 50;
-            this.selected.push(card);
-          } else {
-            card.y += 50;
-            this.selected.splice(index, 1);
-          }
-        })
-        .on('pointerout', () => {
-          card.clearTint();
-          card.y += 50;
-        })
-        .on('pointerup', () => {
-          card.clearTint();
-        });
 
       // Add card sprite to Phaser container so that it do the hide/show group animation
       this.container.add(card);

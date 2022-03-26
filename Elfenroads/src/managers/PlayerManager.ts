@@ -1,3 +1,4 @@
+import Edge from '../classes/Edge';
 import Player from '../classes/Player';
 import Town from '../classes/Town';
 
@@ -53,6 +54,10 @@ export default class PlayerManager {
     this.currentPlayerIndex = playerIndex;
   }
 
+  public getCurrentPlayerIndex(): number {
+    return this.currentPlayerIndex;
+  }
+
   public setNextPlayer(): void {
     if (this.currentPlayerIndex < this.players.length - 1) {
       this.currentPlayerIndex++;
@@ -99,7 +104,33 @@ export default class PlayerManager {
     return winner;
   }
 
-  public setPlayerDest(playerIndex: number, dest: Town): void {
-    this.players[playerIndex].setDestinationTown(dest);
+  public setPlayerSecretTown(playerIndex: number, dest: Town): void {
+    this.players[playerIndex].setSecretTown(dest);
+  }
+
+  public movePlayer(player: Player, edge: Edge): void {
+    if (player !== this.getCurrentPlayer()) return;
+
+    // Set newLocation depending on player's current town
+    let newLocation: Town;
+    if (edge.getDestTown() === player.getCurrentLocation()) {
+      newLocation = edge.getSrcTown();
+    } else {
+      newLocation = edge.getDestTown();
+    }
+
+    // Update the currentPlayer's fields according to the newLocation
+    this.players[this.currentPlayerIndex].setCurrentLocation(newLocation);
+    this.addVisitedTown(this.currentPlayerIndex, newLocation);
+    this.updatePlayerScore(player);
+  }
+
+  private updatePlayerScore(currentPlayer: Player): void {
+    const score: number = currentPlayer.getVisitedTowns().length;
+
+    // Subtract 1 because of starting town Elvenhold
+    currentPlayer.setScore(score - 1);
+
+    console.log(currentPlayer.getVisitedTowns());
   }
 }

@@ -18,8 +18,9 @@ export default class UIScene extends Phaser.Scene {
   private menuButtons: Array<any> = [];
   private inventoryOpen = true;
   private inventories: Array<any> = [];
-  public static itemSprites: Array<Phaser.GameObjects.Sprite> = [];
-  public static cardSprites: Array<Phaser.GameObjects.Sprite> = [];
+  public static itemSprites: Array<Phaser.GameObjects.Sprite>;
+  public static cardSprites: Array<Phaser.GameObjects.Sprite>;
+  public static itemSpritesOnEdges: Array<Phaser.GameObjects.Sprite>;
 
   constructor() {
     super('uiscene');
@@ -37,7 +38,7 @@ export default class UIScene extends Phaser.Scene {
     this.createCheatSheetMenu();
     this.createSettingsMenu();
     this.createTownPieceToggle();
-    this.createDestinationTownBanner();
+    this.createSecretTownBanner();
     this.renderEdges();
     this.renderBoots();
     this.createPlayerInventory();
@@ -109,7 +110,8 @@ export default class UIScene extends Phaser.Scene {
         this,
         this.width / 7,
         this.height / 4 + 70 * i,
-        players[i].getBootColour()
+        players[i].getBootColour(),
+        players[i].getScore()
       );
       const items: Array<ItemUnit> = players[i].getItems();
       for (let j = 0; j < items.length; j++) {
@@ -273,23 +275,24 @@ export default class UIScene extends Phaser.Scene {
         townPieceButton.clearTint();
       })
       .on('pointerup', () => {
+        townPieceButton.clearTint();
         eventsCenter.emit('update-town-piece-vis', true);
       });
   }
 
   // Displays the local Player's secret town.
-  private createDestinationTownBanner(): void {
+  private createSecretTownBanner(): void {
     // Get local player's destination town name
-    const destinationTownName = PlayerManager.getInstance()
+    const secretTownName = PlayerManager.getInstance()
       .getLocalPlayer()
-      .getDestinationTown()
+      .getSecretTown()
       .getName();
 
-    // Create the name of the local player's destination town
-    const destText: Phaser.GameObjects.Text = this.add.text(
+    // Create the name of the local player's secret town
+    const secretTownText: Phaser.GameObjects.Text = this.add.text(
       10,
       10,
-      `${destinationTownName}`,
+      `${secretTownName}`,
       {
         fontFamily: 'MedievalSharp',
         fontSize: '24px',
@@ -298,7 +301,7 @@ export default class UIScene extends Phaser.Scene {
 
     // Create brown ui panel element relative to the size of the text
     const brownPanel: Phaser.GameObjects.RenderTexture = this.add
-      .nineslice(0, 0, destText.width + 20, 30, 'brown-panel', 24)
+      .nineslice(0, 0, secretTownText.width + 20, 30, 'brown-panel', 24)
       .setOrigin(0, 0);
 
     // Create Phaser container to render the text and brown panel
@@ -309,11 +312,13 @@ export default class UIScene extends Phaser.Scene {
 
     // Add the text and brown panel to container to be displayed
     container.add(brownPanel);
-    container.add(destText);
+    container.add(secretTownText);
   }
 
   // Renders the current Counters/Items on each edge.
   private renderEdges(): void {
+    UIScene.itemSpritesOnEdges = [];
+
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
@@ -324,15 +329,14 @@ export default class UIScene extends Phaser.Scene {
         );
         let xOffset = 0;
         edge.getItems().forEach(item => {
-          // If item is in map add it to Phaser container
-          if (item) {
-            // Render sprite to this Phaser Scene and offset based on the other Items
-            this.add
-              .sprite(pos[0] + xOffset, pos[1], item.getName())
-              .setData(item)
-              .setScale(0.25)
-              .setDepth(3);
-          }
+          // Render sprite to this Phaser Scene and offset based on the other Items
+          const itemSprite = this.add
+            .sprite(pos[0] + xOffset, pos[1], item.getName())
+            .setData(item)
+            .setData({currentEdge: edge, mainScene: this})
+            .setScale(0.25)
+            .setDepth(4);
+          UIScene.itemSpritesOnEdges.push(itemSprite);
           xOffset += 30;
         });
       });

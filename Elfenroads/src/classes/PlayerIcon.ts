@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import {BootColour} from '../enums/BootColour';
-import eventsCenter from './EventsCenter';
 
 // helper class for getting the right image
 export class ImgStore {
@@ -8,6 +7,7 @@ export class ImgStore {
   private bootStore: Map<BootColour, string> = new Map();
   private panelStore: Map<BootColour, string> = new Map();
   private circleStore: Map<BootColour, string> = new Map();
+
   private constructor() {
     // set up actor image store
     this.actorStore.set(BootColour.Black, 'black-actor');
@@ -68,18 +68,21 @@ export default class PlayerIcon {
   private panel: Phaser.GameObjects.RenderTexture;
   private numItems: number;
   private color: BootColour;
+  private score: number;
 
   public constructor(
     scene: Phaser.Scene,
     xpos: number,
     ypos: number,
-    color: BootColour
+    color: BootColour,
+    score: number
   ) {
     this.scene = scene;
     this.isShowed = false;
     this.xpos = xpos;
     this.numItems = 0;
     this.color = color;
+    this.score = score;
 
     const store: ImgStore = ImgStore.instance();
 
@@ -121,20 +124,14 @@ export default class PlayerIcon {
       ypos,
       store.getCircle(color)
     );
-    const score: Phaser.GameObjects.Text = this.scene.add.text(
+    const scoreText: Phaser.GameObjects.Text = this.scene.add.text(
       xpos - 80,
       ypos - 12,
-      '0'
+      `${this.score}`
     );
-    score.setColor('black');
-    score.setFontSize(32);
+    scoreText.setColor('black');
+    scoreText.setFontSize(32);
     circle.setScale(1.75);
-
-    eventsCenter.on(
-      'update-points',
-      (points: number) => (score.text = `${points}`),
-      this
-    );
   }
 
   public addItem(img: string): void {

@@ -635,55 +635,6 @@ export default class RoadManager {
         EdgeType.Plain,
         [1190, 545]
       ),
-      // Wylhien - Usselen (river)
-      new Edge(
-        Town.getTown('usselen'),
-        Town.getTown('wylhien'),
-        EdgeType.River,
-        [500, 205]
-      ),
-      // Elvenhold - rivinia (river)
-      new Edge(
-        Town.getTown('rivinia'),
-        Town.getTown('elvenhold'),
-        EdgeType.River,
-        [1080, 340]
-      ),
-      // rivinia - tichih (river)
-      new Edge(
-        Town.getTown('tichih'),
-        Town.getTown('rivinia'),
-        EdgeType.River,
-        [1060, 270]
-      ),
-      // beata - elvenhold (river)
-      new Edge(
-        Town.getTown('elvenhold'),
-        Town.getTown('beata'),
-        EdgeType.River,
-        [1180, 425]
-      ),
-      // virst - jxara (river)
-      new Edge(
-        Town.getTown('jxara'),
-        Town.getTown('virst'),
-        EdgeType.River,
-        [705, 600]
-      ),
-      // jxara - mahdavikia (river)
-      new Edge(
-        Town.getTown('mahdavikia'),
-        Town.getTown('jxara'),
-        EdgeType.River,
-        [490, 580]
-      ),
-      // mahdavikia - grangor (river)
-      new Edge(
-        Town.getTown('grangor'),
-        Town.getTown('mahdavikia'),
-        EdgeType.River,
-        [430, 505]
-      ),
     ];
   }
 

@@ -12,7 +12,7 @@ export default class Player {
   private myItems: Array<ItemUnit>;
   private myCards: Array<CardUnit>;
   private visitedTowns: Array<Town>;
-  private destinationTown: Town;
+  private secretTown: Town;
   private passedTurn: boolean;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
@@ -24,7 +24,7 @@ export default class Player {
     this.myItems = [];
     this.myCards = [];
     this.visitedTowns = [];
-    this.destinationTown = Town.getTown('null');
+    this.secretTown = Town.getTown('null');
     this.passedTurn = false;
   }
 
@@ -36,16 +36,16 @@ export default class Player {
     return this.passedTurn;
   }
 
-  public setDestinationTown(town: Town): void {
-    this.destinationTown = town;
+  public setSecretTown(town: Town): void {
+    this.secretTown = town;
   }
 
   public setPassedTurn(b: boolean): void {
     this.passedTurn = b;
   }
 
-  public getDestinationTown(): Town {
-    return this.destinationTown;
+  public getSecretTown(): Town {
+    return this.secretTown;
   }
 
   public getScore(): integer {
@@ -53,14 +53,14 @@ export default class Player {
   }
 
   public getActualScore(): integer {
-    if (this.destinationTown.isNull()) {
+    if (this.secretTown.isNull()) {
       return this.score;
     } else {
       return (
         this.score -
         RoadManager.getInstance().getDistance(
           this.currentLocation,
-          this.destinationTown
+          this.secretTown
         )
       );
     }
@@ -122,7 +122,10 @@ export default class Player {
   }
 
   public addVisitedTown(pTown: Town): void {
-    this.visitedTowns.push(pTown);
+    // Check if player has already visited this town
+    if (!this.visitedTowns.includes(pTown)) {
+      this.visitedTowns.push(pTown);
+    }
   }
 
   public resetPlayer(): void {
