@@ -189,7 +189,7 @@ export default class GameManager {
   }
 
   private initializePlayers(): void {
-    // Get all towns in Array format to initialize player's random destination town
+    // Get all towns in Array format to initialize player's random secret town
     const allTownsArray = RoadManager.getInstance().getAllTownsAsArray();
 
     // Create our players. Imagine we have many to add based on the lobby.
@@ -205,11 +205,11 @@ export default class GameManager {
         this.roadManager.getTowns().get('elvenhold')!
       );
 
-      // Set a random destination town to the current player
+      // Set a random secret town to the current player
       const randomIndex = Math.floor(Math.random() * allTownsArray.length);
       const randomTown = allTownsArray[randomIndex];
       allTownsArray.splice(randomIndex, 1);
-      player.setDestinationTown(randomTown);
+      player.setSecretTown(randomTown);
 
       // Add the starting town (elvenhold) to the visitedTowns map of player
       player.addVisitedTown(

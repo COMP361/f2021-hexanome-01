@@ -38,7 +38,7 @@ export default class UIScene extends Phaser.Scene {
     this.createCheatSheetMenu();
     this.createSettingsMenu();
     this.createTownPieceToggle();
-    this.createDestinationTownBanner();
+    this.createSecretTownBanner();
     this.renderEdges();
     this.renderBoots();
     this.createPlayerInventory();
@@ -281,18 +281,18 @@ export default class UIScene extends Phaser.Scene {
   }
 
   // Displays the local Player's secret town.
-  private createDestinationTownBanner(): void {
+  private createSecretTownBanner(): void {
     // Get local player's destination town name
-    const destinationTownName = PlayerManager.getInstance()
+    const secretTownName = PlayerManager.getInstance()
       .getLocalPlayer()
-      .getDestinationTown()
+      .getSecretTown()
       .getName();
 
-    // Create the name of the local player's destination town
-    const destText: Phaser.GameObjects.Text = this.add.text(
+    // Create the name of the local player's secret town
+    const secretTownText: Phaser.GameObjects.Text = this.add.text(
       10,
       10,
-      `${destinationTownName}`,
+      `${secretTownName}`,
       {
         fontFamily: 'MedievalSharp',
         fontSize: '24px',
@@ -301,7 +301,7 @@ export default class UIScene extends Phaser.Scene {
 
     // Create brown ui panel element relative to the size of the text
     const brownPanel: Phaser.GameObjects.RenderTexture = this.add
-      .nineslice(0, 0, destText.width + 20, 30, 'brown-panel', 24)
+      .nineslice(0, 0, secretTownText.width + 20, 30, 'brown-panel', 24)
       .setOrigin(0, 0);
 
     // Create Phaser container to render the text and brown panel
@@ -312,7 +312,7 @@ export default class UIScene extends Phaser.Scene {
 
     // Add the text and brown panel to container to be displayed
     container.add(brownPanel);
-    container.add(destText);
+    container.add(secretTownText);
   }
 
   // Renders the current Counters/Items on each edge.

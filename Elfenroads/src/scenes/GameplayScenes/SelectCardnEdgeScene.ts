@@ -4,7 +4,6 @@ import {CardUnit} from '../../classes/CardUnit';
 import Edge from '../../classes/Edge';
 import PlayerManager from '../../managers/PlayerManager';
 import EdgeMenu from '../../classes/EdgeMenu';
-import PlanRouteScene from './PlanRouteScene';
 import RoadManager from '../../managers/RoadManager';
 import {EdgeType} from '../../enums/EdgeType';
 
@@ -33,8 +32,6 @@ export default class SelectionScene extends Phaser.Scene {
       this.makeCardsInteractive();
       this.makeEdgesInteractive();
     }
-
-    //this.confirmButton();
   }
 
   // Button to skip turn

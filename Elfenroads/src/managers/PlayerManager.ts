@@ -104,8 +104,8 @@ export default class PlayerManager {
     return winner;
   }
 
-  public setPlayerDest(playerIndex: number, dest: Town): void {
-    this.players[playerIndex].setDestinationTown(dest);
+  public setPlayerSecretTown(playerIndex: number, dest: Town): void {
+    this.players[playerIndex].setSecretTown(dest);
   }
 
   public movePlayer(player: Player, edge: Edge): void {
