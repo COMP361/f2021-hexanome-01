@@ -110,14 +110,27 @@ export default class PlayerManager {
 
   public movePlayer(player: Player, edge: Edge): void {
     if (player !== this.getCurrentPlayer()) return;
+
+    // Set newLocation depending on player's current town
+    let newLocation: Town;
     if (edge.getDestTown() === player.getCurrentLocation()) {
-      this.players[this.currentPlayerIndex].setCurrentLocation(
-        edge.getSrcTown()
-      );
+      newLocation = edge.getSrcTown();
     } else {
-      this.players[this.currentPlayerIndex].setCurrentLocation(
-        edge.getDestTown()
-      );
+      newLocation = edge.getDestTown();
     }
+
+    // Update the currentPlayer's fields according to the newLocation
+    this.players[this.currentPlayerIndex].setCurrentLocation(newLocation);
+    this.addVisitedTown(this.currentPlayerIndex, newLocation);
+    this.updatePlayerScore(player);
+  }
+
+  private updatePlayerScore(currentPlayer: Player): void {
+    const score: number = currentPlayer.getVisitedTowns().length;
+
+    // Subtract 1 because of starting town Elvenhold
+    currentPlayer.setScore(score - 1);
+
+    console.log(currentPlayer.getVisitedTowns());
   }
 }

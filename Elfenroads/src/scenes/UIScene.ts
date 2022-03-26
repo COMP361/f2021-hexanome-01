@@ -110,7 +110,8 @@ export default class UIScene extends Phaser.Scene {
         this,
         this.width / 7,
         this.height / 4 + 70 * i,
-        players[i].getBootColour()
+        players[i].getBootColour(),
+        players[i].getScore()
       );
       const items: Array<ItemUnit> = players[i].getItems();
       for (let j = 0; j < items.length; j++) {

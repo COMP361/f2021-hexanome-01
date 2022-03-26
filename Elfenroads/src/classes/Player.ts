@@ -122,7 +122,10 @@ export default class Player {
   }
 
   public addVisitedTown(pTown: Town): void {
-    this.visitedTowns.push(pTown);
+    // Check if player has already visited this town
+    if (!this.visitedTowns.includes(pTown)) {
+      this.visitedTowns.push(pTown);
+    }
   }
 
   public resetPlayer(): void {
