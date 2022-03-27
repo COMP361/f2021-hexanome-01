@@ -59,15 +59,8 @@ export class Counter extends ItemUnit {
 }
 
 export class GoldPiece extends ItemUnit {
-  private amount: number;
-
-  constructor(amount: number, allowedEdges: Array<EdgeType>, isHidden = false) {
+  constructor(allowedEdges: Array<EdgeType>, isHidden = false) {
     super('gold-piece', allowedEdges, isHidden);
-    this.amount = amount;
-  }
-
-  public getAmount(): number {
-    return this.amount;
   }
 }
 

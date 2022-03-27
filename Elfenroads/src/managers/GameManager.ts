@@ -9,6 +9,7 @@ import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
+import {GameVariant} from '../enums/GameVariant';
 
 const colorMap: any = {
   '008000': BootColour.Green,
@@ -28,6 +29,7 @@ export default class GameManager {
   private socket: any;
   private initialized: boolean;
   private round: integer;
+  private gameVariant: GameVariant;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -47,6 +49,8 @@ export default class GameManager {
     });
     this.initialized = false;
     this.round = 0;
+    // hard coded this for now
+    this.gameVariant = GameVariant.elfenland;
   }
 
   public static getInstance(): GameManager {
@@ -58,6 +62,10 @@ export default class GameManager {
 
   public getRound(): integer {
     return this.round;
+  }
+
+  public getGameVariant(): GameVariant {
+    return this.gameVariant;
   }
 
   /**

@@ -1,8 +1,17 @@
-import {Counter, ItemUnit, Obstacle} from '../classes/ItemUnit';
+import {
+  Counter,
+  GoldPiece,
+  ItemUnit,
+  Obstacle,
+  Spell,
+} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {CounterType} from '../enums/CounterType';
 import {EdgeType} from '../enums/EdgeType';
+import {GameVariant} from '../enums/GameVariant';
 import {ObstacleType} from '../enums/ObstacleType';
+import {SpellType} from '../enums/SpellType';
+import GameManager from './GameManager';
 
 export default class ItemManager {
   private static itemManagerInstance: ItemManager;
@@ -10,84 +19,205 @@ export default class ItemManager {
   private faceUpPile: Array<ItemUnit>;
 
   constructor() {
-    // contains item for elfenroads
     this.itemPile = [];
     this.faceUpPile = [];
-    //Elfcycle
-    const elfMap: Map<EdgeType, number> = new Map();
-    elfMap.set(EdgeType.Plain, 1);
-    elfMap.set(EdgeType.Wood, 1);
-    elfMap.set(EdgeType.Mountain, 2);
-    //cloud
-    const cloudMap: Map<EdgeType, number> = new Map();
-    cloudMap.set(EdgeType.Plain, 2);
-    cloudMap.set(EdgeType.Wood, 2);
-    cloudMap.set(EdgeType.Mountain, 1);
-    //unicron
-    const unicronMap: Map<EdgeType, number> = new Map();
-    unicronMap.set(EdgeType.Wood, 1);
-    unicronMap.set(EdgeType.Desert, 2);
-    unicronMap.set(EdgeType.Mountain, 1);
-    //trollwagon
-    const trollMap: Map<EdgeType, number> = new Map();
-    trollMap.set(EdgeType.Plain, 1);
-    trollMap.set(EdgeType.Wood, 2);
-    trollMap.set(EdgeType.Desert, 2);
-    trollMap.set(EdgeType.Mountain, 2);
-    //dragon
-    const dragonMap: Map<EdgeType, number> = new Map();
-    dragonMap.set(EdgeType.Plain, 1);
-    dragonMap.set(EdgeType.Wood, 2);
-    dragonMap.set(EdgeType.Desert, 1);
-    dragonMap.set(EdgeType.Mountain, 1);
-    //pig
-    const pigMap: Map<EdgeType, number> = new Map();
-    pigMap.set(EdgeType.Plain, 1);
-    pigMap.set(EdgeType.Wood, 1);
-
-    for (let i = 0; i < 8; i++) {
-      this.itemPile.push(
-        new Counter(
-          CounterType.ElfCycle,
-          [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
-          elfMap
-        )
-      );
-      this.itemPile.push(
-        new Counter(
-          CounterType.MagicCloud,
-          [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
-          cloudMap
-        )
-      );
-      this.itemPile.push(
-        new Counter(
-          CounterType.Unicorn,
-          [EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
-          unicronMap
-        )
-      );
-      this.itemPile.push(
-        new Counter(
-          CounterType.TrollWagon,
-          [EdgeType.Plain, EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
-          trollMap
-        )
-      );
-      this.itemPile.push(
-        new Counter(
-          CounterType.Dragon,
-          [EdgeType.Plain, EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
-          dragonMap
-        )
-      );
-      this.itemPile.push(
-        new Counter(
-          CounterType.GiantPig,
-          [EdgeType.Plain, EdgeType.Wood],
-          pigMap
-        )
-      );
+    const gameVariant = GameManager.getInstance().getGameVariant();
+    if (gameVariant === GameVariant.elfenland) {
+      for (let i = 0; i < 8; i++) {
+        this.itemPile.push(
+          new Counter(
+            CounterType.ElfCycle,
+            [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
+            new Map([
+              [EdgeType.Plain, 1],
+              [EdgeType.Wood, 1],
+              [EdgeType.Mountain, 2],
+            ])
+          )
+        );
+        this.itemPile.push(
+          new Counter(
+            CounterType.MagicCloud,
+            [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
+            new Map([
+              [EdgeType.Plain, 2],
+              [EdgeType.Wood, 2],
+              [EdgeType.Mountain, 1],
+            ])
+          )
+        );
+        this.itemPile.push(
+          new Counter(
+            CounterType.Unicorn,
+            [EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+            new Map([
+              [EdgeType.Wood, 1],
+              [EdgeType.Desert, 2],
+              [EdgeType.Mountain, 1],
+            ])
+          )
+        );
+        this.itemPile.push(
+          new Counter(
+            CounterType.TrollWagon,
+            [EdgeType.Plain, EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+            new Map([
+              [EdgeType.Plain, 1],
+              [EdgeType.Wood, 2],
+              [EdgeType.Desert, 2],
+              [EdgeType.Mountain, 2],
+            ])
+          )
+        );
+        this.itemPile.push(
+          new Counter(
+            CounterType.Dragon,
+            [EdgeType.Plain, EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+            new Map([
+              [EdgeType.Plain, 1],
+              [EdgeType.Wood, 2],
+              [EdgeType.Desert, 1],
+              [EdgeType.Mountain, 1],
+            ])
+          )
+        );
+        this.itemPile.push(
+          new Counter(
+            CounterType.GiantPig,
+            [EdgeType.Plain, EdgeType.Wood],
+            new Map([
+              [EdgeType.Plain, 1],
+              [EdgeType.Wood, 1],
+            ])
+          )
+        );
+      }
+    } else {
+      for (let i = 0; i < 9; i++) {
+        if (i < 2) {
+          this.itemPile.push(
+            new GoldPiece([
+              EdgeType.Plain,
+              EdgeType.Wood,
+              EdgeType.Desert,
+              EdgeType.Mountain,
+            ])
+          );
+          this.itemPile.push(
+            new Spell(SpellType.Double, [
+              EdgeType.Plain,
+              EdgeType.Wood,
+              EdgeType.Desert,
+              EdgeType.Mountain,
+            ])
+          );
+          this.itemPile.push(
+            new Spell(SpellType.Exchange, [
+              EdgeType.Plain,
+              EdgeType.Wood,
+              EdgeType.Desert,
+              EdgeType.Mountain,
+            ])
+          );
+          this.itemPile.push(
+            new Obstacle(ObstacleType.SeaMonster, [
+              EdgeType.Lake,
+              EdgeType.River,
+            ])
+          );
+          this.itemPile.push(
+            new Obstacle(ObstacleType.Tree, [
+              EdgeType.Plain,
+              EdgeType.Wood,
+              EdgeType.Mountain,
+              EdgeType.Desert,
+            ])
+          );
+        }
+        if (i < 4) {
+          this.itemPile.push(
+            new Counter(
+              CounterType.Dragon,
+              [
+                EdgeType.Plain,
+                EdgeType.Wood,
+                EdgeType.Desert,
+                EdgeType.Mountain,
+              ],
+              new Map([
+                [EdgeType.Plain, 1],
+                [EdgeType.Wood, 2],
+                [EdgeType.Desert, 1],
+                [EdgeType.Mountain, 1],
+              ])
+            )
+          );
+          this.itemPile.push(
+            new Counter(
+              CounterType.MagicCloud,
+              [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
+              new Map([
+                [EdgeType.Plain, 2],
+                [EdgeType.Wood, 2],
+                [EdgeType.Mountain, 1],
+              ])
+            )
+          );
+        }
+        if (i < 5) {
+          this.itemPile.push(
+            new Counter(
+              CounterType.Unicorn,
+              [EdgeType.Wood, EdgeType.Desert, EdgeType.Mountain],
+              new Map([
+                [EdgeType.Wood, 1],
+                [EdgeType.Desert, 2],
+                [EdgeType.Mountain, 1],
+              ])
+            )
+          );
+        }
+        if (i < 8) {
+          this.itemPile.push(
+            new Counter(
+              CounterType.TrollWagon,
+              [
+                EdgeType.Plain,
+                EdgeType.Wood,
+                EdgeType.Desert,
+                EdgeType.Mountain,
+              ],
+              new Map([
+                [EdgeType.Plain, 1],
+                [EdgeType.Wood, 2],
+                [EdgeType.Desert, 2],
+                [EdgeType.Mountain, 2],
+              ])
+            )
+          );
+          this.itemPile.push(
+            new Counter(
+              CounterType.ElfCycle,
+              [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain],
+              new Map([
+                [EdgeType.Plain, 1],
+                [EdgeType.Wood, 1],
+                [EdgeType.Mountain, 2],
+              ])
+            )
+          );
+        }
+        this.itemPile.push(
+          new Counter(
+            CounterType.GiantPig,
+            [EdgeType.Plain, EdgeType.Wood],
+            new Map([
+              [EdgeType.Plain, 1],
+              [EdgeType.Wood, 1],
+            ])
+          )
+        );
+      }
     }
   }
 
