@@ -21,6 +21,16 @@ export default class ItemManager {
   constructor() {
     this.itemPile = [];
     this.faceUpPile = [];
+  }
+
+  static getInstance(): ItemManager {
+    if (!ItemManager.itemManagerInstance) {
+      ItemManager.itemManagerInstance = new ItemManager();
+    }
+    return ItemManager.itemManagerInstance;
+  }
+
+  public initializePile(): void {
     const gameVariant = GameManager.getInstance().getGameVariant();
     if (gameVariant === GameVariant.elfenland) {
       for (let i = 0; i < 8; i++) {
@@ -120,18 +130,23 @@ export default class ItemManager {
             ])
           );
           this.itemPile.push(
-            new Obstacle(ObstacleType.SeaMonster, [
-              EdgeType.Lake,
-              EdgeType.River,
-            ])
+            new Obstacle(
+              ObstacleType.SeaMonster,
+              [EdgeType.Lake, EdgeType.River],
+              false
+            )
           );
           this.itemPile.push(
-            new Obstacle(ObstacleType.Tree, [
-              EdgeType.Plain,
-              EdgeType.Wood,
-              EdgeType.Mountain,
-              EdgeType.Desert,
-            ])
+            new Obstacle(
+              ObstacleType.Tree,
+              [
+                EdgeType.Plain,
+                EdgeType.Wood,
+                EdgeType.Mountain,
+                EdgeType.Desert,
+              ],
+              true
+            )
           );
         }
         if (i < 4) {
@@ -221,13 +236,6 @@ export default class ItemManager {
     }
   }
 
-  static getInstance(): ItemManager {
-    if (!ItemManager.itemManagerInstance) {
-      ItemManager.itemManagerInstance = new ItemManager();
-    }
-    return ItemManager.itemManagerInstance;
-  }
-
   getItemPile(): Array<ItemUnit> {
     return this.itemPile;
   }
@@ -240,12 +248,11 @@ export default class ItemManager {
   }
 
   getTreeObstacle(): Obstacle {
-    return new Obstacle(ObstacleType.Tree, [
-      EdgeType.Plain,
-      EdgeType.Wood,
-      EdgeType.Mountain,
-      EdgeType.Desert,
-    ]);
+    return new Obstacle(
+      ObstacleType.Tree,
+      [EdgeType.Plain, EdgeType.Wood, EdgeType.Mountain, EdgeType.Desert],
+      true
+    );
   }
 
   flipCounters(): void {

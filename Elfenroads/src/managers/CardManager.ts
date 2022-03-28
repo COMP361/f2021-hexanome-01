@@ -18,6 +18,16 @@ export class CardManager {
     this.cardPile = [];
     this.faceUpPile = [];
     this.goldCardPile = [];
+  }
+
+  public static getInstance(): CardManager {
+    if (!CardManager.cardManagerInstance) {
+      CardManager.cardManagerInstance = new CardManager();
+    }
+    return CardManager.cardManagerInstance;
+  }
+
+  public initializePile(): void {
     const gameVariant = GameManager.getInstance().getGameVariant();
     for (let i = 0; i < 12; i++) {
       if (
@@ -35,13 +45,6 @@ export class CardManager {
         this.cardPile.push(new TravelCard(TravelCardType.Raft));
       }
     }
-  }
-
-  public static getInstance(): CardManager {
-    if (!CardManager.cardManagerInstance) {
-      CardManager.cardManagerInstance = new CardManager();
-    }
-    return CardManager.cardManagerInstance;
   }
 
   public getCardPile(): Array<CardUnit> {
