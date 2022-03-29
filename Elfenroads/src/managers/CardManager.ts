@@ -1,29 +1,23 @@
-import {CardUnit, TravelCard} from '../classes/CardUnit';
+import {CardUnit, GoldCard, TravelCard} from '../classes/CardUnit';
 import Edge from '../classes/Edge';
 import {Counter, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {EdgeType} from '../enums/EdgeType';
+import {GameVariant} from '../enums/GameVariant';
 import {TravelCardType} from '../enums/TravelCardType';
+import GameManager from './GameManager';
 import PlayerManager from './PlayerManager';
 
 export class CardManager {
   private static cardManagerInstance: CardManager;
   private cardPile: Array<CardUnit>;
+  private faceUpPile: Array<CardUnit>;
+  private goldCardPile: Array<GoldCard>;
 
   private constructor() {
-    // the pile contains elfenroads cards
     this.cardPile = [];
-    for (let i = 0; i < 12; i++) {
-      if (i < 10) {
-        this.cardPile.push(new TravelCard(TravelCardType.Dragon));
-        this.cardPile.push(new TravelCard(TravelCardType.GiantPig));
-        this.cardPile.push(new TravelCard(TravelCardType.ElfCycle));
-        this.cardPile.push(new TravelCard(TravelCardType.MagicCloud));
-        this.cardPile.push(new TravelCard(TravelCardType.Uicorn));
-        this.cardPile.push(new TravelCard(TravelCardType.TrollWagon));
-      }
-      this.cardPile.push(new TravelCard(TravelCardType.Raft));
-    }
+    this.faceUpPile = [];
+    this.goldCardPile = [];
   }
 
   public static getInstance(): CardManager {
@@ -31,6 +25,26 @@ export class CardManager {
       CardManager.cardManagerInstance = new CardManager();
     }
     return CardManager.cardManagerInstance;
+  }
+
+  public initializePile(): void {
+    const gameVariant = GameManager.getInstance().getGameVariant();
+    for (let i = 0; i < 12; i++) {
+      if (
+        gameVariant === GameVariant.elfenland ||
+        (gameVariant === GameVariant.elfengold && i < 9)
+      ) {
+        if (i < 10) {
+          this.cardPile.push(new TravelCard(TravelCardType.Dragon));
+          this.cardPile.push(new TravelCard(TravelCardType.GiantPig));
+          this.cardPile.push(new TravelCard(TravelCardType.ElfCycle));
+          this.cardPile.push(new TravelCard(TravelCardType.MagicCloud));
+          this.cardPile.push(new TravelCard(TravelCardType.Uicorn));
+          this.cardPile.push(new TravelCard(TravelCardType.TrollWagon));
+        }
+        this.cardPile.push(new TravelCard(TravelCardType.Raft));
+      }
+    }
   }
 
   public getCardPile(): Array<CardUnit> {
@@ -41,6 +55,10 @@ export class CardManager {
     const index = Math.floor(Math.random() * this.cardPile.length);
     const card = this.cardPile[index];
     this.cardPile.splice(index, 1);
+    // gold card should go directly to the gold card pile and not player's deck
+    if (card instanceof GoldCard) {
+      this.goldCardPile.push(card);
+    }
     return card;
   }
 
@@ -56,9 +74,38 @@ export class CardManager {
     return;
   }
 
+  public getGoldCardPile(): Array<GoldCard> {
+    return this.goldCardPile;
+  }
+
+  public claimGoldCardPile(player: Player): void {
+    let totalGold = 0;
+    this.goldCardPile.forEach(card => {
+      totalGold += card.getAmount();
+    });
+    const newBalance = player.getGold() + totalGold;
+    player.setGold(newBalance);
+  }
+
   public addToPile(player: Player, card: CardUnit): void {
     player.removeCard(card);
     this.cardPile.push(card);
+  }
+
+  // this must be called 5 times after 5 cards are distributed to every player
+  // also called every time a player picked a card or picked a gold card.
+  public flipCard(): void {
+    const randomCard = this.getRandomCard();
+    if (!(randomCard instanceof GoldCard)) {
+      this.faceUpPile.push(randomCard);
+    }
+  }
+
+  // must call this function after flipping 5 cards
+  public addGoldCardsToPile(): void {
+    for (let i = 0; i < 7; i++) {
+      this.cardPile.push(new GoldCard(3));
+    }
   }
 
   public isValidSelection(

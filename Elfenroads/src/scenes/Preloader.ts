@@ -123,7 +123,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('dragon', 'assets/boardgame/M06.png');
     this.load.image('tree', 'assets/boardgame/M09.png');
     this.load.image('sea-monster', 'assets/boardgame/seamonster.png');
-    this.load.image('bounce', 'assets/boardgame/bounce.png');
+    this.load.image('exchange', 'assets/boardgame/exchange.png');
     this.load.image('double', 'assets/boardgame/double.png');
     this.load.image('gold-piece', 'assets/boardgame/treasure.png');
 

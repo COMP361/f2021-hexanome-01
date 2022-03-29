@@ -9,6 +9,7 @@ import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
+import {GameVariant} from '../enums/GameVariant';
 
 const colorMap: any = {
   '008000': BootColour.Green,
@@ -28,6 +29,7 @@ export default class GameManager {
   private socket: any;
   private initialized: boolean;
   private round: integer;
+  private gameVariant: GameVariant;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -47,6 +49,8 @@ export default class GameManager {
     });
     this.initialized = false;
     this.round = 0;
+    // hard coded this for now
+    this.gameVariant = GameVariant.elfengold;
   }
 
   public static getInstance(): GameManager {
@@ -60,6 +64,10 @@ export default class GameManager {
     return this.round;
   }
 
+  public getGameVariant(): GameVariant {
+    return this.gameVariant;
+  }
+
   /**
    * SIMULATION OF GAME
    */
@@ -67,16 +75,20 @@ export default class GameManager {
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
 
-    // Step 2: Get number of rounds
+    // Step 2: initialize the item and card pile
+    this.itemManager.initializePile();
+    this.cardManager.initializePile();
+
+    // Step 3: Get number of rounds
     const numRounds: integer = 1;
 
-    // Step 3: Play number of rounds
+    // Step 4: Play number of rounds
     for (let i = 1; i < numRounds + 1; i++) {
       this.round = i;
       this.playRound(mainScene, i - 1);
     }
 
-    // Step 4: Determine winner
+    // Step 5: Determine winner
   }
 
   private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {

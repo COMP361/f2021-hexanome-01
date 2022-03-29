@@ -107,7 +107,12 @@ export default class PlanRouteScene extends Phaser.Scene {
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
-        if (item.data.values.allowedEdges.includes(edge.getType())) {
+        if (
+          (item.data.values.allowedEdges.includes(edge.getType()) &&
+            edge.getItems().length === 0 &&
+            !item.data.values.needsCounter) ||
+          (item.data.values.needsCounter && edge.getItems().length > 0)
+        ) {
           const pos = UIScene.getResponsivePosition(
             this,
             edge.getPosition()[0],
@@ -145,9 +150,8 @@ export default class PlanRouteScene extends Phaser.Scene {
       if (
         (this.selectedItem.getAllowedEdges().includes(edge.getType()) &&
           edge.getItems().length === 0 &&
-          this.selectedItem.getName() !== ObstacleType.Tree) ||
-        (this.selectedItem.getName() === ObstacleType.Tree &&
-          edge.getItems().length === 1)
+          !this.selectedItem.getNeedsCounter()) ||
+        (this.selectedItem.getNeedsCounter() && edge.getItems().length >= 1)
       ) {
         this.sound.play('place');
         graphics.clear();

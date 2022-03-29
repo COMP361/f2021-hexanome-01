@@ -6,11 +6,18 @@ import {SpellType} from '../enums/SpellType';
 export abstract class ItemUnit {
   private name: string;
   private allowedEdges: Array<EdgeType>;
+  private needsCounter: boolean;
   private isHidden: boolean;
 
-  constructor(name: string, allowedEdges: Array<EdgeType>, isHidden = false) {
+  constructor(
+    name: string,
+    allowedEdges: Array<EdgeType>,
+    needsCounter: boolean,
+    isHidden = false
+  ) {
     this.name = name;
     this.allowedEdges = allowedEdges;
+    this.needsCounter = needsCounter;
     this.isHidden = isHidden;
   }
 
@@ -20,6 +27,10 @@ export abstract class ItemUnit {
 
   public getAllowedEdges(): Array<EdgeType> {
     return this.allowedEdges;
+  }
+
+  public getNeedsCounter(): boolean {
+    return this.needsCounter;
   }
 
   public getHidden(): boolean {
@@ -37,7 +48,7 @@ export class Spell extends ItemUnit {
     allowedEdges: Array<EdgeType>,
     isHidden = false
   ) {
-    super(spellType, allowedEdges, isHidden);
+    super(spellType, allowedEdges, true, isHidden);
   }
 }
 
@@ -49,7 +60,7 @@ export class Counter extends ItemUnit {
     cardsNeeded: Map<EdgeType, number>,
     isHidden = false
   ) {
-    super(counterType, allowedEdges, isHidden);
+    super(counterType, allowedEdges, false, isHidden);
     this.cardsNeeded = cardsNeeded;
   }
 
@@ -59,15 +70,8 @@ export class Counter extends ItemUnit {
 }
 
 export class GoldPiece extends ItemUnit {
-  private amount: number;
-
-  constructor(amount: number, allowedEdges: Array<EdgeType>, isHidden = false) {
-    super('gold-piece', allowedEdges, isHidden);
-    this.amount = amount;
-  }
-
-  public getAmount(): number {
-    return this.amount;
+  constructor(allowedEdges: Array<EdgeType>, isHidden = false) {
+    super('gold-piece', allowedEdges, true, isHidden);
   }
 }
 
@@ -75,8 +79,9 @@ export class Obstacle extends ItemUnit {
   constructor(
     obstacleType: ObstacleType,
     allowedEdges: Array<EdgeType>,
+    needsCounter: boolean,
     isHidden = false
   ) {
-    super(obstacleType, allowedEdges, isHidden);
+    super(obstacleType, allowedEdges, needsCounter, isHidden);
   }
 }
