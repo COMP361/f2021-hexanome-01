@@ -7,7 +7,6 @@ import {ItemUnit} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import PlayerIcon from '../classes/PlayerIcon';
 import SettingsMenu from '../classes/SettingsMenu';
-import Town from '../classes/Town';
 import GameManager from '../managers/GameManager';
 import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
@@ -157,12 +156,16 @@ export default class UIScene extends Phaser.Scene {
       .slice(0, currentPlayer.getBootColour().indexOf('-'));
 
     // Create text to notify whose turn it is using boot color substring
-    const playerText: Phaser.GameObjects.Text = this.add
-      .text(10, 5, `${bootString.toUpperCase()}`, {
+    const playerText: Phaser.GameObjects.Text = this.add.text(
+      10,
+      5,
+      `${bootString.toUpperCase()}`,
+      {
         fontFamily: 'MedievalSharp',
         fontSize: '50px',
-      })
-      .setColor(`${bootString.toLowerCase()}`);
+        color: `${bootString.toLowerCase()}`,
+      }
+    );
 
     // Grab width of text to determine size of panel behind
     const textWidth: number = playerText.width;

@@ -62,6 +62,10 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('grid', 'assets/boardgame/grid.png');
 
     // Assests for PlayerIconScene.ts
+    this.load.image(
+      'brown-gauntlet',
+      'assets/ui/rpgpack/PNG/cursorGauntlet_bronze.png'
+    );
     this.load.image('blue-actor', 'assets/boardgame/actors/blue_actor.png');
     this.load.image('black-actor', 'assets/boardgame/actors/black_actor.png');
     this.load.image('green-actor', 'assets/boardgame/actors/green_actor.png');
@@ -89,28 +93,10 @@ export default class Preloader extends Phaser.Scene {
       'purple-panel',
       'assets/ui/uipack_fixed/PNG/purple_panel.png'
     );
-    this.load.image(
-      'green-circle',
-      'assets/ui/uipack_fixed/PNG/green_circle.png'
-    );
-    this.load.image(
-      'blue-circle',
-      'assets/ui/uipack_fixed/PNG/blue_circle.png'
-    );
-    this.load.image('red-circle', 'assets/ui/uipack_fixed/PNG/red_circle.png');
-    this.load.image(
-      'yellow-circle',
-      'assets/ui/uipack_fixed/PNG/yellow_circle.png'
-    );
 
     this.load.image(
-      'black-circle',
-      'assets/ui/uipack_fixed/PNG/grey_circle.png'
-    );
-
-    this.load.image(
-      'purple-circle',
-      'assets/ui/uipack_fixed/PNG/purple_circle.png'
+      'grey-slider',
+      'assets/ui/uipack_fixed/PNG/grey_sliderRight.png'
     );
 
     // Assets for CounterScene.js
