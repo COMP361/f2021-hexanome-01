@@ -1,12 +1,11 @@
 import Phaser from 'phaser';
 import {BootColour} from '../enums/BootColour';
+import PlayerManager from '../managers/PlayerManager';
 
 // helper class for getting the right image
 export class ImgStore {
   private actorStore: Map<BootColour, string> = new Map();
-  private bootStore: Map<BootColour, string> = new Map();
   private panelStore: Map<BootColour, string> = new Map();
-  private circleStore: Map<BootColour, string> = new Map();
 
   private constructor() {
     // set up actor image store
@@ -16,13 +15,6 @@ export class ImgStore {
     this.actorStore.set(BootColour.Red, 'red-actor');
     this.actorStore.set(BootColour.Yellow, 'yellow-actor');
     this.actorStore.set(BootColour.Purple, 'purple-actor');
-    // set up boot image store
-    this.bootStore.set(BootColour.Black, 'black-boot');
-    this.bootStore.set(BootColour.Blue, 'blue-boot');
-    this.bootStore.set(BootColour.Green, 'green-boot');
-    this.bootStore.set(BootColour.Red, 'red-boot');
-    this.bootStore.set(BootColour.Yellow, 'yellow-boot');
-    this.bootStore.set(BootColour.Purple, 'purple-boot');
     // set up panel image store
     this.panelStore.set(BootColour.Black, 'black-panel');
     this.panelStore.set(BootColour.Blue, 'blue-panel');
@@ -30,13 +22,6 @@ export class ImgStore {
     this.panelStore.set(BootColour.Red, 'red-panel');
     this.panelStore.set(BootColour.Yellow, 'yellow-panel');
     this.panelStore.set(BootColour.Purple, 'purple-panel');
-    // set up circle image store
-    this.circleStore.set(BootColour.Black, 'black-circle');
-    this.circleStore.set(BootColour.Blue, 'blue-circle');
-    this.circleStore.set(BootColour.Green, 'green-circle');
-    this.circleStore.set(BootColour.Red, 'red-circle');
-    this.circleStore.set(BootColour.Yellow, 'yellow-circle');
-    this.circleStore.set(BootColour.Purple, 'purple-circle');
   }
 
   public static instance(): ImgStore {
@@ -47,16 +32,8 @@ export class ImgStore {
     return String(this.actorStore.get(c));
   }
 
-  public getBoot(c: BootColour) {
-    return String(this.bootStore.get(c));
-  }
-
   public getPanel(c: BootColour) {
     return String(this.panelStore.get(c));
-  }
-
-  public getCircle(c: BootColour) {
-    return String(this.circleStore.get(c));
   }
 }
 
@@ -65,6 +42,7 @@ export default class PlayerIcon {
   private isShowed: boolean;
   private container: Phaser.GameObjects.Container;
   private xpos: number;
+  private ypos: number;
   private panel: Phaser.GameObjects.RenderTexture;
   private numItems: number;
   private color: BootColour;
@@ -80,6 +58,7 @@ export default class PlayerIcon {
     this.scene = scene;
     this.isShowed = false;
     this.xpos = xpos;
+    this.ypos = ypos;
     this.numItems = 0;
     this.color = color;
     this.score = score;
@@ -88,22 +67,31 @@ export default class PlayerIcon {
 
     /* add player token */
     const token: Phaser.GameObjects.Sprite = this.scene.add
-      .sprite(xpos, ypos, store.getActor(color))
+      .sprite(this.xpos, this.ypos, store.getActor(this.color))
       .setDepth(3);
 
     const panel: Phaser.GameObjects.RenderTexture = this.scene.add
-      .nineslice(0, 0, 120, 60, store.getPanel(color), 24)
+      .nineslice(0, 0, 120, 60, store.getPanel(this.color), 24)
       .setOrigin(0, 0);
     this.panel = panel;
 
     token.setScale(0.3);
 
     const aContainer: Phaser.GameObjects.Container = this.scene.add
-      .container(xpos + 30, ypos - 30)
+      .container(this.xpos + 30, this.ypos - 30)
       .setDepth(3);
     this.container = aContainer;
     aContainer.add(panel);
     aContainer.setVisible(false);
+    const scoreContainer = this.renderScore();
+    scoreContainer.setVisible(false);
+
+    // If this icon is the current player, then render the bouncing pointer
+    const isCurrentPlayer: boolean =
+      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
+      this.color;
+
+    isCurrentPlayer ? this.renderPointer(token.getLeftCenter().x) : undefined;
 
     token
       .setInteractive()
@@ -115,23 +103,59 @@ export default class PlayerIcon {
       })
       .on('pointerup', () => {
         token.clearTint();
+        scoreContainer.setVisible(!scoreContainer.visible);
         aContainer.setVisible(!aContainer.visible);
       });
+  }
 
-    // Show player current score
-    const circle: Phaser.GameObjects.Sprite = this.scene.add.sprite(
-      xpos - 70,
-      ypos,
-      store.getCircle(color)
+  // Show player current score
+  private renderScore(): Phaser.GameObjects.Container {
+    const scoreContainer = this.scene.add.container(
+      this.xpos - 39,
+      this.ypos - 10
     );
-    const scoreText: Phaser.GameObjects.Text = this.scene.add.text(
-      xpos - 80,
-      ypos - 12,
-      `${this.score}`
+    const greyPanel: Phaser.GameObjects.Sprite = this.scene.add.sprite(
+      0,
+      0,
+      'grey-slider'
     );
-    scoreText.setColor('black');
-    scoreText.setFontSize(32);
-    circle.setScale(1.75);
+
+    scoreContainer.add(greyPanel);
+
+    const scoreText = this.scene.add
+      .text(
+        greyPanel.getCenter().x - 3,
+        greyPanel.getCenter().y - 1,
+        `${this.score}`,
+        {
+          fontFamily: 'MedievalSharp',
+          fontSize: '19px',
+          color: 'black',
+        }
+      )
+      .setOrigin(0.5, 0.5);
+
+    scoreContainer.add(scoreText);
+
+    return scoreContainer;
+  }
+
+  // Create the bouncing pointer inidicator using the relative position of the icon
+  private renderPointer(xEdge: number): void {
+    const image = this.scene.add
+      .image(xEdge - 20, this.ypos, 'brown-gauntlet')
+      .setFlipX(true);
+
+    image.rotation = 0.79;
+
+    this.scene.tweens.add({
+      targets: image,
+      x: this.xpos - 70,
+      duration: 600,
+      ease: 'Power1',
+      yoyo: true,
+      repeat: Infinity,
+    });
   }
 
   public addItem(img: string): void {
