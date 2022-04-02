@@ -8,6 +8,7 @@ export default class Player {
   private gold: integer;
   private score: integer;
   private bootColour: BootColour;
+  private bootColourHex: number;
   private currentLocation: Town;
   private myItems: Array<ItemUnit>;
   private myCards: Array<CardUnit>;
@@ -26,6 +27,18 @@ export default class Player {
     this.visitedTowns = [];
     this.secretTown = Town.getTown('null');
     this.passedTurn = false;
+
+    // Colour to Hex Map for global variable.
+    const colourToHex: Map<BootColour, number> = new Map();
+    colourToHex.set(BootColour.Black, 0x000000);
+    colourToHex.set(BootColour.Blue, 0x004499);
+    colourToHex.set(BootColour.Green, 0x008811);
+    colourToHex.set(BootColour.Red, 0x991111);
+    colourToHex.set(BootColour.Yellow, 0xffff00);
+    colourToHex.set(BootColour.Purple, 0x880099);
+
+    // Set the appropriate hex according to player's boot colour.
+    this.bootColourHex = colourToHex.get(pBootColour)!;
   }
 
   public getGold(): integer {
@@ -34,6 +47,10 @@ export default class Player {
 
   public getPassedTurn(): boolean {
     return this.passedTurn;
+  }
+
+  public getHexColour(): number {
+    return this.bootColourHex;
   }
 
   public setSecretTown(town: Town): void {
