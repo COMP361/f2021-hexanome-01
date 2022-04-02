@@ -16,7 +16,6 @@ import {useRef, useState} from 'react';
 // All of our scenes in Phaser Game
 import UIScene from '../../scenes/UIScene';
 import MainScene from '../../scenes/MainScene';
-import MoveBootScene from '../../scenes/GameplayScenes/MoveBootScene';
 import Preloader from '../../scenes/Preloader';
 import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
 import PlanRouteScene from '../../scenes/GameplayScenes/PlanRouteScene';
@@ -41,7 +40,6 @@ const game = {
     Preloader,
     MainScene,
     UIScene,
-    MoveBootScene,
     DrawCountersScene,
     PlanRouteScene,
     SelectionScene,

@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 import CardInventory from '../classes/CardInventory';
 import CheatSheetMenu from '../classes/CheatSheetMenu';
-import eventsCenter from '../classes/EventsCenter';
 import ItemInventory from '../classes/ItemInventory';
 import {ItemUnit} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import PlayerIcon from '../classes/PlayerIcon';
 import SettingsMenu from '../classes/SettingsMenu';
+import Town from '../classes/Town';
 import GameManager from '../managers/GameManager';
 import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
@@ -125,23 +125,23 @@ export default class UIScene extends Phaser.Scene {
 
   // Renders the Player Boots across the map.
   private renderBoots(): void {
-    let xOffset: integer = 0;
+    // Begin offset at a negative so that the collection of boots are rendered centered
+    const allPlayers: Array<Player> = PlayerManager.getInstance().getPlayers();
+    let xOffset: integer = -(allPlayers.length * 10) / 2;
 
     // Loop through players and render their boots based on current Town.
-    PlayerManager.getInstance()
-      .getPlayers()
-      .forEach(player => {
-        const pos = UIScene.getResponsivePosition(
-          this,
-          player.getCurrentLocation().getXposition(),
-          player.getCurrentLocation().getYposition()
-        );
-        this.add
-          .sprite(pos[0] + xOffset, pos[1], player.getBootColour())
-          .setDepth(3)
-          .setScale(0.15);
-        xOffset += 10;
-      });
+    allPlayers.forEach(player => {
+      const pos = UIScene.getResponsivePosition(
+        this,
+        player.getCurrentLocation().getXposition(),
+        player.getCurrentLocation().getYposition()
+      );
+      this.add
+        .sprite(pos[0] + xOffset, pos[1], player.getBootColour())
+        .setDepth(3)
+        .setScale(0.15);
+      xOffset += 10;
+    });
   }
 
   // Displays whose turn is it.
@@ -260,7 +260,7 @@ export default class UIScene extends Phaser.Scene {
       });
   }
 
-  // Displays Player's current acquired town pieces.
+  // Displays all Players town pieces.
   private createTownPieceToggle(): void {
     /* toggles town piece visibility */
     const townPieceButton = this.add.sprite(this.width - 130, 30, 'brown-box');
@@ -268,7 +268,40 @@ export default class UIScene extends Phaser.Scene {
       .image(townPieceButton.x, townPieceButton.y, 'information')
       .setScale(0.7);
 
-    // Add interactivity
+    // Container to store all of the townPieces
+    const allPieces: Phaser.GameObjects.Container = this.add
+      .container(0, 0)
+      .setDepth(4)
+      .setVisible(false);
+
+    // Begin offset at a negative so that the collection of boots are rendered centered
+    const allPlayers: Array<Player> = PlayerManager.getInstance().getPlayers();
+    let xOffset: integer = -(allPlayers.length * 20) / 2;
+
+    // Loop through all players and render their uncollected town pieces
+    allPlayers.forEach(player => {
+      // Create a an array of unvisitedTowns to render the appropriate towns
+      const visitedTowns: Array<Town> = player.getVisitedTowns();
+      const allTowns: Array<Town> =
+        RoadManager.getInstance().getAllTownsAsArray();
+      const unvisitedTowns = allTowns.filter(
+        town => !visitedTowns.includes(town)
+      );
+
+      // For each unvisitedTown, render the player's uncollected town piece.
+      unvisitedTowns.forEach(town => {
+        const piecesOnTown = renderPiecesOnTown(
+          this,
+          town,
+          xOffset,
+          player.getHexColour()
+        );
+        allPieces.add(piecesOnTown); // Add the town piece to the container above.
+      });
+      xOffset += 20; // Increment the offset since we are moving on to the next player.
+    });
+
+    // Add toggle interactivity for the townPieceButton
     townPieceButton
       .setInteractive()
       .on('pointerdown', () => {
@@ -279,8 +312,39 @@ export default class UIScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         townPieceButton.clearTint();
-        eventsCenter.emit('update-town-piece-vis', true);
+        allPieces.setVisible(!allPieces.visible);
       });
+
+    // Anonymous function to render the pieces on currentTown
+    function renderPiecesOnTown(
+      scene: Phaser.Scene,
+      currentTown: Town,
+      xOffset: number,
+      playerColour: number
+    ): Phaser.GameObjects.Container {
+      const pos = UIScene.getResponsivePosition(
+        scene,
+        currentTown.getXposition(),
+        currentTown.getYposition()
+      );
+
+      const piecesOnCurrentTown = scene.add.container(
+        pos[0] + xOffset,
+        pos[1] - 40
+      );
+
+      const brownCircle = scene.add
+        .sprite(0, 0, 'brown-cirle')
+        .setDepth(4)
+        .setScale(0.7);
+
+      const playerCirle = scene.add.circle(0, -1, 7, playerColour).setDepth(5);
+
+      piecesOnCurrentTown.add(brownCircle);
+      piecesOnCurrentTown.add(playerCirle);
+
+      return piecesOnCurrentTown;
+    }
   }
 
   // Displays the local Player's secret town.
