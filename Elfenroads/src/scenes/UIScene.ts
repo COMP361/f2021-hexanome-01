@@ -1,8 +1,6 @@
-import {parse} from 'path';
 import Phaser from 'phaser';
 import CardInventory from '../classes/CardInventory';
 import CheatSheetMenu from '../classes/CheatSheetMenu';
-import eventsCenter from '../classes/EventsCenter';
 import ItemInventory from '../classes/ItemInventory';
 import {ItemUnit} from '../classes/ItemUnit';
 import Player from '../classes/Player';
@@ -262,7 +260,7 @@ export default class UIScene extends Phaser.Scene {
       });
   }
 
-  // Displays Player's current acquired town pieces.
+  // Displays all Players town pieces.
   private createTownPieceToggle(): void {
     /* toggles town piece visibility */
     const townPieceButton = this.add.sprite(this.width - 130, 30, 'brown-box');
