@@ -5,37 +5,43 @@ export default class Town {
   private position: Array<integer>;
   private currentPlayers: Array<Player>;
   private nextTowns: Array<Town>;
+  private goldValue: number;
   private static townStore: Map<string, Town> = new Map<string, Town>([
-    ['elvenhold', new Town('elvenhold', [1050, 400])],
-    ['feodor', new Town('feodor', [835, 370])],
-    ['lapphalya', new Town('lapphalya', [840, 470])],
-    ['rivinia', new Town('rivinia', [1005, 315])],
-    ['ergeren', new Town('ergeren', [1190, 315])],
-    ['beata', new Town('beata', [1200, 490])],
-    ['strykhaven', new Town('strykhaven', [1090, 540])],
-    ['virst', new Town('virst', [915, 570])],
-    ['jxara', new Town('jxara', [655, 560])],
-    ['mahdavikia', new Town('mahdavikia', [450, 555])],
-    ['grangor', new Town('grangor', [415, 455])],
-    ['kihromah', new Town('kihromah', [550, 410])],
-    ['dagamura', new Town('dagamura', [680, 435])],
-    ['albaran', new Town('albaran', [685, 335])],
-    ['parundia', new Town('parundia', [555, 285])],
-    ['usselen', new Town('usselen', [400, 225])],
-    ['wylhien', new Town('wylhien', [560, 160])],
-    ['jaccaranda', new Town('jaccaranda', [725, 185])],
-    ['throtmanni', new Town('throtmanni', [890, 250])],
-    ['tichih', new Town('tichih', [1060, 200])],
-    ['yttar', new Town('yttar', [390, 330])],
+    ['elvenhold', new Town('elvenhold', [1050, 400], 0)],
+    ['feodor', new Town('feodor', [835, 370], 4)],
+    ['lapphalya', new Town('lapphalya', [840, 470], 2)],
+    ['rivinia', new Town('rivinia', [1005, 315], 3)],
+    ['ergeren', new Town('ergeren', [1190, 315], 5)],
+    ['beata', new Town('beata', [1200, 490], 2)],
+    ['strykhaven', new Town('strykhaven', [1090, 540], 4)],
+    ['virst', new Town('virst', [915, 570], 3)],
+    ['jxara', new Town('jxara', [655, 560], 3)],
+    ['mahdavikia', new Town('mahdavikia', [450, 555], 5)],
+    ['grangor', new Town('grangor', [415, 455], 5)],
+    ['kihromah', new Town('kihromah', [550, 410], 6)],
+    ['dagamura', new Town('dagamura', [680, 435], 4)],
+    ['albaran', new Town('albaran', [685, 335], 7)],
+    ['parundia', new Town('parundia', [555, 285], 4)],
+    ['usselen', new Town('usselen', [400, 225], 4)],
+    ['wylhien', new Town('wylhien', [560, 160], 3)],
+    ['jaccaranda', new Town('jaccaranda', [725, 185], 5)],
+    ['throtmanni', new Town('throtmanni', [890, 250], 3)],
+    ['tichih', new Town('tichih', [1060, 200], 3)],
+    ['yttar', new Town('yttar', [390, 330], 4)],
     ['null', new Town()],
   ]);
   private isNullTown: boolean;
 
-  private constructor(name?: string, position?: Array<integer>) {
+  private constructor(
+    name?: string,
+    position?: Array<integer>,
+    goldValue?: number
+  ) {
     this.name = name ?? 'null';
     this.position = position ?? [-1, -1];
     this.currentPlayers = [];
     this.nextTowns = [];
+    this.goldValue = goldValue ?? 0;
     this.isNullTown = name ? false : true;
   }
 
@@ -85,5 +91,9 @@ export default class Town {
 
   public getName(): string {
     return this.name;
+  }
+
+  public getGoldValue(): number {
+    return this.goldValue;
   }
 }
