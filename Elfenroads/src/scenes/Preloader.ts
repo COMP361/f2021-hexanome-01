@@ -66,6 +66,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('grid', 'assets/boardgame/grid.png');
     this.load.image('target', 'assets/ui/iconpack/PNG/White/1x/target.png');
     this.load.image('gold-cirle', 'assets/ui/rpgpack/PNG/buttonRound_gold.png');
+
     // Assests for PlayerIconScene.ts
     this.load.image(
       'brown-gauntlet',
@@ -130,8 +131,8 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('witch-card', 'assets/boardgame/witch.png');
     this.load.image('gold-card', 'assets/boardgame/Gold.png');
 
-    // Assets for card and edge selection
-    this.load.image('check', 'assets/ui/iconpack/PNG/White/2x/checkmark.png');
+    // Assets for DrawCounterScene
+    this.load.image('cross', 'assets/ui/uipack_fixed/PNG/grey_crossWhite.png');
 
     // music
     this.load.audio('medieval-music', 'audio/medieval-music.mp3');

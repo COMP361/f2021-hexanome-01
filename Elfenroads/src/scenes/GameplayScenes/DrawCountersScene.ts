@@ -4,17 +4,28 @@ import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 
 export default class DrawCountersScene extends Phaser.Scene {
-  // Grab width of current game to center our container
+  public counterSprites!: Array<Phaser.GameObjects.Sprite>;
+  public callback!: Function;
 
-  public cb: any;
-  public sprites: any;
   constructor() {
     super('drawcountersscene');
   }
 
-  create(cb: any) {
-    this.cb = cb;
-    this.sprites = [];
+  create(callback: Function) {
+    this.callback = callback;
+    this.counterSprites = [];
+
+    // Create UI banner in the middle of the screen
+    this.createUIBanner();
+
+    // Create pass turn button
+    this.createPassTurnButton();
+
+    // Render five face up counters
+    this.renderSixCounters();
+  }
+
+  private createUIBanner() {
     // Create text to notify that it is draw counter phase
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -42,18 +53,62 @@ export default class DrawCountersScene extends Phaser.Scene {
     // Render the brown panel and text
     container.add(brownPanel);
     container.add(drawCounterText);
-
-    // Render five face up counters
-    this.renderCounters();
   }
 
-  renderCounters() {
+  private createPassTurnButton() {
+    // Create small button with the "next" icon
+    const width = this.cameras.main.width;
+    const height = this.cameras.main.height;
+    const passTurnButton = this.add.sprite(
+      width - 30,
+      height - 30,
+      'brown-box'
+    );
+    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
+
+    // Add interactive pointer options for passTurnButton
+    // After click, currentPlayer is updated via playerManager
+    // PlayerTurnScene is rerendered to show whose turn it is
+    passTurnButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        passTurnButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        passTurnButton.clearTint();
+      })
+      .on('pointerup', () => {
+        passTurnButton.clearTint();
+        this.sound.play('pass');
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('uiscene').scene.restart();
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getPassedTurn() === true) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.callback();
+        } else {
+          this.scene.restart();
+        }
+      });
+  }
+
+  private renderSixCounters() {
     const gameWidth: number = this.cameras.main.width;
     let previousWidth: integer = gameWidth / 2 + 200;
 
-    while (this.sprites.length) {
-      this.sprites[0].destroy();
-      this.sprites.splice(0, 1);
+    while (this.counterSprites.length) {
+      this.counterSprites[0].destroy();
+      this.counterSprites.splice(0, 1);
     }
 
     // Render five face up counters
@@ -67,86 +122,122 @@ export default class DrawCountersScene extends Phaser.Scene {
     this.generateRandomCounter(previousWidth);
   }
 
-  generateCounter(previousWidth: integer, counter: ItemUnit, i: number): void {
+  private generateCounter(
+    previousWidth: integer,
+    counter: ItemUnit,
+    i: number
+  ): void {
     const currentItem = counter;
     const itemSprite = this.add
       .sprite(previousWidth, 110, currentItem.getName())
       .setScale(0.25)
-      .setInteractive()
-      .on('pointerdown', () => {
-        itemSprite.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        itemSprite.clearTint();
-      })
-      .on('pointerup', () => {
-        itemSprite.clearTint();
-        this.sound.play('collect');
-        PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
-        itemSprite.destroy();
-        ItemManager.getInstance().removeFaceUpItem(i);
-        this.generateCounter(
-          previousWidth,
-          ItemManager.getInstance().getFaceUpPile()[i],
-          i
-        );
-        // this.generateCounter(previousWidth);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
+      .setInteractive();
 
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getItems().length === 4) {
-              finishedPlayers++;
-            }
-          });
+    // Make counter interactive if it's the current player's turn.
+    if (
+      PlayerManager.getInstance().getCurrentPlayer() ===
+      PlayerManager.getInstance().getLocalPlayer()
+    ) {
+      itemSprite
+        .on('pointerdown', () => {
+          itemSprite.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          itemSprite.clearTint();
+        })
+        .on('pointerup', () => {
+          itemSprite.clearTint();
+          this.sound.play('collect');
+          PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
+          itemSprite.destroy();
+          ItemManager.getInstance().removeFaceUpItem(i);
+          this.generateCounter(
+            previousWidth,
+            ItemManager.getInstance().getFaceUpPile()[i],
+            i
+          );
+          PlayerManager.getInstance().setNextPlayer();
+          this.scene.get('uiscene').scene.restart();
 
-        console.log(finishedPlayers);
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          this.cb();
-        }
-      });
-    this.sprites.push(itemSprite);
+          let finishedPlayers: integer = 0;
+          PlayerManager.getInstance()
+            .getPlayers()
+            .forEach(player => {
+              if (player.getItems().length === 5) {
+                finishedPlayers++;
+              }
+            });
+          if (
+            finishedPlayers === PlayerManager.getInstance().getPlayers().length
+          ) {
+            this.callback();
+          } else {
+            this.scene.restart();
+          }
+        });
+    }
+
+    // If not player's turn, disable the counters
+    else {
+      itemSprite.setTint(0xd3d3d3);
+      this.add.sprite(previousWidth, 110, 'cross');
+    }
+
+    this.counterSprites.push(itemSprite);
   }
 
-  generateRandomCounter(previousWidth: integer): void {
+  private generateRandomCounter(previousWidth: integer): void {
     const currentItem = ItemManager.getInstance().getRandomItem();
     const itemSprite = this.add
       .sprite(previousWidth, 110, 'unknown-counter')
       .setScale(0.25)
-      .setInteractive()
-      .on('pointerdown', () => {
-        itemSprite.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        itemSprite.clearTint();
-      })
-      .on('pointerup', () => {
-        itemSprite.clearTint();
-        PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
-        itemSprite.destroy();
-        this.generateRandomCounter(previousWidth);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
+      .setInteractive();
 
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getItems().length === 4) {
-              finishedPlayers++;
-            }
-          });
+    // Make counter interactive if it's the current player's turn.
+    if (
+      PlayerManager.getInstance().getCurrentPlayer() ===
+      PlayerManager.getInstance().getLocalPlayer()
+    ) {
+      itemSprite
+        .on('pointerdown', () => {
+          itemSprite.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          itemSprite.clearTint();
+        })
+        .on('pointerup', () => {
+          itemSprite.clearTint();
+          PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
+          itemSprite.destroy();
+          this.generateRandomCounter(previousWidth);
+          PlayerManager.getInstance().setNextPlayer();
+          this.scene.get('uiscene').scene.restart();
 
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          this.cb();
-        }
-      });
+          let finishedPlayers: integer = 0;
+          PlayerManager.getInstance()
+            .getPlayers()
+            .forEach(player => {
+              if (player.getItems().length === 4) {
+                finishedPlayers++;
+              }
+            });
+
+          if (
+            finishedPlayers === PlayerManager.getInstance().getPlayers().length
+          ) {
+            this.callback();
+          } else {
+            this.scene.restart();
+          }
+        });
+    }
+
+    // If not player's turn, disable the counters
+    else {
+      itemSprite.setTint(0xd3d3d3);
+      this.add.sprite(previousWidth, 110, 'cross');
+    }
+
+    this.counterSprites.push(itemSprite);
   }
 }
