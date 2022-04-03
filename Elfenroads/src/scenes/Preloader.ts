@@ -64,7 +64,8 @@ export default class Preloader extends Phaser.Scene {
     );
     this.load.image('question', 'assets/ui/iconpack/PNG/White/1x/question.png');
     this.load.image('grid', 'assets/boardgame/grid.png');
-
+    this.load.image('target', 'assets/ui/iconpack/PNG/White/1x/target.png');
+    this.load.image('gold-cirle', 'assets/ui/rpgpack/PNG/buttonRound_gold.png');
     // Assests for PlayerIconScene.ts
     this.load.image(
       'brown-gauntlet',

@@ -7,6 +7,7 @@ import Player from '../classes/Player';
 import PlayerIcon from '../classes/PlayerIcon';
 import SettingsMenu from '../classes/SettingsMenu';
 import Town from '../classes/Town';
+import {GameVariant} from '../enums/GameVariant';
 import GameManager from '../managers/GameManager';
 import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
@@ -41,6 +42,12 @@ export default class UIScene extends Phaser.Scene {
     this.renderEdges();
     this.renderBoots();
     this.createPlayerInventory();
+
+    // only show town gold values in elfengold
+    const gameVariant: GameVariant = GameManager.getInstance().getGameVariant();
+    if (gameVariant === GameVariant.elfengold) {
+      this.createTownGoldToggle();
+    }
   }
 
   public static getResponsivePosition(
@@ -344,6 +351,75 @@ export default class UIScene extends Phaser.Scene {
       piecesOnCurrentTown.add(playerCirle);
 
       return piecesOnCurrentTown;
+    }
+  }
+
+  // Displays all town gold values.
+  private createTownGoldToggle(): void {
+    /* toggles town gold value visibility */
+    const townGoldButton = this.add.sprite(this.width - 180, 30, 'brown-box');
+    this.add.image(townGoldButton.x, townGoldButton.y, 'target').setScale(0.7);
+
+    // Container to store all of the gold values
+    const allGolds: Phaser.GameObjects.Container = this.add
+      .container(0, 0)
+      .setDepth(4)
+      .setVisible(false);
+
+    const allTowns: Array<Town> =
+      RoadManager.getInstance().getAllTownsAsArray();
+
+    allTowns.forEach(town => {
+      if (town.getGoldValue() !== 0) {
+        const goldOnTown = renderGoldOnTown(this, town);
+        allGolds.add(goldOnTown); // Add the town gold value to the container above.
+      }
+    });
+
+    // Add toggle interactivity for the townGoldButton
+    townGoldButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        townGoldButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        townGoldButton.clearTint();
+      })
+      .on('pointerup', () => {
+        townGoldButton.clearTint();
+        allGolds.setVisible(!allGolds.visible);
+      });
+
+    // Anonymous function to render the gold on currentTown
+    function renderGoldOnTown(
+      scene: Phaser.Scene,
+      currentTown: Town
+    ): Phaser.GameObjects.Container {
+      const pos = UIScene.getResponsivePosition(
+        scene,
+        currentTown.getXposition(),
+        currentTown.getYposition()
+      );
+
+      const goldOnCurrentTown = scene.add.container(pos[0] + 40, pos[1] - 40);
+
+      const goldCircle = scene.add
+        .sprite(0, 0, 'gold-cirle')
+        .setDepth(4)
+        .setScale(0.8);
+
+      const goldValueText: Phaser.GameObjects.Text = scene.add
+        .text(-7, -14, currentTown.getGoldValue().toString(), {
+          fontFamily: 'MedievalSharp',
+          fontSize: '25px',
+          color: 'black',
+        })
+        .setDepth(5);
+
+      goldOnCurrentTown.add(goldCircle);
+      goldOnCurrentTown.add(goldValueText);
+
+      return goldOnCurrentTown;
     }
   }
 
