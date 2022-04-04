@@ -10,11 +10,23 @@ import { GameModule } from './LS/game/gamesvc.module';
 import { UserModule } from './LS/user/user.module';
 import { SocketModule } from './GameServiceInstance/socket/socket.module';
 import { AppController } from './app.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GameHistory } from './LS/game/gamesvc.model';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'http://elfenroads.westus3.cloudapp.azure.com',
+      port: 3456,
+      username: 'comp361',
+      password: 'comp3612021',
+      database: 'cs361',
+      entities: [GameHistory],
+      synchronize: true,
     }),
     AuthModule,
     GameModule,

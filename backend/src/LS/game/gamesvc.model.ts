@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @ObjectType()
 export class GSDetail {
@@ -19,4 +20,26 @@ export class GSDetail {
 
   @Field()
   webSupport: boolean;
+}
+
+@ObjectType()
+export class SaveGame {
+  @Field()
+  gamename: string;
+
+  @Field()
+  players: string[];
+
+  @Field()
+  savegameid: string;
+}
+
+@ObjectType()
+@Entity()
+export class GameHistory {
+  @PrimaryColumn()
+  gameid: string;
+
+  @Column()
+  gamedata: string;
 }
