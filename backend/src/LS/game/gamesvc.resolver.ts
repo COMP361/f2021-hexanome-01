@@ -24,21 +24,22 @@ export class GameResolver {
     return this.gsService.getSaveGame(game, savegameid);
   }
 
-  @Mutation()
+  @Mutation(returns => String)
   async registerSaveGame(
-    @Args('game') game: string,
-    @Args('savegameid') savegameid: string,
-    @Args('players') players: string[],
-    @Args('gamedata') gamedata: string,
-  ): Promise<string> {
-    return this.gsService.registerSaveGame(game, savegameid, players, gamedata);
+    @Args('game') game: String,
+    @Args('savegameid') savegameid: String,
+    @Args('players') players: String,
+    @Args('gamedata') gamedata: String,
+  ): Promise<String> {
+    const playerList = players.split(",");
+    return this.gsService.registerSaveGame(game, savegameid, playerList, gamedata);
   }
 
-  @Mutation()
+  @Mutation(returns => String)
   async deleteSaveGame(
     @Args('game') game: string,
     @Args('savegameid') savegameid: string,
-  ): Promise<string> {
+  ): Promise<String> {
     return this.gsService.deleteSaveGame(game, savegameid);
   }
 }

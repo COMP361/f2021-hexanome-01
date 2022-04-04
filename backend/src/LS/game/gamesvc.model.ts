@@ -28,7 +28,7 @@ export class SaveGame {
   gamename: string;
 
   @Field()
-  players: string[];
+  players: string;
 
   @Field()
   savegameid: string;
@@ -38,8 +38,8 @@ export class SaveGame {
 @Entity()
 export class GameHistory {
   @PrimaryColumn()
-  gameid: string;
+  gameid: String;
 
   @Column()
-  gamedata: string;
+  gamedata: String;
 }

@@ -20,7 +20,7 @@ import { GameHistory } from './LS/game/gamesvc.model';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'http://elfenroads.westus3.cloudapp.azure.com',
+      host: '20.38.171.218',
       port: 3456,
       username: 'comp361',
       password: 'comp3612021',

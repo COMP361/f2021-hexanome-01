@@ -1,18 +1,6 @@
 version: '3.3'
 
 services:
-  db:
-    container_name: mysql
-    build:
-      context: .
-      dockerfile: Dockerfile-gs-db
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: comp3612021
-    ports:
-      - "3456:3306"
-  
   backend:
     container_name: backend-api
     build:
@@ -22,5 +10,3 @@ services:
       - "3454:3000"
       - "3455:3001"
     restart: unless-stopped
-    depends_on: 
-      - db

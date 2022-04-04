@@ -34,11 +34,11 @@ export class GameService {
   }
 
   async registerSaveGame(
-    game: string,
-    savegameid: string,
-    players: string[],
-    gamedata: string,
-  ): Promise<string> {
+    game: String,
+    savegameid: String,
+    players: String[],
+    gamedata: String,
+  ): Promise<String> {
     let access_token = '';
 
     const config = {
@@ -48,7 +48,7 @@ export class GameService {
       },
     };
 
-    await axios
+    await axios.create()
       .post(
         'http://elfenroads.westus3.cloudapp.azure.com:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123',
         {},
@@ -56,6 +56,8 @@ export class GameService {
       )
       .then((response) => {
         access_token = response.data['access_token'];
+      }).catch((err) => {
+        console.log(err);
       });
 
     return instance
