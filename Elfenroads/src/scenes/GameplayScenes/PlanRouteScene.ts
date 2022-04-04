@@ -116,31 +116,26 @@ export default class PlanRouteScene extends Phaser.Scene {
     return false;
   }
 
-  isItemValid(edge: Edge) {
-    if (this.selectedItem) {
-      return (
-        // dont forget to add condition for spell
-        (((this.selectedItem instanceof GoldPiece ||
-          this.selectedItem instanceof Obstacle) &&
-          !this.goldOrObsExist(edge.getItems())) ||
-          (!(this.selectedItem instanceof GoldPiece) &&
-            !(this.selectedItem instanceof Obstacle))) &&
-        ((this.selectedItem.getAllowedEdges().includes(edge.getType()) &&
-          edge.getItems().length === 0 &&
-          !this.selectedItem.getNeedsCounter()) ||
-          (this.selectedItem.getNeedsCounter() && edge.getItems().length >= 1))
-      );
-    }
-    return false;
+  isItemValid(item: ItemUnit, edge: Edge) {
+    return (
+      // dont forget to add condition for spell
+      (((item instanceof GoldPiece || item instanceof Obstacle) &&
+        !this.goldOrObsExist(edge.getItems())) ||
+        (!(item instanceof GoldPiece) && !(item instanceof Obstacle))) &&
+      ((item.getAllowedEdges().includes(edge.getType()) &&
+        edge.getItems().length === 0 &&
+        !item.getNeedsCounter()) ||
+        (item.getNeedsCounter() && edge.getItems().length >= 1))
+    );
   }
 
-  drawAllowedEdges(graphics: any, zoneRadius: number) {
+  drawAllowedEdges(item: ItemUnit, graphics: any, zoneRadius: number) {
     graphics.lineStyle(8, 0x8a6440, 0.7);
     // highlight every draggable counter
     RoadManager.getInstance()
       .getEdges()
       .forEach(edge => {
-        if (this.isItemValid(edge)) {
+        if (this.isItemValid(item, edge)) {
           const pos = UIScene.getResponsivePosition(
             this,
             edge.getPosition()[0],
@@ -172,10 +167,10 @@ export default class PlanRouteScene extends Phaser.Scene {
         ) {
           this.selectedDoubleItem = playerItem;
           this.selectedDoubleItemSprite = item;
+          this.drawAllowedEdges(this.selectedItem, graphics, zoneRadius);
         } else {
           this.selectedItem = playerItem;
           this.selectedItemSprite = item;
-          this.drawAllowedEdges(graphics, zoneRadius);
           if (
             this.selectedItem instanceof Spell &&
             !this.cancelButton.visible
@@ -183,6 +178,7 @@ export default class PlanRouteScene extends Phaser.Scene {
             this.cancelButton.setVisible(true);
           } else {
             this.cancelButton.setVisible(false);
+            this.drawAllowedEdges(this.selectedItem, graphics, zoneRadius);
           }
         }
         break;
@@ -192,7 +188,7 @@ export default class PlanRouteScene extends Phaser.Scene {
 
   placeItem(edge: Edge, graphics: GameObjects.Graphics) {
     if (this.selectedItem) {
-      if (this.isItemValid(edge)) {
+      if (this.isItemValid(this.selectedItem, edge)) {
         const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
         if (
           this.selectedItem.getName() === SpellType.Double &&
