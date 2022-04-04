@@ -11,6 +11,12 @@ type GSDetail {
   webSupport: Boolean!
 }
 
+type SaveGame {
+  gamename: String!
+  players: String!
+  savegameid: String!
+}
+
 type LSUser {
   name: String!
   preferredColour: String!
@@ -47,6 +53,8 @@ type Query {
   AllSessions: [GameSession!]!
   Session(session_id: String!): SessionInfo!
   GameServiceDetail(game: String!): GSDetail!
+  SaveGames(game: String!): [SaveGame!]!
+  SaveGame(savegameid: String!, game: String!): SaveGame!
 }
 
 type Mutation {
@@ -58,4 +66,6 @@ type Mutation {
   joinSession(access_token: String!, name: String!, session_id: String!): SessionInfo!
   exitSession(access_token: String!, name: String!, session_id: String!): String!
   removeSession(access_token: String!, session_id: String!): String!
+  registerSaveGame(gamedata: String!, players: String!, savegameid: String!, game: String!): String!
+  deleteSaveGame(savegameid: String!, game: String!): String!
 }

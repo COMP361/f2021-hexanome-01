@@ -6,6 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { GameService } from 'src/LS/game/gamesvc.service';
 import GameManager from '../manager/GameManager';
 
 @WebSocketGateway(3001, {
@@ -14,7 +15,7 @@ import GameManager from '../manager/GameManager';
   },
 })
 export class SocketGateway {
-  constructor() {}
+  constructor(private readonly gsService: GameService) {}
   @WebSocketServer()
   server: Server;
 
@@ -43,6 +44,7 @@ export class SocketGateway {
   async startGame(@MessageBody() data) {
     this.server.to(data.game + '-' + data.session_id).emit('startGame', {
       msg: GameManager.getInstance().getGame(data.game, data.session_id),
+      data: this.gsService.getSaveGameData(data.game, data.savegameid),
     });
   }
 
