@@ -29,6 +29,9 @@ export default class GameService {
       )
       .then((response) => {
         access_token = response.data['access_token'];
+      })
+      .catch((error) => {
+        return error.response['data'] as string;
       });
 
     return await this.instance
@@ -104,11 +107,15 @@ export default class GameService {
     password: string,
   ): Promise<void> {
     await this.getOAuthToken(username, password);
-    await this.instance.delete(
-      encodeURI(
-        `api/gameservices/${service}?access_token=${this.token}`,
-      ).replace(/\+/g, '%2B'),
-    );
+    await this.instance
+      .delete(
+        encodeURI(
+          `api/gameservices/${service}?access_token=${this.token}`,
+        ).replace(/\+/g, '%2B'),
+      )
+      .catch((error) => {
+        return error.response['data'] as string;
+      });
   }
 
   private async registerGameService(
