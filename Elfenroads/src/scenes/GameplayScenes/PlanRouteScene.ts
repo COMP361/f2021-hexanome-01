@@ -170,48 +170,57 @@ export default class PlanRouteScene extends Phaser.Scene {
     this.checkmarkSprites.forEach(checkmark => {
       checkmark.destroy();
     });
-    if (this.edgeSprites) {
-      this.edgeSprites.forEach(sprite => {
-        sprite.removeInteractive();
-      });
-    }
     this.checkmarkSprites = [];
   }
 
-  // disableItems() {
-  //   if (this.selectedItem?.getName() === SpellType.Double) {
-  //     const itemSprites = UIScene.itemSprites;
-  //     itemSprites.forEach(item => {
-  //       item.getData()
-  //     });
-  //   }
-  // }
+  disableItems() {
+    const itemSprites = UIScene.itemSprites;
+    itemSprites.forEach(itemSprite => {
+      const item = itemSprite.getData('item');
+      // only set counters interactive when using double and
+      // disable all counters when using exchange
+      if (
+        this.selectedItem &&
+        ((!(item instanceof Counter) &&
+          this.selectedItem.getName() === SpellType.Double) ||
+          this.selectedItem.getName() === SpellType.Exchange)
+      ) {
+        itemSprite.removeInteractive();
+      }
+    });
+  }
 
   confirmExchangeItem(itemSprite: Phaser.GameObjects.Sprite) {
-    const checkmark = this.add
-      .sprite(itemSprite.x, itemSprite.y, 'checkmark')
-      .setScale(0.7);
-    this.checkmarkSprites.push(checkmark);
-    this.exchangeItemSprites.push(itemSprite);
+    // only transportations counter can be exchanged
+    const item = itemSprite.getData('item');
+    if (item instanceof Counter) {
+      const checkmark = this.add
+        .sprite(itemSprite.x, itemSprite.y, 'checkmark')
+        .setScale(0.7);
+      this.checkmarkSprites.push(checkmark);
+      this.exchangeItemSprites.push(itemSprite);
 
-    // swap when the second counter is selected
-    if (this.exchangeItemSprites.length === 2) {
-      const item1 = this.exchangeItemSprites[0].getData('item');
-      const item2 = this.exchangeItemSprites[1].getData('item');
-      const edge1 = this.exchangeItemSprites[0].getData('currentEdge');
-      const edge2 = this.exchangeItemSprites[1].getData('currentEdge');
-      edge1.removeItem(item1);
-      edge1.addItem(item2);
-      edge2.removeItem(item2);
-      edge2.addItem(item1);
-      const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
-      if (this.selectedItem) {
-        currPlayer.removeItem(this.selectedItem);
-        this.selectedItemSprite.destroy();
+      // swap when the second counter is selected
+      if (this.exchangeItemSprites.length === 2) {
+        const item1 = this.exchangeItemSprites[0].getData('item');
+        const item2 = this.exchangeItemSprites[1].getData('item');
+        const edge1 = this.exchangeItemSprites[0].getData('currentEdge');
+        const edge2 = this.exchangeItemSprites[1].getData('currentEdge');
+        edge1.removeItem(item1);
+        edge1.addItem(item2);
+        edge2.removeItem(item2);
+        edge2.addItem(item1);
+        const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
+        if (this.selectedItem) {
+          currPlayer.removeItem(this.selectedItem);
+          this.selectedItemSprite.destroy();
+        }
+        this.resetSpell();
+        PlayerManager.getInstance().setNextPlayer();
+        this.scene.get('uiscene').scene.restart();
       }
-      this.resetSpell();
-      PlayerManager.getInstance().setNextPlayer();
-      this.scene.get('uiscene').scene.restart();
+    } else {
+      itemSprite.clearTint();
     }
   }
 
@@ -224,11 +233,7 @@ export default class PlanRouteScene extends Phaser.Scene {
           .on('pointerdown', () => {
             itemSprite.setTint(0xd3d3d3);
           })
-          .on('pointerout', () => {
-            itemSprite.clearTint();
-          })
           .on('pointerup', () => {
-            itemSprite.clearTint();
             this.confirmExchangeItem(itemSprite);
           });
       });
@@ -242,38 +247,31 @@ export default class PlanRouteScene extends Phaser.Scene {
   ) {
     item.clearTint();
     graphics.clear();
-    const playerItems: Array<ItemUnit> = PlayerManager.getInstance()
-      .getCurrentPlayer()
-      .getItems();
-
-    for (let i = 0; i < playerItems.length; i++) {
-      const playerItem: ItemUnit = playerItems[i];
-      if (playerItem.getName() === item.data.values.name) {
-        if (
-          this.selectedItem &&
-          this.selectedItem.getName() === SpellType.Double &&
-          playerItem instanceof Counter
-        ) {
-          this.selectedDoubleItem = playerItem;
-          this.selectedDoubleItemSprite = item;
-          this.drawAllowedEdges(graphics, zoneRadius);
-        } else {
-          this.selectedItem = playerItem;
-          this.selectedItemSprite = item;
-          if (
-            this.selectedItem instanceof Spell &&
-            !this.cancelButton.visible
-          ) {
-            this.cancelButton.setVisible(true);
-            if (this.selectedItem.getName() === SpellType.Exchange) {
-              this.initializeExchange();
-            }
-          } else {
-            this.cancelButton.setVisible(false);
-            this.drawAllowedEdges(graphics, zoneRadius);
-          }
+    const playerItem = item.getData('item');
+    // check wether we are in the double spell state
+    if (
+      this.selectedItem &&
+      this.selectedItem.getName() === SpellType.Double &&
+      playerItem instanceof Counter
+    ) {
+      this.selectedDoubleItem = playerItem;
+      this.selectedDoubleItemSprite = item;
+      this.drawAllowedEdges(graphics, zoneRadius);
+    } else {
+      // normal state goes here
+      this.selectedItem = playerItem;
+      this.selectedItemSprite = item;
+      // go to spell state
+      if (this.selectedItem instanceof Spell && !this.cancelButton.visible) {
+        this.cancelButton.setVisible(true);
+        this.disableItems();
+        if (this.selectedItem.getName() === SpellType.Exchange) {
+          this.initializeExchange();
         }
-        break;
+      } else {
+        // normal state
+        this.cancelButton.setVisible(false);
+        this.drawAllowedEdges(graphics, zoneRadius);
       }
     }
   }
@@ -285,6 +283,12 @@ export default class PlanRouteScene extends Phaser.Scene {
         if (this.selectedItem.getName() === SpellType.Double) {
           // can only be placed if we selected the double item
           if (this.selectedDoubleItem) {
+            // prevent placing second if we have the same
+            for (const item of edge.getItems()) {
+              if (item.getName() === this.selectedDoubleItem.getName()) {
+                return;
+              }
+            }
             edge.addItem(this.selectedDoubleItem);
             currPlayer.removeItem(this.selectedDoubleItem);
             this.selectedDoubleItemSprite.destroy();
@@ -309,6 +313,7 @@ export default class PlanRouteScene extends Phaser.Scene {
     }
   }
 
+  // cancel button for spells
   createCancelButton(graphics: GameObjects.Graphics) {
     const container = this.add.container(
       this.scale.width / 2,
@@ -342,6 +347,19 @@ export default class PlanRouteScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         cancelButton.clearTint();
+        // set all the items in the inventory interactive
+        UIScene.itemSprites.forEach(sprite => {
+          sprite.setInteractive();
+        });
+        // disable interactive items on edges
+        if (
+          this.selectedItem &&
+          this.selectedItem.getName() === SpellType.Exchange
+        ) {
+          this.edgeSprites.forEach(sprite => {
+            sprite.removeInteractive();
+          });
+        }
         this.resetSpell();
         graphics.clear();
       });
