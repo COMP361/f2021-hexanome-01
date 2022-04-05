@@ -206,18 +206,27 @@ export default class PlanRouteScene extends Phaser.Scene {
         const item2 = this.exchangeItemSprites[1].getData('item');
         const edge1 = this.exchangeItemSprites[0].getData('currentEdge');
         const edge2 = this.exchangeItemSprites[1].getData('currentEdge');
-        edge1.removeItem(item1);
-        edge1.addItem(item2);
-        edge2.removeItem(item2);
-        edge2.addItem(item1);
-        const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
-        if (this.selectedItem) {
-          currPlayer.removeItem(this.selectedItem);
-          this.selectedItemSprite.destroy();
+        // prevent swaps with the same counter or on the same edge
+        if (item1.getName() !== item2.getName() && edge1 !== edge2) {
+          edge1.removeItem(item1);
+          edge1.addItem(item2);
+          edge2.removeItem(item2);
+          edge2.addItem(item1);
+          const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
+          if (this.selectedItem) {
+            currPlayer.removeItem(this.selectedItem);
+            this.selectedItemSprite.destroy();
+          }
+          this.resetSpell();
+          this.cancelButton.setVisible(true);
+          PlayerManager.getInstance().setNextPlayer();
+          this.scene.get('uiscene').scene.restart();
+        } else {
+          this.exchangeItemSprites.splice(1, 1);
+          this.checkmarkSprites[1].destroy();
+          this.checkmarkSprites.splice(1, 1);
+          itemSprite.clearTint();
         }
-        this.resetSpell();
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
       }
     } else {
       itemSprite.clearTint();
