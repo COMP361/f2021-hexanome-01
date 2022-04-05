@@ -42,6 +42,12 @@ export default class Edge {
     this.items.push(item);
   }
 
+  public removeItem(item: ItemUnit): void {
+    const index = this.items.indexOf(item);
+    if (index > -1) {
+      this.items.splice(index, 1);
+    }
+  }
   public getItems(): Array<ItemUnit> {
     return this.items;
   }

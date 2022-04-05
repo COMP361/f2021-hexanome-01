@@ -475,8 +475,7 @@ export default class UIScene extends Phaser.Scene {
           // Render sprite to this Phaser Scene and offset based on the other Items
           const itemSprite = this.add
             .sprite(pos[0] + xOffset, pos[1], item.getName())
-            .setData(item)
-            .setData({currentEdge: edge, mainScene: this})
+            .setData({item: item, currentEdge: edge, mainScene: this})
             .setScale(0.25)
             .setDepth(4);
           UIScene.itemSpritesOnEdges.push(itemSprite);
