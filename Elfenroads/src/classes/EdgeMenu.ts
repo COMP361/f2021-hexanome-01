@@ -62,7 +62,7 @@ export default class EdgeMenu {
     // Horizontal animation
     this.scene.tweens.add({
       targets: this.container,
-      x: this.counterCenterX - 35,
+      y: this.counterCenterY - 35,
       duration: 200,
       ease: Phaser.Math.Easing.Sine.InOut,
     });
@@ -78,7 +78,7 @@ export default class EdgeMenu {
     // Horizontal animation
     this.scene.tweens.add({
       targets: this.container,
-      x: this.counterCenterX,
+      y: this.counterCenterY,
       duration: 200,
       ease: Phaser.Math.Easing.Sine.InOut,
     });

@@ -32,7 +32,7 @@ export default class ItemInventory {
         0,
         pItem.getName()
       );
-      item.setData(pItem).setScale(0.25);
+      item.setData({item: pItem}).setScale(0.25);
       // Add item sprite to Phaser container so that it do the hide/show group animation
       this.container.add(item);
       this.sprites.push(item);

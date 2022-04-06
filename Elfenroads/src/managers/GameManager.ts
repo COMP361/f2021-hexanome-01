@@ -129,6 +129,11 @@ export default class GameManager {
         // Phase 3: Draw additional Transportation counters
         mainScene.scene.launch('drawcountersscene', () => {
           mainScene.scene.stop('drawcountersscene');
+
+          // Reinitialize players turn
+          PlayerManager.getInstance()
+            .getPlayers()
+            .forEach(player => player.setPassedTurn(false));
           PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
           // Phase 4: Plan route
           mainScene.scene.launch('planroutescene', () => {
