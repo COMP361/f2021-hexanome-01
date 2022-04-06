@@ -5,11 +5,13 @@ import Town from '../classes/Town';
 export default class PlayerManager {
   private static instance: PlayerManager;
   private currentPlayerIndex: number;
+  private startingPlayerIndex: number;
   private players: Array<Player>;
   private localPlayer!: Player;
 
   private constructor() {
     this.currentPlayerIndex = 0;
+    this.startingPlayerIndex = 0;
     this.players = [];
   }
 
@@ -64,6 +66,19 @@ export default class PlayerManager {
     } else {
       this.currentPlayerIndex = 0;
     }
+  }
+
+  public setNextStartingPlayer(): void {
+    if (this.startingPlayerIndex < this.players.length - 1) {
+      this.startingPlayerIndex++;
+    } else {
+      this.startingPlayerIndex = 0;
+    }
+  }
+
+  public readyUpPlayers(): void {
+    this.players.forEach(player => player.setPassedTurn(false));
+    this.currentPlayerIndex = this.startingPlayerIndex;
   }
 
   public addPoint(playerIndex: number): void {
