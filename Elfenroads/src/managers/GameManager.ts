@@ -10,6 +10,8 @@ import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
 import {GameVariant} from '../enums/GameVariant';
+import {throwServerError} from '@apollo/client';
+import {Console} from 'console';
 
 const colorMap: any = {
   '008000': BootColour.Green,
@@ -21,15 +23,24 @@ const colorMap: any = {
 };
 
 export default class GameManager {
+  // Singleton Field
   private static gameManagerInstance: GameManager;
+
+  // Manager Fields
   private itemManager: ItemManager;
   private cardManager: CardManager;
   private playerManager: PlayerManager;
   private roadManager: RoadManager;
+
+  // Connection Fields
   private socket: any;
   private initialized: boolean;
+
+  // Gameplay Fields
   private round: integer;
+  private numRounds: integer;
   private gameVariant: GameVariant;
+  private mainScene!: Phaser.Scene;
 
   private constructor() {
     // Instantiate all other Singleton Managers
@@ -48,9 +59,11 @@ export default class GameManager {
       data: getUser().name,
     });
     this.initialized = false;
-    this.round = 0;
+
     // hard coded this for now
-    this.gameVariant = GameVariant.elfengold;
+    this.gameVariant = GameVariant.elfenland;
+    this.numRounds = 3;
+    this.round = 1;
   }
 
   public static getInstance(): GameManager {
@@ -72,6 +85,9 @@ export default class GameManager {
    * SIMULATION OF GAME
    */
   public playGame(mainScene: Phaser.Scene): void {
+    // Step 0: Initialize the main Phaser.Scene
+    this.mainScene = mainScene;
+
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
 
@@ -79,112 +95,92 @@ export default class GameManager {
     this.itemManager.initializePile();
     this.cardManager.initializePile();
 
-    // Step 3: Get number of rounds
-    const numRounds: integer = 1;
-
-    // Step 4: Play number of rounds
-    for (let i = 1; i < numRounds + 1; i++) {
-      this.round = i;
-      this.playRound(mainScene, i - 1);
+    // Step 4: Play specific type of round based on game version
+    switch (this.gameVariant) {
+      case GameVariant.elfenland:
+        this.playRoundElfenland();
+        break;
+      case GameVariant.elfengold:
+        this.playRoundElfengold();
+        break;
+      default:
+        console.log("I don't know that game variant.");
     }
-
-    // Step 5: Determine winner
   }
 
-  private playRound(mainScene: Phaser.Scene, pStartingPlayer: integer): void {
+  private playRoundElfenland(): void {
+    console.log(`Playing Elfenland Round: ${this.round}`);
+    // Check to see if we have played enough rounds
+    if (this.round > this.numRounds) {
+      this.displayGameOver();
+      return;
+    }
+
     // Phase 1 & 2
     this.dealCardsAndCounter();
-    // Initialize session with managers
-    if (getUser().name === getSession().gameSession.creator) {
-      ItemManager.getInstance().flipCounters();
-      this.socket.emit('statusChange', {
-        game: 'ElfenlandVer1',
-        session_id: getSessionId(),
-        data: {
-          itemManager: ItemManager.getInstance(),
-          cardManager: CardManager.getInstance(),
-          playerManager: PlayerManager.getInstance(),
-          roadManager: RoadManager.getInstance(),
-        },
-      });
-      this.socket.on('chat', () => {
-        this.socket.emit('statusChange', {
-          game: 'ElfenlandVer1',
-          session_id: getSessionId(),
-          data: {
-            itemManager: ItemManager.getInstance(),
-            cardManager: CardManager.getInstance(),
-            playerManager: PlayerManager.getInstance(),
-            roadManager: RoadManager.getInstance(),
-          },
+    this.itemManager.flipCounters();
+
+    // Phase 3: Draw additional Transportation counters
+    this.playerManager.readyUpPlayers();
+    this.mainScene.scene.launch('drawcountersscene', () => {
+      this.mainScene.scene.stop('drawcountersscene');
+
+      // Phase 4: Plan route
+      this.playerManager.readyUpPlayers(); // Reinitialize players turn
+      this.mainScene.scene.launch('planroutescene', () => {
+        this.mainScene.scene.stop('planroutescene');
+
+        // Phase 5: Move Boot
+        this.playerManager.readyUpPlayers(); // Reinitialize players turn
+        this.mainScene.scene.launch('selectionscene', () => {
+          this.mainScene.scene.stop('selectionscene');
+
+          // Phase 6: Finish the Round
+          // @TODO: Still missing round cleanup function/scene.
+          this.playerManager.setNextStartingPlayer();
+          this.round++;
+          this.playRoundElfenland();
         });
       });
+    });
+  }
+
+  private playRoundElfengold(): void {
+    console.log(`Playing Elfengold Round: ${this.round}`);
+    // Check to see if we have played enough rounds
+    if (this.round > this.numRounds) {
+      this.displayGameOver();
+      return;
     }
-    this.socket.on('statusChange', (data: any) => {
-      if (!this.initialized) {
-        const managers = data.msg.data;
-        // ItemManager.getInstance().update(managers.itemManager);
-        this.initialized = true;
-        PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
-        // Phase 3: Draw additional Transportation counters
-        mainScene.scene.launch('drawcountersscene', () => {
-          mainScene.scene.stop('drawcountersscene');
 
-          // Reinitialize players turn
-          PlayerManager.getInstance()
-            .getPlayers()
-            .forEach(player => player.setPassedTurn(false));
-          PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
-          // Phase 4: Plan route
-          mainScene.scene.launch('planroutescene', () => {
-            mainScene.scene.stop('planroutescene');
+    // Phase 1 & 2
+    this.dealCardsAndCounter();
+    this.itemManager.flipCounters();
 
-            // Reinitialize players turn
-            PlayerManager.getInstance()
-              .getPlayers()
-              .forEach(player => player.setPassedTurn(false));
+    // Phase 3: Draw additional Transportation counters
+    this.playerManager.readyUpPlayers();
+    this.mainScene.scene.launch('drawcountersscene', () => {
+      this.mainScene.scene.stop('drawcountersscene');
 
-            PlayerManager.getInstance().setCurrentPlayerIndex(pStartingPlayer);
+      // Phase 4: Auction
 
-            // Phase 5: Move Boot
-            mainScene.scene.launch('selectionscene', () => {
-              mainScene.scene.launch('selectionscene');
-              mainScene.scene.stop('selectionscene');
+      // Phase 5: Plan the Travel Routes
+      this.playerManager.readyUpPlayers(); // Reinitialize players turn
+      this.mainScene.scene.launch('planroutescene', () => {
+        this.mainScene.scene.stop('planroutescene');
 
-              // Create text to notify whose turn it is using boot color substring
-              const playerText: Phaser.GameObjects.Text = mainScene.add
-                .text(10, 5, 'GAMEOVER', {
-                  fontFamily: 'MedievalSharp',
-                  fontSize: '50px',
-                })
-                .setColor('white');
+        // Phase 6: Move the Elf Boot
+        this.playerManager.readyUpPlayers(); // Reinitialize players turn
+        this.mainScene.scene.launch('selectionscene', () => {
+          this.mainScene.scene.stop('selectionscene');
 
-              // Grab width of text to determine size of panel behind
-              const textWidth: number = playerText.width;
-
-              // Create brown ui panel element relative to the size of the text
-              const brownPanel: Phaser.GameObjects.RenderTexture = mainScene.add
-                .nineslice(0, 0, textWidth + 20, 60, 'brown-panel', 24)
-                .setOrigin(0, 0);
-
-              // Grab width of current game to center our container
-              const gameWidth: number = mainScene.scale.width;
-
-              // Initialize container to group elements
-              // Need to center the container relative to the gameWidth and the size of the text box
-              const container: Phaser.GameObjects.Container =
-                mainScene.add.container(
-                  gameWidth / 2 - brownPanel.width / 2,
-                  20
-                );
-
-              // Render the brown panel and text
-              container.add(brownPanel).setDepth(3);
-              container.add(playerText).setDepth(3);
-            });
-          });
+          // Phase 7: Finish the Round
+          // @TODO: Still missing round cleanup function/scene.
+          this.playerManager.setNextStartingPlayer();
+          this.round++;
+          this.playRoundElfengold();
         });
-      }
+      });
     });
   }
 
@@ -200,8 +196,11 @@ export default class GameManager {
       const randomItem: ItemUnit = this.itemManager.getRandomItem();
       randomItem.setHidden(true);
       player.addItem(randomItem);
-      const tree: Obstacle = this.itemManager.getTreeObstacle();
-      player.addItem(tree);
+
+      if (this.round === 1) {
+        const tree: Obstacle = this.itemManager.getTreeObstacle();
+        player.addItem(tree);
+      }
     }
   }
 
@@ -243,5 +242,33 @@ export default class GameManager {
     });
   }
 
-  private drawAdditionalCounters(): void {}
+  private displayGameOver(): void {
+    // Create text to notify whose turn it is using boot color substring
+    const playerText: Phaser.GameObjects.Text = this.mainScene.add
+      .text(10, 5, 'GAMEOVER', {
+        fontFamily: 'MedievalSharp',
+        fontSize: '50px',
+      })
+      .setColor('white');
+
+    // Grab width of text to determine size of panel behind
+    const textWidth: number = playerText.width;
+
+    // Create brown ui panel element relative to the size of the text
+    const brownPanel: Phaser.GameObjects.RenderTexture = this.mainScene.add
+      .nineslice(0, 0, textWidth + 20, 60, 'brown-panel', 24)
+      .setOrigin(0, 0);
+
+    // Grab width of current game to center our container
+    const gameWidth: number = this.mainScene.scale.width;
+
+    // Initialize container to group elements
+    // Need to center the container relative to the gameWidth and the size of the text box
+    const container: Phaser.GameObjects.Container =
+      this.mainScene.add.container(gameWidth / 2 - brownPanel.width / 2, 20);
+
+    // Render the brown panel and text
+    container.add(brownPanel).setDepth(3);
+    container.add(playerText).setDepth(3);
+  }
 }
