@@ -135,7 +135,8 @@ export default class GameManager {
         this.mainScene.scene.launch('selectionscene', () => {
           this.mainScene.scene.stop('selectionscene');
 
-          // Set up next round
+          // Phase 6: Finish the Round
+          // @TODO: Still missing round cleanup function/scene.
           this.playerManager.setNextStartingPlayer();
           this.round++;
           this.playRoundElfenland();
@@ -174,6 +175,7 @@ export default class GameManager {
           this.mainScene.scene.stop('selectionscene');
 
           // Phase 7: Finish the Round
+          // @TODO: Still missing round cleanup function/scene.
           this.playerManager.setNextStartingPlayer();
           this.round++;
           this.playRoundElfengold();
