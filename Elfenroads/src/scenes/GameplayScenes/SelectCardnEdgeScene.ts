@@ -6,6 +6,7 @@ import PlayerManager from '../../managers/PlayerManager';
 import EdgeMenu from '../../classes/EdgeMenu';
 import RoadManager from '../../managers/RoadManager';
 import {EdgeType} from '../../enums/EdgeType';
+import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -145,40 +146,45 @@ export default class SelectionScene extends Phaser.Scene {
   private makeEdgesInteractive(): void {
     // Make the itemSprites interactive
     UIScene.itemSpritesOnEdges.forEach(itemSprite => {
-      const edgeMenu = new EdgeMenu(
-        itemSprite.getData('mainScene'),
-        itemSprite.getCenter().x,
-        itemSprite.getCenter().y,
-        this.attemptMoveBoot
-      );
+      const itemObject: ItemUnit = itemSprite.getData('item');
 
-      this.edgeMenus.push(edgeMenu);
+      // Only make travel counters interactable
+      if (itemObject instanceof Counter) {
+        const edgeMenu = new EdgeMenu(
+          itemSprite.getData('mainScene'),
+          itemSprite.getCenter().x,
+          itemSprite.getCenter().y,
+          this.attemptMoveBoot
+        );
 
-      itemSprite
-        .setInteractive()
-        .on('pointerdown', () => {
-          itemSprite.setTint(0xd3d3d3);
-        })
-        .on('pointerout', () => {
-          itemSprite.clearTint();
-        })
-        .on('pointerup', () => {
-          itemSprite.clearTint();
+        this.edgeMenus.push(edgeMenu);
 
-          this.selectedEdge = itemSprite.getData('currentEdge');
-          const args = [this.selectedCardSprites, this.selectedEdge, this];
+        itemSprite
+          .setInteractive()
+          .on('pointerdown', () => {
+            itemSprite.setTint(0xd3d3d3);
+          })
+          .on('pointerout', () => {
+            itemSprite.clearTint();
+          })
+          .on('pointerup', () => {
+            itemSprite.clearTint();
 
-          edgeMenu.setArgs(args);
+            this.selectedEdge = itemSprite.getData('currentEdge');
+            const args = [this.selectedCardSprites, this.selectedEdge, this];
 
-          if (edgeMenu.isOpen) {
-            edgeMenu.hide();
-          } else {
-            this.edgeMenus.forEach(menu => {
-              menu.hide();
-            });
-            edgeMenu.show();
-          }
-        });
+            edgeMenu.setArgs(args);
+
+            if (edgeMenu.isOpen) {
+              edgeMenu.hide();
+            } else {
+              this.edgeMenus.forEach(menu => {
+                menu.hide();
+              });
+              edgeMenu.show();
+            }
+          });
+      }
     });
 
     // make river and lakes selectable
