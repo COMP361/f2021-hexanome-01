@@ -218,18 +218,15 @@ export default class PlanRouteScene extends Phaser.Scene {
             this.selectedItemSprite.destroy();
           }
           this.resetSpell();
-          this.cancelButton.setVisible(true);
+
           PlayerManager.getInstance().setNextPlayer();
           this.scene.get('uiscene').scene.restart();
         } else {
           this.exchangeItemSprites.splice(1, 1);
           this.checkmarkSprites[1].destroy();
           this.checkmarkSprites.splice(1, 1);
-          itemSprite.clearTint();
         }
       }
-    } else {
-      itemSprite.clearTint();
     }
   }
 
@@ -241,6 +238,9 @@ export default class PlanRouteScene extends Phaser.Scene {
           .setInteractive()
           .on('pointerdown', () => {
             itemSprite.setTint(0xd3d3d3);
+          })
+          .on('pointerout', () => {
+            itemSprite.clearTint();
           })
           .on('pointerup', () => {
             this.confirmExchangeItem(itemSprite);
@@ -314,6 +314,9 @@ export default class PlanRouteScene extends Phaser.Scene {
           this.selectedItemSprite.destroy();
         }
         this.resetSpell();
+        this.checkmarkSprites.forEach(checkmark => {
+          checkmark.destroy();
+        });
         this.sound.play('place');
         graphics.clear();
         PlayerManager.getInstance().setNextPlayer();
