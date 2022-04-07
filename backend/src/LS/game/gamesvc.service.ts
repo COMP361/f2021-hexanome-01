@@ -48,7 +48,8 @@ export class GameService {
       },
     };
 
-    await axios.create()
+    await axios
+      .create()
       .post(
         'http://elfenroads.westus3.cloudapp.azure.com:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123',
         {},
@@ -56,7 +57,8 @@ export class GameService {
       )
       .then((response) => {
         access_token = response.data['access_token'];
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
 
@@ -115,5 +117,24 @@ export class GameService {
     return this.gameHistoryRepo.findOne({
       gameid: game + '-' + savegameid,
     });
+  }
+
+  async registerSaveGameData(
+    game: string,
+    savegameid: string,
+    gamedata: string,
+  ): Promise<String> {
+    const gameHistory = new GameHistory();
+    gameHistory.gameid = game + '-' + savegameid;
+    gameHistory.gamedata = gamedata;
+    await this.gameHistoryRepo.save(gameHistory);
+    return 'succeed';
+  }
+
+  async deleteSaveGameData(game: string, savegameid: string) {
+    await this.gameHistoryRepo.delete({
+      gameid: game + '-' + savegameid,
+    });
+    return 'succeed';
   }
 }

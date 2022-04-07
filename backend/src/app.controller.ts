@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 import GameManager from './GameServiceInstance/manager/GameManager';
 import GameInstance from './GameServiceInstance/GameInstance';
@@ -25,4 +25,5 @@ export class AppController {
   deleteSession(@Param() params): String {
     return GameManager.getInstance().deleteGame(params.service, params.game_id);
   }
+
 }
