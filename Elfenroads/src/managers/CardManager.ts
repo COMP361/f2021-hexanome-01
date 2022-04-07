@@ -6,7 +6,6 @@ import {EdgeType} from '../enums/EdgeType';
 import {GameVariant} from '../enums/GameVariant';
 import {TravelCardType} from '../enums/TravelCardType';
 import GameManager from './GameManager';
-import PlayerManager from './PlayerManager';
 
 export class CardManager {
   private static cardManagerInstance: CardManager;
@@ -114,6 +113,11 @@ export class CardManager {
     edge: Edge
   ): boolean {
     // only for Elfenland
+    if (
+      edge.getDestTown() !== player.getCurrentLocation() &&
+      edge.getSrcTown() !== player.getCurrentLocation()
+    )
+      return false;
     const edgeType = edge.getType();
     // travel on river
     if (edgeType === EdgeType.River) {
@@ -175,9 +179,9 @@ export class CardManager {
 
       if (isCaravan) {
         if (obstacle === undefined) {
-          if (cards.length < 3) return false;
+          if (cards.length !== 3) return false;
         } else {
-          if (cards.length < 4) return false;
+          if (cards.length !== 4) return false;
         }
       } else {
         let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
@@ -185,7 +189,7 @@ export class CardManager {
         if (obstacle !== undefined) {
           numCardsRequired += 1;
         }
-        if (cards.length < numCardsRequired) return false;
+        if (cards.length !== numCardsRequired) return false;
       }
     }
     return true;
