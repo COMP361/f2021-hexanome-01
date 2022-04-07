@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { GSDetail, SaveGame } from './gamesvc.model';
+import { GameHistory, GSDetail, SaveGame } from './gamesvc.model';
 import { GameService } from './gamesvc.service';
 @Resolver()
 export class GameResolver {
@@ -24,22 +24,52 @@ export class GameResolver {
     return this.gsService.getSaveGame(game, savegameid);
   }
 
-  @Mutation(returns => String)
+  @Mutation((returns) => String)
   async registerSaveGame(
     @Args('game') game: String,
     @Args('savegameid') savegameid: String,
     @Args('players') players: String,
     @Args('gamedata') gamedata: String,
   ): Promise<String> {
-    const playerList = players.split(",");
-    return this.gsService.registerSaveGame(game, savegameid, playerList, gamedata);
+    const playerList = players.split(',');
+    return this.gsService.registerSaveGame(
+      game,
+      savegameid,
+      playerList,
+      gamedata,
+    );
   }
 
-  @Mutation(returns => String)
+  @Mutation((returns) => String)
   async deleteSaveGame(
     @Args('game') game: string,
     @Args('savegameid') savegameid: string,
   ): Promise<String> {
     return this.gsService.deleteSaveGame(game, savegameid);
+  }
+
+  @Query(() => GameHistory)
+  async SaveGameData(
+    @Args('game') game: string,
+    @Args('savegameid') savegameid: string,
+  ): Promise<GameHistory> {
+    return this.gsService.getSaveGameData(game, savegameid);
+  }
+
+  @Mutation((returns) => String)
+  async registerSaveGameData(
+    @Args('game') game: string,
+    @Args('savegameid') savegameid: string,
+    @Args('gamedata') gamedata: string,
+  ): Promise<String> {
+    return this.gsService.registerSaveGameData(game, savegameid, gamedata);
+  }
+
+  @Mutation((returns) => String)
+  async deleteSaveGameData(
+    @Args('game') game: string,
+    @Args('savegameid') savegameid: string,
+  ): Promise<String> {
+    return this.gsService.deleteSaveGameData(game, savegameid);
   }
 }
