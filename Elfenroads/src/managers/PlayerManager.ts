@@ -1,6 +1,10 @@
 import Edge from '../classes/Edge';
+import {Spell} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import Town from '../classes/Town';
+import {GameVariant} from '../enums/GameVariant';
+import {SpellType} from '../enums/SpellType';
+import GameManager from './GameManager';
 
 export default class PlayerManager {
   private static instance: PlayerManager;
@@ -138,6 +142,20 @@ export default class PlayerManager {
     this.players[this.currentPlayerIndex].setCurrentLocation(newLocation);
     this.addVisitedTown(this.currentPlayerIndex, newLocation);
     this.updatePlayerScore(player);
+    if (GameManager.getInstance().getGameVariant() === GameVariant.elfengold) {
+      if (
+        edge.getItems().find(item => {
+          if (item instanceof Spell) {
+            return item.getName() === SpellType.Double;
+          }
+          return false;
+        }) !== undefined
+      ) {
+        this.addCoins(this.currentPlayerIndex, newLocation.getGoldValue() * 2);
+      } else {
+        this.addCoins(this.currentPlayerIndex, newLocation.getGoldValue());
+      }
+    }
   }
 
   private updatePlayerScore(currentPlayer: Player): void {

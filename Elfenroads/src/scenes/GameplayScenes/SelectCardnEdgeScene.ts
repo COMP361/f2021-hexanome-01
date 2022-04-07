@@ -230,10 +230,6 @@ export default class SelectionScene extends Phaser.Scene {
     selectedEdge: Edge,
     currentScene: Phaser.Scene
   ): void {
-    console.log('Started the callback...');
-    console.log(selectedCardSprites);
-    console.log(selectedEdge);
-    console.log(currentScene);
     const selectedCards: Array<CardUnit> = [];
     if (selectedCardSprites.length > 0) {
       // check if each card sprites are valid and collect each cards
@@ -282,7 +278,6 @@ export default class SelectionScene extends Phaser.Scene {
           edge
         );
         currentScene.scene.get('uiscene').scene.restart();
-        console.log('YOOOOO ITS WORKING!');
         currentScene.scene.restart();
       } else {
         for (let i = 0; i < selectedCardSprites.length; i++) {
@@ -313,7 +308,6 @@ export default class SelectionScene extends Phaser.Scene {
               card.clearTint();
             });
           currentScene.scene.get('uiscene').scene.restart();
-          console.log('Selection not valid');
           currentScene.scene.restart();
         }
       }
