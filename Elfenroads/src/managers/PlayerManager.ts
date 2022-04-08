@@ -93,8 +93,7 @@ export default class PlayerManager {
 
   public addCoins(playerIndex: number, coinAmount: number): void {
     const tempPlayer: Player = this.players[playerIndex];
-    const newScore = tempPlayer.getScore() + coinAmount;
-    tempPlayer.setScore(newScore);
+    tempPlayer.addGoldToAdd(coinAmount);
   }
 
   public setCurrentTown(playerIndex: number, town: Town): void {
