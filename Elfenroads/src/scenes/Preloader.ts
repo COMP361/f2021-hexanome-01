@@ -10,6 +10,13 @@ export default class Preloader extends Phaser.Scene {
     // ///// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
     // /////////////////////////////////////////////////////////
 
+    // Assets for WinnerScene
+    this.load.atlas(
+      'flares',
+      'http://labs.phaser.io/assets/particles/flares.png',
+      'http://labs.phaser.io/assets/particles/flares.json'
+    );
+
     // Assets for Round
     this.load.image('R1', 'assets/boardgame/R1.png');
     this.load.image('R2', 'assets/boardgame/R2.png');

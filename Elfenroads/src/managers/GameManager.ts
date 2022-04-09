@@ -112,7 +112,8 @@ export default class GameManager {
     console.log(`Playing Elfenland Round: ${this.round}`);
     // Check to see if we have played enough rounds
     if (this.round > this.numRounds) {
-      this.displayGameOver();
+      this.mainScene.scene.pause('uiscene');
+      this.mainScene.scene.launch('winnerscene');
       return;
     }
 
@@ -149,7 +150,7 @@ export default class GameManager {
     console.log(`Playing Elfengold Round: ${this.round}`);
     // Check to see if we have played enough rounds
     if (this.round > this.numRounds) {
-      this.displayGameOver();
+      this.mainScene.scene.launch('winnerscene');
       return;
     }
 
@@ -240,35 +241,5 @@ export default class GameManager {
         this.playerManager.setLocalPlayer(player);
       }
     });
-  }
-
-  private displayGameOver(): void {
-    // Create text to notify whose turn it is using boot color substring
-    const playerText: Phaser.GameObjects.Text = this.mainScene.add
-      .text(10, 5, 'GAMEOVER', {
-        fontFamily: 'MedievalSharp',
-        fontSize: '50px',
-      })
-      .setColor('white');
-
-    // Grab width of text to determine size of panel behind
-    const textWidth: number = playerText.width;
-
-    // Create brown ui panel element relative to the size of the text
-    const brownPanel: Phaser.GameObjects.RenderTexture = this.mainScene.add
-      .nineslice(0, 0, textWidth + 20, 60, 'brown-panel', 24)
-      .setOrigin(0, 0);
-
-    // Grab width of current game to center our container
-    const gameWidth: number = this.mainScene.scale.width;
-
-    // Initialize container to group elements
-    // Need to center the container relative to the gameWidth and the size of the text box
-    const container: Phaser.GameObjects.Container =
-      this.mainScene.add.container(gameWidth / 2 - brownPanel.width / 2, 20);
-
-    // Render the brown panel and text
-    container.add(brownPanel).setDepth(3);
-    container.add(playerText).setDepth(3);
   }
 }
