@@ -134,6 +134,9 @@ export default class Preloader extends Phaser.Scene {
     // Assets for DrawCounterScene
     this.load.image('cross', 'assets/ui/uipack_fixed/PNG/grey_crossWhite.png');
 
+    // Assets for ChooseCoinScene
+    this.load.image('get-cards', 'assets/boardgame/playing-cards.png');
+
     // music
     this.load.audio('medieval-music', 'audio/medieval-music.mp3');
     this.load.audio('pass', 'audio/pass.wav');
