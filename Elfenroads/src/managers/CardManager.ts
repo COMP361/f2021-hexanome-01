@@ -4,6 +4,7 @@ import {Counter, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {EdgeType} from '../enums/EdgeType';
 import {GameVariant} from '../enums/GameVariant';
+import {ObstacleType} from '../enums/ObstacleType';
 import {TravelCardType} from '../enums/TravelCardType';
 import GameManager from './GameManager';
 
@@ -112,6 +113,8 @@ export class CardManager {
     cards: Array<CardUnit>,
     edge: Edge
   ): boolean {
+    const isElfengold: boolean =
+      GameManager.getInstance().getGameVariant() === GameVariant.elfengold;
     // only for Elfenland
     if (
       edge.getDestTown() !== player.getCurrentLocation() &&
@@ -128,15 +131,32 @@ export class CardManager {
           return false;
         }
       }
+      let numcards = cards.length;
+      if (isElfengold) {
+        const edgeItems = edge.getItems();
+        let obstacle: Obstacle | undefined = undefined;
+        for (const item of edgeItems) {
+          if (
+            item instanceof Obstacle &&
+            item.getName() === ObstacleType.SeaMonster
+          ) {
+            obstacle = <Obstacle>item;
+          }
+        }
+        if (obstacle !== undefined) {
+          numcards--;
+        }
+      }
+
       // 1 raft if traveling with current
       if (player.getCurrentLocation() === edge.getSrcTown()) {
         // only need 1 raft
-        if (cards.length !== 1) {
+        if (numcards !== 1) {
           return false;
         }
       }
       // against current
-      else if (cards.length !== 2) {
+      else if (numcards !== 2) {
         return false;
       }
     }
@@ -149,7 +169,23 @@ export class CardManager {
           return false;
         }
       }
-      if (cards.length !== 2) {
+      let numcards = cards.length;
+      if (isElfengold) {
+        const edgeItems = edge.getItems();
+        let obstacle: Obstacle | undefined = undefined;
+        for (const item of edgeItems) {
+          if (
+            item instanceof Obstacle &&
+            item.getName() === ObstacleType.SeaMonster
+          ) {
+            obstacle = <Obstacle>item;
+          }
+        }
+        if (obstacle !== undefined) {
+          numcards--;
+        }
+      }
+      if (numcards !== 2) {
         return false;
       }
     }
