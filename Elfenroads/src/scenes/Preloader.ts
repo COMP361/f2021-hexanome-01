@@ -106,10 +106,13 @@ export default class Preloader extends Phaser.Scene {
       'purple-panel',
       'assets/ui/uipack_fixed/PNG/purple_panel.png'
     );
-
     this.load.image(
       'grey-slider',
       'assets/ui/uipack_fixed/PNG/grey_sliderRight.png'
+    );
+    this.load.image(
+      'yellow-slider',
+      'assets/ui/uipack_fixed/PNG/yellow_sliderRight.png'
     );
 
     // Assets for CounterScene.js
