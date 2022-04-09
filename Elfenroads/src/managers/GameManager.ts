@@ -61,7 +61,7 @@ export default class GameManager {
     this.initialized = false;
 
     // hard coded this for now
-    this.gameVariant = GameVariant.elfenland;
+    this.gameVariant = GameVariant.elfengold;
     this.numRounds = 3;
     this.round = 1;
   }
