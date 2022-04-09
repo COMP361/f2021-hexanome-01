@@ -1,6 +1,8 @@
 import Edge from '../classes/Edge';
 import Player from '../classes/Player';
 import Town from '../classes/Town';
+import {GameVariant} from '../enums/GameVariant';
+import GameManager from './GameManager';
 
 export default class PlayerManager {
   private static instance: PlayerManager;
@@ -111,8 +113,16 @@ export default class PlayerManager {
       if (winnerscore < playerscore) {
         winner = player;
       } else if (winnerscore === playerscore) {
-        if (winner.getCards().length < player.getCards().length) {
-          winner = player;
+        if (
+          GameManager.getInstance().getGameVariant() === GameVariant.elfenland
+        ) {
+          if (winner.getCards().length < player.getCards().length) {
+            winner = player;
+          }
+        } else {
+          if (winner.getGold() < player.getGold()) {
+            winner = player;
+          }
         }
       }
     }
@@ -134,8 +144,16 @@ export default class PlayerManager {
         if (winnerscore < playerscore) {
           winner = player;
         } else if (winnerscore === playerscore) {
-          if (winner!.getCards().length < player.getCards().length) {
-            winner = player;
+          if (
+            GameManager.getInstance().getGameVariant() === GameVariant.elfenland
+          ) {
+            if (winner!.getCards().length < player.getCards().length) {
+              winner = player;
+            }
+          } else {
+            if (winner!.getGold() < player.getGold()) {
+              winner = player;
+            }
           }
         }
       }
