@@ -1,5 +1,5 @@
 import Edge from '../classes/Edge';
-import {Spell} from '../classes/ItemUnit';
+import {GoldPiece, Spell} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import Town from '../classes/Town';
 import {GameVariant} from '../enums/GameVariant';
@@ -144,10 +144,7 @@ export default class PlayerManager {
     if (GameManager.getInstance().getGameVariant() === GameVariant.elfengold) {
       if (
         edge.getItems().find(item => {
-          if (item instanceof Spell) {
-            return item.getName() === SpellType.Double;
-          }
-          return false;
+          return item instanceof GoldPiece;
         }) !== undefined
       ) {
         this.addCoins(this.currentPlayerIndex, newLocation.getGoldValue() * 2);

@@ -1,3 +1,4 @@
+import internal from 'stream';
 import {BootColour} from '../enums/BootColour';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
@@ -15,12 +16,14 @@ export default class Player {
   private visitedTowns: Array<Town>;
   private secretTown: Town;
   private passedTurn: boolean;
+  private goldToAdd: integer;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
     this.bootColour = pBootColour;
     this.currentLocation = pCurrentLocation;
 
     this.gold = 0;
+    this.goldToAdd = 0;
     this.score = 0;
     this.myItems = [];
     this.myCards = [];
@@ -106,6 +109,25 @@ export default class Player {
 
   public setGold(pGold: integer): void {
     this.gold = pGold;
+  }
+
+  public addGoldToAdd(pGold: integer): void {
+    this.goldToAdd += pGold;
+  }
+
+  public chooseGold(): void {
+    this.gold += this.goldToAdd;
+    this.goldToAdd = 0;
+  }
+
+  public chooseCards(): void {
+    // let numcards = 2;
+    // while (this.getCards().length < 8 && numcards > 0) {
+    //   const randomCard: CardUnit = CardManager.getInstance().getRandomCard();
+    //   this.addCard(randomCard);
+    //   numcards--;
+    // }
+    this.goldToAdd = 0;
   }
 
   public setScore(pScore: integer): void {

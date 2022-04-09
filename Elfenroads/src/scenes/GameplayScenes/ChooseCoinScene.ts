@@ -41,14 +41,7 @@ export default class ChooseCoinScene extends Phaser.Scene {
       })
       .on('pointerup', () => {
         passTurnButton.clearTint();
-        const player = PlayerManager.getInstance().getCurrentPlayer();
-        let numcards = 2;
-        while (player.getCards().length < 8 && numcards > 0) {
-          const randomCard: CardUnit =
-            CardManager.getInstance().getRandomCard();
-          player.addCard(randomCard);
-          numcards--;
-        }
+        PlayerManager.getInstance().getCurrentPlayer().chooseCards();
         this.scene.get('uiscene').scene.restart();
         this.callback();
       });
