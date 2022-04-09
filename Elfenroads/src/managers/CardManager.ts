@@ -1,10 +1,11 @@
 import {CardUnit, GoldCard, TravelCard} from '../classes/CardUnit';
 import Edge from '../classes/Edge';
-import {Counter, Obstacle} from '../classes/ItemUnit';
+import {Counter, Obstacle, Spell} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {EdgeType} from '../enums/EdgeType';
 import {GameVariant} from '../enums/GameVariant';
 import {ObstacleType} from '../enums/ObstacleType';
+import {SpellType} from '../enums/SpellType';
 import {TravelCardType} from '../enums/TravelCardType';
 import GameManager from './GameManager';
 
@@ -191,6 +192,80 @@ export class CardManager {
     }
     // travel on land
     else {
+      if (isElfengold) {
+        let hasDoubleSpell = false;
+        const edgeItems = edge.getItems();
+        for (const item of edgeItems) {
+          if (item instanceof Spell) {
+            hasDoubleSpell = item.getName() === SpellType.Double;
+          }
+        }
+        if (hasDoubleSpell) {
+          let travelcounter1: Counter | undefined = undefined;
+          let travelcounter2: Counter | undefined = undefined;
+          let obstacle: Obstacle | undefined = undefined;
+          for (const item of edgeItems) {
+            if (item instanceof Counter) {
+              if (travelcounter1 === undefined) {
+                travelcounter1 = <Counter>item;
+              } else {
+                travelcounter2 = <Counter>item;
+              }
+            }
+            if (item instanceof Obstacle) {
+              obstacle = <Obstacle>item;
+            }
+          }
+          if (travelcounter1 === undefined || travelcounter2 === undefined)
+            return false;
+          // check if it is the case of caravan
+          let isCaravan = false;
+          for (const card of cards) {
+            // check if the card type correspond to the counter type
+            if (
+              !card.getName().includes(travelcounter1.getName()) &&
+              !card.getName().includes(travelcounter2.getName())
+            ) {
+              isCaravan = true;
+            }
+          }
+
+          if (isCaravan) {
+            if (obstacle === undefined) {
+              if (cards.length !== 3) return false;
+            } else {
+              if (cards.length !== 4) return false;
+            }
+          } else {
+            let numCardsRequired1 = travelcounter1
+              .getCardsNeeded()
+              .get(edgeType);
+            let numCardsRequired2 = travelcounter1
+              .getCardsNeeded()
+              .get(edgeType);
+            if (numCardsRequired1 === undefined) return false;
+            if (numCardsRequired2 === undefined) return false;
+            if (obstacle !== undefined) {
+              numCardsRequired1 += 1;
+              numCardsRequired2 += 1;
+            }
+            for (const card of cards) {
+              // check if the card type correspond to the counter type
+              if (card.getName().includes(travelcounter1.getName())) {
+                numCardsRequired1 -= 1;
+              } else if (card.getName().includes(travelcounter2.getName())) {
+                numCardsRequired2 -= 1;
+              }
+            }
+            if (numCardsRequired1 !== 0 && numCardsRequired2 !== 0) {
+              return false;
+            } else if (numCardsRequired1 === 0 && numCardsRequired2 === 0) {
+              return false;
+            }
+          }
+          return true;
+        }
+      }
       const edgeItems = edge.getItems();
       let travelcounter: Counter | undefined = undefined;
       let obstacle: Obstacle | undefined = undefined;
