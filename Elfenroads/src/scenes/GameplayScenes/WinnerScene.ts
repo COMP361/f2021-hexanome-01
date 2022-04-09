@@ -52,7 +52,7 @@ export default class WinnerScene extends Phaser.Scene {
 
   // Create text panel displaying winning colour boot
   private createWinnerDisplay(): void {
-    // Get the winningPlayer because it is their turn
+    // Get the winningPlayer
     const winningPlayer: Player = PlayerManager.getInstance().getWinner();
 
     // Extract substring of boot color from boot enum
