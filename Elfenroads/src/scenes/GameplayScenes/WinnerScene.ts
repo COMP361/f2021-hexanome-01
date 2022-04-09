@@ -19,8 +19,8 @@ export default class WinnerScene extends Phaser.Scene {
 
   // Create game over text panel
   private createGameOverBanner(): void {
-    // Create text to notify whose turn it is using boot color substring
-    const playerText: Phaser.GameObjects.Text = this.add
+    // Create text to notify game over.
+    const gameOverText: Phaser.GameObjects.Text = this.add
       .text(10, 5, 'GAME OVER', {
         fontFamily: 'MedievalSharp',
         fontSize: '50px',
@@ -28,7 +28,7 @@ export default class WinnerScene extends Phaser.Scene {
       .setColor('white');
 
     // Grab width of text to determine size of panel behind
-    const textWidth: number = playerText.width;
+    const textWidth: number = gameOverText.width;
 
     // Create brown ui panel element relative to the size of the text
     const brownPanel: Phaser.GameObjects.RenderTexture = this.add
@@ -47,7 +47,7 @@ export default class WinnerScene extends Phaser.Scene {
 
     // Render the brown panel and text
     container.add(brownPanel).setDepth(4);
-    container.add(playerText).setDepth(4);
+    container.add(gameOverText).setDepth(4);
   }
 
   // Create text panel displaying winning colour boot
@@ -60,7 +60,7 @@ export default class WinnerScene extends Phaser.Scene {
       .getBootColour()
       .slice(0, winningPlayer.getBootColour().indexOf('-'));
 
-    // Create text to notify whose turn it is using boot color substring
+    // Create text to notify which player has won
     const playerText: Phaser.GameObjects.Text = this.add.text(
       10,
       5,
