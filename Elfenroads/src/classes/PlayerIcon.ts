@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import {BootColour} from '../enums/BootColour';
-import PlayerManager from '../managers/PlayerManager';
 
 // helper class for getting the right image
 export class ImgStore {
@@ -39,72 +38,80 @@ export class ImgStore {
 
 export default class PlayerIcon {
   private scene: Phaser.Scene;
-  private isShowed: boolean;
   private container: Phaser.GameObjects.Container;
   private xpos: number;
   private ypos: number;
   private panel: Phaser.GameObjects.RenderTexture;
   private numItems: number;
   private color: BootColour;
+  private isCurrentPlayer: boolean;
   private score: number;
+  private gold: number;
+  private isElfengold: boolean;
 
   public constructor(
     scene: Phaser.Scene,
     xpos: number,
     ypos: number,
     color: BootColour,
-    score: number
+    isCurrentPlayer: boolean,
+    score: number,
+    gold: number,
+    isElfengold: boolean
   ) {
     this.scene = scene;
-    this.isShowed = false;
     this.xpos = xpos;
     this.ypos = ypos;
     this.numItems = 0;
     this.color = color;
+    this.isCurrentPlayer = isCurrentPlayer;
     this.score = score;
+    this.gold = gold;
+    this.isElfengold = isElfengold;
 
     const store: ImgStore = ImgStore.instance();
 
-    /* add player token */
-    const token: Phaser.GameObjects.Sprite = this.scene.add
+    /* add playerIcon */
+    const playerIcon: Phaser.GameObjects.Sprite = this.scene.add
       .sprite(this.xpos, this.ypos, store.getActor(this.color))
-      .setDepth(3);
+      .setDepth(3)
+      .setScale(0.3);
 
-    const panel: Phaser.GameObjects.RenderTexture = this.scene.add
+    this.panel = this.scene.add
       .nineslice(0, 0, 120, 60, store.getPanel(this.color), 24)
       .setOrigin(0, 0);
-    this.panel = panel;
 
-    token.setScale(0.3);
-
-    const aContainer: Phaser.GameObjects.Container = this.scene.add
+    this.container = this.scene.add
       .container(this.xpos + 30, this.ypos - 30)
-      .setDepth(3);
-    this.container = aContainer;
-    aContainer.add(panel);
-    aContainer.setVisible(false);
-    const scoreContainer = this.renderScore();
-    scoreContainer.setVisible(false);
+      .setDepth(3)
+      .add(this.panel)
+      .setVisible(false);
+
+    const scoreContainer: Phaser.GameObjects.Container =
+      this.renderScore().setVisible(false);
+
+    // Only create the gold container if game variant is isElfengold
+    let goldContainer: Phaser.GameObjects.Container;
+    if (isElfengold) {
+      goldContainer = this.renderGold().setVisible(false);
+    }
 
     // If this icon is the current player, then render the bouncing pointer
-    const isCurrentPlayer: boolean =
-      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
-      this.color;
+    this.isCurrentPlayer && this.renderPointer(playerIcon.getLeftCenter().x);
 
-    isCurrentPlayer ? this.renderPointer(token.getLeftCenter().x) : undefined;
-
-    token
+    playerIcon
       .setInteractive()
       .on('pointerdown', () => {
-        token.setTint(0xd3d3d3);
+        playerIcon.setTint(0xd3d3d3);
       })
       .on('pointerout', () => {
-        token.clearTint();
+        playerIcon.clearTint();
       })
       .on('pointerup', () => {
-        token.clearTint();
+        playerIcon.clearTint();
         scoreContainer.setVisible(!scoreContainer.visible);
-        aContainer.setVisible(!aContainer.visible);
+        this.container.setVisible(!this.container.visible);
+        this.isElfengold && goldContainer.setVisible(!goldContainer.visible);
       });
   }
 
@@ -112,7 +119,7 @@ export default class PlayerIcon {
   private renderScore(): Phaser.GameObjects.Container {
     const scoreContainer = this.scene.add.container(
       this.xpos - 39,
-      this.ypos - 10
+      this.ypos - 13
     );
     const greyPanel: Phaser.GameObjects.Sprite = this.scene.add.sprite(
       0,
@@ -138,6 +145,38 @@ export default class PlayerIcon {
     scoreContainer.add(scoreText);
 
     return scoreContainer;
+  }
+
+  // Show player current gold amount
+  private renderGold(): Phaser.GameObjects.Container {
+    const goldAmountContainer = this.scene.add.container(
+      this.xpos - 39,
+      this.ypos + 16
+    );
+    const yellowPanel: Phaser.GameObjects.Sprite = this.scene.add.sprite(
+      0,
+      0,
+      'yellow-slider'
+    );
+
+    goldAmountContainer.add(yellowPanel);
+
+    const goldAmountText = this.scene.add
+      .text(
+        yellowPanel.getCenter().x - 3,
+        yellowPanel.getCenter().y - 1,
+        `${this.gold}`,
+        {
+          fontFamily: 'MedievalSharp',
+          fontSize: '19px',
+          color: 'black',
+        }
+      )
+      .setOrigin(0.5, 0.5);
+
+    goldAmountContainer.add(goldAmountText);
+
+    return goldAmountContainer;
   }
 
   // Create the bouncing pointer inidicator using the relative position of the icon

@@ -114,12 +114,54 @@ export default class PlayerManager {
       if (winnerscore < playerscore) {
         winner = player;
       } else if (winnerscore === playerscore) {
-        if (winner.getCards().length < player.getCards().length) {
-          winner = player;
+        if (
+          GameManager.getInstance().getGameVariant() === GameVariant.elfenland
+        ) {
+          if (winner.getCards().length < player.getCards().length) {
+            winner = player;
+          }
+        } else {
+          if (winner.getGold() < player.getGold()) {
+            winner = player;
+          }
         }
       }
     }
     return winner;
+  }
+
+  public getWinnerList(): Array<Player> {
+    const newPlayers = new Set(this.players);
+    const winnerList: Array<Player> = [];
+    while (newPlayers.size > 0) {
+      let winner: Player;
+      for (const player of newPlayers) {
+        winner = player;
+        break;
+      }
+      for (const player of newPlayers) {
+        const winnerscore: number = winner!.getActualScore();
+        const playerscore: number = player.getActualScore();
+        if (winnerscore < playerscore) {
+          winner = player;
+        } else if (winnerscore === playerscore) {
+          if (
+            GameManager.getInstance().getGameVariant() === GameVariant.elfenland
+          ) {
+            if (winner!.getCards().length < player.getCards().length) {
+              winner = player;
+            }
+          } else {
+            if (winner!.getGold() < player.getGold()) {
+              winner = player;
+            }
+          }
+        }
+      }
+      newPlayers.delete(winner!);
+      winnerList.push(winner!);
+    }
+    return winnerList;
   }
 
   public setPlayerSecretTown(playerIndex: number, dest: Town): void {
