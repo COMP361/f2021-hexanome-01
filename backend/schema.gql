@@ -17,6 +17,11 @@ type SaveGame {
   savegameid: String!
 }
 
+type GameHistory {
+  gameid: String!
+  gamedata: String!
+}
+
 type LSUser {
   name: String!
   preferredColour: String!
@@ -55,6 +60,7 @@ type Query {
   GameServiceDetail(game: String!): GSDetail!
   SaveGames(game: String!): [SaveGame!]!
   SaveGame(savegameid: String!, game: String!): SaveGame!
+  SaveGameData(savegameid: String!, game: String!): GameHistory!
 }
 
 type Mutation {
@@ -68,4 +74,5 @@ type Mutation {
   removeSession(access_token: String!, session_id: String!): String!
   registerSaveGame(gamedata: String!, players: String!, savegameid: String!, game: String!): String!
   deleteSaveGame(savegameid: String!, game: String!): String!
+  registerSaveGameData(gamedata: String!, savegameid: String!, game: String!): String!
 }

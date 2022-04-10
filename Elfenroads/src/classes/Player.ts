@@ -90,6 +90,17 @@ export default class Player {
     }
   }
 
+  public getTownDistance(): integer {
+    if (this.secretTown.isNull()) {
+      return -1;
+    } else {
+      return RoadManager.getInstance().getDistance(
+        this.currentLocation,
+        this.secretTown
+      );
+    }
+  }
+
   public getBootColour(): BootColour {
     return this.bootColour;
   }

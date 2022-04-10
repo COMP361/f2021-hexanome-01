@@ -38,8 +38,10 @@ export class SaveGame {
 @Entity()
 export class GameHistory {
   @PrimaryColumn()
+  @Field()
   gameid: String;
 
   @Column()
+  @Field()
   gamedata: String;
 }
