@@ -229,7 +229,7 @@ export default class GameManager {
     // Get all towns in Array format to initialize player's random secret town
     const allTownsArray = RoadManager.getInstance()
       .getAllTownsAsArray()
-      .filter(town => town.getName() !== null);
+      .filter(town => town.getName() !== 'null');
 
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
