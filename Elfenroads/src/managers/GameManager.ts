@@ -118,8 +118,7 @@ export default class GameManager {
     }
 
     // Phase 1 & 2
-    this.dealCardsAndCounter();
-    this.itemManager.flipCounters();
+    this.setUpRoundElfenland();
 
     // Phase 3: Draw additional Transportation counters
     this.playerManager.readyUpPlayers();
@@ -161,15 +160,54 @@ export default class GameManager {
       this.mainScene.scene.launch('winnerscene');
       return;
     }
+    this.setUpRoundElfengold();
 
-    // Phase 1 & 2
-    this.dealCardsAndCounter();
-    this.itemManager.flipCounters();
+    // In first round, we skip phase 1 & 2
+    if (this.round === 1) {
+      // Phase 3: Draw Tokens and Counters
+      /**
+       * @TODO Make a new draw counter scene for elfengold
+       */
 
-    // Phase 3: Draw additional Transportation counters
-    this.playerManager.readyUpPlayers();
-    this.mainScene.scene.launch('drawcountersscene', () => {
-      this.mainScene.scene.stop('drawcountersscene');
+      // Phase 4: Auction
+      this.playerManager.readyUpPlayers(); // Reinitialize players turn
+      this.mainScene.scene.launch('auctionscene', () => {
+        this.mainScene.scene.stop('auctionscene');
+
+        // Phase 5: Plan the Travel Routes
+        this.playerManager.readyUpPlayers(); // Reinitialize players turn
+        this.mainScene.scene.launch('planroutescene', () => {
+          this.mainScene.scene.stop('planroutescene');
+
+          // Phase 6: Move the Elf Boot
+          this.playerManager.readyUpPlayers(); // Reinitialize players turn
+          this.mainScene.scene.launch('selectionscene', () => {
+            this.mainScene.scene.stop('selectionscene');
+
+            // Phase 7: Finish the Round
+            this.playerManager.readyUpPlayers();
+            this.mainScene.scene.launch('roundcleanupscene', () => {
+              this.mainScene.scene.stop('roundcleanupscene');
+              this.playerManager.setNextStartingPlayer();
+              this.round++;
+              this.playRoundElfengold();
+            });
+          });
+        });
+      });
+    }
+
+    // In subsequence rounds we go through all phases
+    else {
+      // Phase 1: Draw Travel Cards
+
+      // Phase 2: Distribute Gold Coins
+      // Handled by setUpRoundElfengold()
+
+      // Phase 3: Draw Tokens and Counters
+      /**
+       * @TODO Make a new draw counter scene for elfengold
+       */
 
       // Phase 4: Auction
       this.playerManager.readyUpPlayers(); // Reinitialize players turn
@@ -202,10 +240,10 @@ export default class GameManager {
           });
         });
       });
-    });
+    }
   }
 
-  private dealCardsAndCounter(): void {
+  private setUpRoundElfenland(): void {
     for (const player of this.playerManager.getPlayers()) {
       // Deal up to 8 cards
       while (player.getCards().length < 8) {
@@ -221,6 +259,27 @@ export default class GameManager {
       if (this.round === 1) {
         const tree: Obstacle = this.itemManager.getTreeObstacle();
         player.addItem(tree);
+      }
+
+      this.itemManager.flipCounters();
+    }
+  }
+
+  private setUpRoundElfengold(): void {
+    for (const player of this.playerManager.getPlayers()) {
+      // Initialize players if it is the first round
+      if (this.round === 1) {
+        // Deal up to 5 cards
+        while (player.getCards().length < 5) {
+          const randomCard: CardUnit = this.cardManager.getRandomCard();
+          player.addCard(randomCard);
+        }
+        player.setGold(12);
+      }
+
+      // If not first round, then only give them gold
+      else {
+        player.setGold(player.getGold() + 2);
       }
     }
   }
