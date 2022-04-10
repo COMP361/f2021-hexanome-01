@@ -162,12 +162,6 @@ export default class GameManager {
 
     // In first round, we skip phase 1 & 2
     if (this.round === 1) {
-      // Initialze decks for subsequence rounds
-      for (let i = 0; i < 3; i++) {
-        CardManager.getInstance().flipCard();
-      }
-      CardManager.getInstance().addGoldCardsToPile();
-
       // Phase 3: Draw Tokens and Counters
       /**
        * @TODO Make a new draw counter scene for elfengold
@@ -274,9 +268,20 @@ export default class GameManager {
   }
 
   private setUpRoundElfengold(): void {
+    const isFirstRound: boolean = this.round === 1;
+
+    // Initialze faceUpPile for subsequence rounds
+    if (isFirstRound) {
+      for (let i = 0; i < 3; i++) {
+        CardManager.getInstance().flipCard();
+      }
+      CardManager.getInstance().addGoldCardsToPile();
+    }
+
+    // Loop through players
     for (const player of this.playerManager.getPlayers()) {
       // Initialize players if it is the first round
-      if (this.round === 1) {
+      if (isFirstRound) {
         // Deal up to 5 cards
         while (player.getCards().length < 5) {
           const randomCard: CardUnit = this.cardManager.getRandomCard();
