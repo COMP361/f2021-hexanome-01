@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import {ItemUnit} from '../../classes/ItemUnit';
-import ItemManager from '../../managers/ItemManager';
+import {CardUnit} from '../../classes/CardUnit';
+import {CardManager} from '../../managers/CardManager';
 import PlayerManager from '../../managers/PlayerManager';
 
 export default class DrawCardsScene extends Phaser.Scene {
-  public counterSprites!: Array<Phaser.GameObjects.Sprite>;
+  public cardSprites!: Array<Phaser.GameObjects.Sprite>;
   public callback!: Function;
 
   constructor() {
@@ -13,16 +13,16 @@ export default class DrawCardsScene extends Phaser.Scene {
 
   create(callback: Function) {
     this.callback = callback;
-    this.counterSprites = [];
+    this.cardSprites = [];
 
     // Create UI banner in the middle of the screen
     this.createUIBanner();
 
     // Create pass turn button
-    //this.createPassTurnButton();
+    this.createPassTurnButton();
 
-    // Render five face up counters
-    // this.renderSixCounters();
+    // Render the three face up cards
+    this.renderCards();
   }
 
   private createUIBanner() {
@@ -102,35 +102,36 @@ export default class DrawCardsScene extends Phaser.Scene {
       });
   }
 
-  private renderSixCounters() {
+  private renderCards() {
     const gameWidth: number = this.cameras.main.width;
     let previousWidth: integer = gameWidth / 2 + 200;
 
-    while (this.counterSprites.length) {
-      this.counterSprites[0].destroy();
-      this.counterSprites.splice(0, 1);
+    while (this.cardSprites.length) {
+      this.cardSprites[0].destroy();
+      this.cardSprites.splice(0, 1);
     }
 
-    // Render five face up counters
-    const counters: Array<ItemUnit> = ItemManager.getInstance().getFaceUpPile();
-    for (let i = 0; i < 5; i++) {
-      this.generateCounter(previousWidth, counters[i], i);
-      previousWidth += 50;
+    // Render the 3 face up cards
+    const faceUpPile: Array<CardUnit> =
+      CardManager.getInstance().getFaceUpPile();
+    for (let i = 0; i < faceUpPile.length; i++) {
+      this.generateCard(previousWidth, faceUpPile[i], i);
+      previousWidth += 60;
     }
 
     // Render a face down counter pile
-    this.generateRandomCounter(previousWidth);
+    //this.generateRandomCard(previousWidth);
   }
 
-  private generateCounter(
+  private generateCard(
     previousWidth: integer,
-    counter: ItemUnit,
-    i: number
+    card: CardUnit,
+    index: number
   ): void {
-    const currentItem = counter;
-    const itemSprite = this.add
-      .sprite(previousWidth, 110, currentItem.getName())
-      .setScale(0.25)
+    const currentCard = card;
+    const cardSprites = this.add
+      .sprite(previousWidth, 110, currentCard.getName())
+      .setScale(0.2)
       .setInteractive();
 
     // Make counter interactive if it's the current player's turn.
@@ -138,57 +139,31 @@ export default class DrawCardsScene extends Phaser.Scene {
       PlayerManager.getInstance().getCurrentPlayer() ===
       PlayerManager.getInstance().getLocalPlayer()
     ) {
-      itemSprite
+      cardSprites
         .on('pointerdown', () => {
-          itemSprite.setTint(0xd3d3d3);
+          cardSprites.setTint(0xd3d3d3);
         })
         .on('pointerout', () => {
-          itemSprite.clearTint();
+          cardSprites.clearTint();
         })
         .on('pointerup', () => {
-          itemSprite.clearTint();
+          cardSprites.clearTint();
           this.sound.play('collect');
-          PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
-          itemSprite.destroy();
-          ItemManager.getInstance().removeFaceUpItem(i);
-          this.generateCounter(
-            previousWidth,
-            ItemManager.getInstance().getFaceUpPile()[i],
-            i
-          );
-          PlayerManager.getInstance().setNextPlayer();
-          this.scene.get('uiscene').scene.restart();
-
-          let finishedPlayers: integer = 0;
-          PlayerManager.getInstance()
-            .getPlayers()
-            .forEach(player => {
-              if (player.getItems().length === 5) {
-                finishedPlayers++;
-              }
-            });
-          if (
-            finishedPlayers === PlayerManager.getInstance().getPlayers().length
-          ) {
-            this.callback();
-          } else {
-            this.scene.restart();
-          }
         });
     }
 
     // If not player's turn, disable the counters
     else {
-      itemSprite.setTint(0xd3d3d3);
+      cardSprites.setTint(0xd3d3d3);
       this.add.sprite(previousWidth, 110, 'cross');
     }
 
-    this.counterSprites.push(itemSprite);
+    this.cardSprites.push(cardSprites);
   }
 
-  private generateRandomCounter(previousWidth: integer): void {
-    const currentItem = ItemManager.getInstance().getRandomItem();
-    const itemSprite = this.add
+  private generateRandomCard(previousWidth: integer): void {
+    const currentCard = CardManager.getInstance().getRandomCard();
+    const cardSprite = this.add
       .sprite(previousWidth, 110, 'unknown-counter')
       .setScale(0.25)
       .setInteractive();
@@ -198,46 +173,24 @@ export default class DrawCardsScene extends Phaser.Scene {
       PlayerManager.getInstance().getCurrentPlayer() ===
       PlayerManager.getInstance().getLocalPlayer()
     ) {
-      itemSprite
+      cardSprite
         .on('pointerdown', () => {
-          itemSprite.setTint(0xd3d3d3);
+          cardSprite.setTint(0xd3d3d3);
         })
         .on('pointerout', () => {
-          itemSprite.clearTint();
+          cardSprite.clearTint();
         })
         .on('pointerup', () => {
-          itemSprite.clearTint();
-          PlayerManager.getInstance().getCurrentPlayer().addItem(currentItem);
-          itemSprite.destroy();
-          this.generateRandomCounter(previousWidth);
-          PlayerManager.getInstance().setNextPlayer();
-          this.scene.get('uiscene').scene.restart();
-
-          let finishedPlayers: integer = 0;
-          PlayerManager.getInstance()
-            .getPlayers()
-            .forEach(player => {
-              if (player.getItems().length === 4) {
-                finishedPlayers++;
-              }
-            });
-
-          if (
-            finishedPlayers === PlayerManager.getInstance().getPlayers().length
-          ) {
-            this.callback();
-          } else {
-            this.scene.restart();
-          }
+          cardSprite.clearTint();
         });
     }
 
     // If not player's turn, disable the counters
     else {
-      itemSprite.setTint(0xd3d3d3);
+      cardSprite.setTint(0xd3d3d3);
       this.add.sprite(previousWidth, 110, 'cross');
     }
 
-    this.counterSprites.push(itemSprite);
+    this.cardSprites.push(cardSprite);
   }
 }

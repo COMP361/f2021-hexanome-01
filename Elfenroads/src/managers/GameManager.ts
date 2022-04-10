@@ -81,9 +81,6 @@ export default class GameManager {
     return this.gameVariant;
   }
 
-  /**
-   * SIMULATION OF GAME
-   */
   public playGame(mainScene: Phaser.Scene): void {
     // Step 0: Initialize the main Phaser.Scene
     this.mainScene = mainScene;
@@ -160,10 +157,17 @@ export default class GameManager {
       this.mainScene.scene.launch('winnerscene');
       return;
     }
+
     this.setUpRoundElfengold();
 
     // In first round, we skip phase 1 & 2
     if (this.round === 1) {
+      // Initialze decks for subsequence rounds
+      for (let i = 0; i < 3; i++) {
+        CardManager.getInstance().flipCard();
+      }
+      CardManager.getInstance().addGoldCardsToPile();
+
       // Phase 3: Draw Tokens and Counters
       /**
        * @TODO Make a new draw counter scene for elfengold
@@ -279,10 +283,6 @@ export default class GameManager {
           player.addCard(randomCard);
         }
         player.setGold(12);
-
-        // Initialze decks for subsequence rounds
-        CardManager.getInstance().flipCards();
-        CardManager.getInstance().addGoldCardsToPile();
       }
 
       // If not first round, then only give them gold

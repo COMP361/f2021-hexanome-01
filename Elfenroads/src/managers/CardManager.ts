@@ -73,6 +73,10 @@ export class CardManager {
     return;
   }
 
+  public getFaceUpPile(): Array<CardUnit> {
+    return this.faceUpPile;
+  }
+
   public getGoldCardPile(): Array<GoldCard> {
     return this.goldCardPile;
   }
@@ -97,12 +101,6 @@ export class CardManager {
     const randomCard = this.getRandomCard();
     if (!(randomCard instanceof GoldCard)) {
       this.faceUpPile.push(randomCard);
-    }
-  }
-
-  public flipCards(): void {
-    for (let i = 0; i < 3; i++) {
-      this.flipCard();
     }
   }
 
