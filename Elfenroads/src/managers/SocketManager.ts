@@ -1,4 +1,5 @@
 import {io} from 'socket.io-client';
+import {Counter} from '../classes/ItemUnit';
 import {
   getGame,
   getSession,
@@ -123,6 +124,63 @@ export default class SocketManager {
   }
 
   public emitStatusChange(data: any): void {
+    // Maps can't be converted to objects, so we need to convert them manually
+    if (data.PlayerManager) {
+      const newPlayerManager = {...data.PlayerManager};
+      newPlayerManager.players = data.PlayerManager.players.map(
+        (player: any) => {
+          const newPlayer = {...player};
+          newPlayer.myItems = player.myItems.map((item: any) => {
+            const newItem = {...item};
+            if (item instanceof Counter) {
+              newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
+            }
+            return newItem;
+          });
+          return newPlayer;
+        }
+      );
+      data.PlayerManager = newPlayerManager;
+    }
+    if (data.ItemManager) {
+      const newItemManager = {...data.ItemManager};
+      newItemManager.itemPile = [
+        ...data.ItemManager.itemPile.map((item: any) => {
+          const newItem = {...item};
+          if (item instanceof Counter) {
+            newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
+          }
+          return newItem;
+        }),
+      ];
+      newItemManager.faceUpPile = [
+        ...data.ItemManager.faceUpPile.map((item: any) => {
+          const newItem = {...item};
+          if (item instanceof Counter) {
+            newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
+          }
+          return newItem;
+        }),
+      ];
+      data.ItemManager = newItemManager;
+    }
+    if (data.RoadManager) {
+      const newRoadManager = {...data.RoadManager};
+      newRoadManager.allEdges = [
+        ...data.RoadManager.allEdges.map((edge: any) => {
+          const newEdge = {...edge};
+          newEdge.items = edge.items.map((item: any) => {
+            const newItem = {...item};
+            if (item instanceof Counter) {
+              newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
+            }
+            return newItem;
+          });
+          return newEdge;
+        }),
+      ];
+      data.RoadManager = newRoadManager;
+    }
     this.socket.emit('statusChange', {
       ...this.headers,
       data: {

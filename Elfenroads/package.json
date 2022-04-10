@@ -68,5 +68,8 @@
     "gts": "^3.1.0",
     "phaser3-webfont-loader": "^1.0.0",
     "typescript": "^4.5.5"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }

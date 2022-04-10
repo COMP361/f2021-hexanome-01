@@ -136,7 +136,8 @@ export default class PlayerManager {
 
   public update(manager: any): void {
     this.setCurrentPlayerIndex(manager.currentPlayerIndex);
-    this.players.forEach(player => {
+    this.players.forEach((player: Player) => {
+      console.log(player);
       const updatedPlayerObject = manager.players.find(
         (newPlayer: any) => newPlayer.bootColour === player.getBootColour()
       );

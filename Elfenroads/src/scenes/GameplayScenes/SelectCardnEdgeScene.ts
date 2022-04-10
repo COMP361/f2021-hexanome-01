@@ -326,11 +326,9 @@ export default class SelectionScene extends Phaser.Scene {
             .on('pointerup', () => {
               card.clearTint();
             });
-          SocketManager.getInstance().emitStatusChange({
-            CardManager: CardManager.getInstance(),
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-          });
+          currentScene.scene.get('uiscene').scene.restart();
+          console.log('Selection not valid');
+          currentScene.scene.restart();
         }
       }
     }

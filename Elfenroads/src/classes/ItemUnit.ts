@@ -2,6 +2,7 @@ import {CounterType} from '../enums/CounterType';
 import {EdgeType} from '../enums/EdgeType';
 import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
+import Edge from './Edge';
 
 export abstract class ItemUnit {
   private name: string;
@@ -60,11 +61,20 @@ export class Counter extends ItemUnit {
   constructor(
     counterType: CounterType,
     allowedEdges: Array<EdgeType>,
-    cardsNeeded: Map<EdgeType, number>,
+    cardsNeeded: any,
     isHidden = false
   ) {
     super(counterType, allowedEdges, false, isHidden, 'counter');
-    this.cardsNeeded = cardsNeeded;
+    if (cardsNeeded instanceof Map) {
+      this.cardsNeeded = cardsNeeded;
+    } else {
+      this.cardsNeeded = new Map(
+        Object.entries(cardsNeeded).map(entry => [
+          EdgeType[entry[0] as keyof typeof EdgeType],
+          Number(entry[1]),
+        ])
+      );
+    }
   }
 
   public getCardsNeeded(): Map<EdgeType, number> {
