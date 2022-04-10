@@ -119,8 +119,8 @@ export class BidManager {
     return this.bidItems;
   }
 
-  public getCurrentItem(): ItemUnit {
-    return this.bidItems[this.currentItem];
+  public getCurrentItem(): number {
+    return this.currentItem;
   }
 
   public getActive(): boolean {
