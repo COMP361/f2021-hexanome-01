@@ -137,10 +137,18 @@ export default class GameManager {
           this.mainScene.scene.stop('selectionscene');
 
           // Phase 6: Finish the Round
-          // @TODO: Still missing round cleanup function/scene.
-          this.playerManager.setNextStartingPlayer();
-          this.round++;
-          this.playRoundElfenland();
+          if (this.round < this.numRounds) {
+            this.playerManager.readyUpPlayers();
+            this.mainScene.scene.launch('roundcleanupscene', () => {
+              this.mainScene.scene.stop('roundcleanupscene');
+              this.playerManager.setNextStartingPlayer();
+              this.round++;
+              this.playRoundElfenland();
+            });
+          } else {
+            this.round++;
+            this.playRoundElfenland();
+          }
         });
       });
     });
@@ -179,10 +187,18 @@ export default class GameManager {
             this.mainScene.scene.stop('selectionscene');
 
             // Phase 7: Finish the Round
-            // @TODO: Still missing round cleanup function/scene.
-            this.playerManager.setNextStartingPlayer();
-            this.round++;
-            this.playRoundElfengold();
+            if (this.round < this.numRounds) {
+              this.playerManager.readyUpPlayers();
+              this.mainScene.scene.launch('roundcleanupscene', () => {
+                this.mainScene.scene.stop('roundcleanupscene');
+                this.playerManager.setNextStartingPlayer();
+                this.round++;
+                this.playRoundElfengold();
+              });
+            } else {
+              this.round++;
+              this.playRoundElfengold();
+            }
           });
         });
       });
