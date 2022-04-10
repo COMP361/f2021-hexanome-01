@@ -5,8 +5,8 @@ import PlayerManager from '../../managers/PlayerManager';
 import UIScene from '../UIScene';
 
 export default class AuctionScene extends Phaser.Scene {
-  public callback!: Function;
-  public bidManager: BidManager;
+  private callback!: Function;
+  private bidManager: BidManager;
   private currentBid: number;
 
   constructor() {
@@ -22,7 +22,7 @@ export default class AuctionScene extends Phaser.Scene {
     this.createAuction();
   }
 
-  private createUIBanner() {
+  private createUIBanner(): void {
     // Create text to notify that it is auction phase
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
@@ -52,7 +52,7 @@ export default class AuctionScene extends Phaser.Scene {
     container.add(drawCounterText);
   }
 
-  private createPassTurnButton() {
+  private createPassTurnButton(): void {
     // Create small button with the "next" icon
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
@@ -89,10 +89,13 @@ export default class AuctionScene extends Phaser.Scene {
             }
           });
         const totalPlayers = PlayerManager.getInstance().getPlayers().length;
+
+        // If everyone passed, other than highest bidder
+        // OR, if everyone passed
         if (
-          finishedPlayers === totalPlayers ||
           (finishedPlayers === totalPlayers - 1 &&
-            this.bidManager.getHighestBidPlayer())
+            this.bidManager.getHighestBidPlayer()) ||
+          finishedPlayers === totalPlayers
         ) {
           PlayerManager.getInstance()
             .getPlayers()
@@ -110,105 +113,130 @@ export default class AuctionScene extends Phaser.Scene {
       });
   }
 
-  private CreateBidCounter() {
-    const negBtn: Phaser.GameObjects.Text = this.add
-      .text(10, 6, '-', {
-        fontFamily: 'MedievalSharp',
-        fontSize: '30px',
-        color: 'white',
-      })
-      .setInteractive()
-      .on('pointerdown', () => {
-        negBtn.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        negBtn.clearTint();
-      })
-      .on('pointerup', () => {
-        negBtn.clearTint();
-        if (this.currentBid > 0) {
-          this.currentBid--;
+  private createBidCounter(): void {
+    // Only render interactive auction UI if you are current player
+    if (
+      PlayerManager.getInstance().getCurrentPlayer() ===
+      PlayerManager.getInstance().getLocalPlayer()
+    ) {
+      // Create minus sign auction button
+      const negBtn: Phaser.GameObjects.Text = this.add
+        .text(10, 7, '-', {
+          fontFamily: 'MedievalSharp',
+          fontSize: '30px',
+          color: 'white',
+        })
+        .setInteractive()
+        .on('pointerdown', () => {
+          negBtn.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          negBtn.clearTint();
+        })
+        .on('pointerup', () => {
+          negBtn.clearTint();
+          if (this.currentBid > 0) {
+            this.currentBid--;
+            bidText.setText(this.currentBid.toString());
+          }
+        });
+
+      // Create plus sign auction button
+      const posBtn: Phaser.GameObjects.Text = this.add
+        .text(40, 7, '+', {
+          fontFamily: 'MedievalSharp',
+          fontSize: '30px',
+          color: 'white',
+        })
+        .setInteractive()
+        .on('pointerdown', () => {
+          posBtn.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          posBtn.clearTint();
+        })
+        .on('pointerup', () => {
+          posBtn.clearTint();
+          this.currentBid++;
           bidText.setText(this.currentBid.toString());
-        }
-      });
-    const posBtn: Phaser.GameObjects.Text = this.add
-      .text(40, 6, '+', {
-        fontFamily: 'MedievalSharp',
-        fontSize: '30px',
-        color: 'white',
-      })
-      .setInteractive()
-      .on('pointerdown', () => {
-        posBtn.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        posBtn.clearTint();
-      })
-      .on('pointerup', () => {
-        posBtn.clearTint();
-        this.currentBid++;
-        bidText.setText(this.currentBid.toString());
-      });
-    const bidText: Phaser.GameObjects.Text = this.add.text(
-      80,
-      10,
-      this.currentBid.toString(),
-      {
-        fontFamily: 'MedievalSharp',
-        fontSize: '25px',
-        backgroundColor: 'white',
-        color: 'black',
-      }
-    );
-    const checkmark: Phaser.GameObjects.Image = this.add
-      .image(180, 25, 'checkmark')
-      .setScale(0.7);
-    const brownButton = this.add
-      .sprite(180, 25, 'brown-box')
-      .setInteractive()
-      .on('pointerdown', () => {
-        brownButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        brownButton.clearTint();
-      })
-      .on('pointerup', () => {
-        brownButton.clearTint();
-        this.confirmBid();
-      });
-    const totalTextWidth = bidText.width + negBtn.width + posBtn.width;
-    const brownPanel: Phaser.GameObjects.RenderTexture = this.add
-      .nineslice(0, 0, totalTextWidth + 80, 40, 'brown-panel', 24)
-      .setOrigin(0, 0);
-    const height = this.cameras.main.height;
-    const pos: Array<number> = UIScene.getResponsivePosition(this, 1200, 0);
-    const container: Phaser.GameObjects.Container = this.add.container(
-      pos[0],
-      height - 60
-    );
-    container.add(brownPanel);
-    container.add(negBtn);
-    container.add(bidText);
-    container.add(posBtn);
-    container.add(brownButton);
-    container.add(checkmark);
+        });
+
+      // Create gold coin placeholder for text
+      const goldCircle = this.add
+        .sprite(90, posBtn.getCenter().y + 2, 'gold-cirle')
+        .setDepth(3)
+        .setScale(1.2);
+
+      // Create big amount text
+      const bidText: Phaser.GameObjects.Text = this.add
+        .text(
+          goldCircle.getCenter().x,
+          goldCircle.getCenter().y - 1,
+          this.currentBid.toString(),
+          {
+            fontFamily: 'MedievalSharp',
+            fontSize: '25px',
+            color: 'black',
+          }
+        )
+        .setOrigin(0.5, 0.5)
+        .setDepth(4);
+
+      // Create confirm button
+      const checkmark: Phaser.GameObjects.Image = this.add
+        .image(180, 25, 'checkmark')
+        .setScale(0.7);
+      const brownButton = this.add
+        .sprite(180, 25, 'brown-box')
+        .setInteractive()
+        .on('pointerdown', () => {
+          brownButton.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          brownButton.clearTint();
+        })
+        .on('pointerup', () => {
+          brownButton.clearTint();
+          this.confirmBid();
+        });
+
+      // Create brown pannel for all auction UI elements from above
+      const brownPanel: Phaser.GameObjects.RenderTexture = this.add
+        .nineslice(0, 0, 120, 40, 'brown-panel', 24)
+        .setOrigin(0, 0);
+      const height = this.cameras.main.height;
+      const pos: Array<number> = UIScene.getResponsivePosition(this, 1200, 0);
+      const container: Phaser.GameObjects.Container = this.add.container(
+        pos[0],
+        height - 60
+      );
+
+      // Add all elements to Phaser container
+      container.add(brownPanel);
+      container.add(negBtn);
+      container.add(goldCircle);
+      container.add(bidText);
+      container.add(posBtn);
+      container.add(brownButton);
+      container.add(checkmark);
+    }
   }
 
-  private showCurrentBid() {
+  private showCurrentBid(): void {
     const highestBid = this.bidManager.getHighestBid();
     const highestBidder = this.bidManager.getHighestBidPlayer();
-    let text = 'There are currently \n no bidders.';
+    let text = 'There are currently \nno bidders.';
     if (highestBidder) {
       const playerColor = highestBidder.getBootColour();
       const bootString: string = playerColor.slice(0, playerColor.indexOf('-'));
-      text = `The highest bid is ${highestBid} \n by ${bootString}.`;
+      text = `The highest bid is ${highestBid} \nby ${bootString}.`;
     }
     const currentBidText: Phaser.GameObjects.Text = this.add.text(10, 6, text, {
       fontFamily: 'MedievalSharp',
-      fontSize: '25px',
+      fontSize: '40px',
     });
     const brownPanel: Phaser.GameObjects.RenderTexture = this.add
-      .nineslice(0, 0, currentBidText.width + 20, 70, 'brown-panel', 24)
+      .nineslice(0, 0, currentBidText.width + 20, 100, 'brown-panel', 24)
       .setOrigin(0, 0);
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
@@ -220,22 +248,52 @@ export default class AuctionScene extends Phaser.Scene {
     container.add(currentBidText);
   }
 
-  private displayItems() {
+  private displayItems(): void {
     const pos: Array<number> = UIScene.getResponsivePosition(this, 1450, 150);
     let previousHeight: integer = pos[1];
     // Render counters
     const items: Array<ItemUnit> = this.bidManager.getBidItems();
-    items.forEach(item => {
-      this.add.sprite(pos[0], previousHeight, item.getName()).setScale(0.25);
+
+    for (let i = 0; i < items.length; i++) {
+      const itemSprite = this.add
+        .sprite(pos[0], previousHeight, items[i].getName())
+        .setScale(0.25)
+        .setDepth(4)
+        .setTint(0x6b6b6b);
       previousHeight += 50;
-    });
+
+      if (i === this.bidManager.getCurrentItem()) {
+        itemSprite.clearTint();
+        const yellowPanel: Phaser.GameObjects.Sprite = this.add
+          .sprite(
+            itemSprite.getCenter().x - 34,
+            itemSprite.getCenter().y,
+            'yellow-slider'
+          )
+          .setDepth(3);
+
+        this.add
+          .text(
+            yellowPanel.getCenter().x - 3,
+            yellowPanel.getCenter().y - 1,
+            `${this.bidManager.getHighestBid()}`,
+            {
+              fontFamily: 'MedievalSharp',
+              fontSize: '19px',
+              color: 'black',
+            }
+          )
+          .setOrigin(0.5, 0.5)
+          .setDepth(4);
+      }
+    }
   }
 
   private renderPointer(): void {
     const currItem = this.bidManager.getCurrentItem();
     const pos = UIScene.getResponsivePosition(this, 1500, 150);
     const ypos = pos[1] + currItem * 50;
-    const image = this.add.image(pos[0] - 20, ypos, 'brown-gauntlet');
+    const image = this.add.image(pos[0] - 10, ypos, 'brown-gauntlet');
 
     image.rotation = -0.79;
 
@@ -249,23 +307,23 @@ export default class AuctionScene extends Phaser.Scene {
     });
   }
 
-  private confirmBid() {
+  private confirmBid(): void {
     if (this.currentBid > this.bidManager.getHighestBid()) {
       const playerManager = PlayerManager.getInstance();
       const currentPlayer = playerManager.getCurrentPlayer();
       this.bidManager.setBid(currentPlayer, this.currentBid);
-      playerManager.getCurrentPlayer();
+
       playerManager.setNextPlayer();
       this.scene.get('uiscene').scene.restart();
       this.scene.restart();
     }
   }
 
-  private createAuction() {
+  private createAuction(): void {
     this.bidManager.startBid();
     this.displayItems();
     this.renderPointer();
-    this.CreateBidCounter();
+    this.createBidCounter();
     this.showCurrentBid();
   }
 }
