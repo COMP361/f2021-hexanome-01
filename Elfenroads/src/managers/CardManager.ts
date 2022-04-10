@@ -237,6 +237,10 @@ export class CardManager {
     }
     // travel on land
     else {
+      // if the game version is Elfengold,
+      // we need to check if double spell is used and apply different set of logic
+      // otherwise we just use the same logic as Elfenland
+      // assuming witch card can be use in caravan to go pass obstacle
       if (isElfengold) {
         let hasDoubleSpell = false;
         const edgeItems = edge.getItems();
@@ -279,7 +283,16 @@ export class CardManager {
             if (obstacle === undefined) {
               if (cards.length !== 3) return false;
             } else {
-              if (cards.length !== 4) return false;
+              if (hasWitchCard) {
+                if (player.hasEnoughCoins(1)) {
+                  player.deductCoins(1);
+                  if (cards.length !== 3) return false;
+                } else {
+                  return false;
+                }
+              } else {
+                if (cards.length !== 4) return false;
+              }
             }
           } else {
             let numCardsRequired1 = travelcounter1
@@ -291,8 +304,16 @@ export class CardManager {
             if (numCardsRequired1 === undefined) return false;
             if (numCardsRequired2 === undefined) return false;
             if (obstacle !== undefined) {
-              numCardsRequired1 += 1;
-              numCardsRequired2 += 1;
+              if (hasWitchCard) {
+                if (player.hasEnoughCoins(1)) {
+                  player.deductCoins(1);
+                } else {
+                  return false;
+                }
+              } else {
+                numCardsRequired1 += 1;
+                numCardsRequired2 += 1;
+              }
             }
             for (const card of cards) {
               // check if the card type correspond to the counter type
@@ -337,17 +358,52 @@ export class CardManager {
         if (obstacle === undefined) {
           if (cards.length !== 3) return false;
         } else {
-          if (cards.length !== 4) return false;
+          if (hasWitchCard) {
+            if (player.hasEnoughCoins(1)) {
+              player.deductCoins(1);
+              if (cards.length !== 3) return false;
+            } else {
+              return false;
+            }
+          } else {
+            if (cards.length !== 4) return false;
+          }
         }
       } else {
         let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
         if (numCardsRequired === undefined) return false;
         if (obstacle !== undefined) {
-          numCardsRequired += 1;
+          if (hasWitchCard) {
+            if (player.hasEnoughCoins(1)) {
+              player.deductCoins(1);
+            } else {
+              return false;
+            }
+          } else {
+            numCardsRequired += 1;
+          }
         }
         if (cards.length !== numCardsRequired) return false;
       }
     }
     return true;
+  }
+
+  public isMagicFlight(player: Player, cards: Array<CardUnit>): boolean {
+    if (
+      GameManager.getInstance().getGameVariant() === GameVariant.elfengold &&
+      cards.length === 1
+    ) {
+      for (const card of cards) {
+        // check if a witch card is selected
+        if (card.getName() === TravelCardType.Witch) {
+          if (player.hasEnoughCoins(3)) {
+            player.deductCoins(3);
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 }

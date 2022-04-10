@@ -7,6 +7,8 @@ import EdgeMenu from '../../classes/EdgeMenu';
 import RoadManager from '../../managers/RoadManager';
 import {EdgeType} from '../../enums/EdgeType';
 import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
+import GameManager from '../../managers/GameManager';
+import {GameVariant} from '../../enums/GameVariant';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -248,7 +250,31 @@ export default class SelectionScene extends Phaser.Scene {
       }
       const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
       const edge = selectedEdge;
-      if (
+      if (CardManager.getInstance().isMagicFlight(currPlayer, selectedCards)) {
+        // remove all played cards sprite and update the player's hand
+        for (const card of selectedCardSprites) {
+          const c = CardManager.getInstance().getSelectedCard(
+            PlayerManager.getInstance().getCurrentPlayer(),
+            card.name
+          );
+          if (c === undefined) {
+            selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
+          } else {
+            card.destroy();
+            CardManager.getInstance().addToPile(
+              PlayerManager.getInstance().getCurrentPlayer(),
+              c
+            );
+          }
+        }
+        PlayerManager.getInstance().movePlayer(
+          PlayerManager.getInstance().getCurrentPlayer(),
+          edge,
+          false
+        );
+        currentScene.scene.get('uiscene').scene.restart();
+        currentScene.scene.restart();
+      } else if (
         edge !== undefined &&
         selectedCards.length > 0 &&
         CardManager.getInstance().isValidSelection(
@@ -275,7 +301,8 @@ export default class SelectionScene extends Phaser.Scene {
         }
         PlayerManager.getInstance().movePlayer(
           PlayerManager.getInstance().getCurrentPlayer(),
-          edge
+          edge,
+          GameManager.getInstance().getGameVariant() === GameVariant.elfengold
         );
         currentScene.scene.get('uiscene').scene.restart();
         currentScene.scene.restart();

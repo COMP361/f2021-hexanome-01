@@ -126,7 +126,7 @@ export default class PlayerManager {
     this.players[playerIndex].setSecretTown(dest);
   }
 
-  public movePlayer(player: Player, edge: Edge): void {
+  public movePlayer(player: Player, edge: Edge, withcoins: boolean): void {
     if (player !== this.getCurrentPlayer()) return;
 
     // Set newLocation depending on player's current town
@@ -141,7 +141,7 @@ export default class PlayerManager {
     this.players[this.currentPlayerIndex].setCurrentLocation(newLocation);
     this.addVisitedTown(this.currentPlayerIndex, newLocation);
     this.updatePlayerScore(player);
-    if (GameManager.getInstance().getGameVariant() === GameVariant.elfengold) {
+    if (withcoins) {
       if (
         edge.getItems().find(item => {
           return item instanceof GoldPiece;
