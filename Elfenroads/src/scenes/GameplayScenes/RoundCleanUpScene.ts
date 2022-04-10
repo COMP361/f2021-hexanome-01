@@ -10,9 +10,11 @@ import {
   Spell,
 } from '../../classes/ItemUnit';
 import Player from '../../classes/Player';
+import {GameVariant} from '../../enums/GameVariant';
 import {ObstacleType} from '../../enums/ObstacleType';
 import {SpellType} from '../../enums/SpellType';
 import {CardManager} from '../../managers/CardManager';
+import GameManager from '../../managers/GameManager';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
 import UIScene from '../UIScene';
@@ -84,16 +86,35 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         passTurnButton.clearTint();
         this.sound.play('pass');
         const player: Player = PlayerManager.getInstance().getCurrentPlayer();
-        const validItems: Array<ItemUnit> = player.getItems().filter(item => {
-          return !(item instanceof Obstacle);
-        });
-        let itemIndex = Math.floor(Math.random() * validItems.length);
-        for (const item of validItems) {
-          if (itemIndex !== 0) {
-            player.removeItem(item);
+        if (
+          GameManager.getInstance().getGameVariant() === GameVariant.elfenland
+        ) {
+          const validItems: Array<ItemUnit> = player.getItems().filter(item => {
+            return !(item instanceof Obstacle);
+          });
+          let itemIndex = Math.floor(Math.random() * validItems.length);
+          for (const item of validItems) {
+            if (itemIndex !== 0) {
+              player.removeItem(item);
+            }
+            itemIndex--;
           }
-          itemIndex--;
+        } else {
+          const playerItems = player.getItems();
+          let itemIndex = Math.floor(Math.random() * playerItems.length);
+          let itemIndex2 = itemIndex;
+          while (itemIndex === itemIndex2) {
+            itemIndex2 = Math.floor(Math.random() * playerItems.length);
+          }
+          for (const item of playerItems) {
+            if (itemIndex !== 0 && itemIndex2 !== 0) {
+              player.removeItem(item);
+            }
+            itemIndex--;
+            itemIndex2--;
+          }
         }
+
         player.setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
         this.scene.get('uiscene').scene.restart();
@@ -114,8 +135,9 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           this.scene.restart();
         }
       });
-
-    this.chooseCounterToKeep();
+    if (GameManager.getInstance().getGameVariant() === GameVariant.elfenland) {
+      this.chooseCounterToKeep();
+    }
   }
 
   chooseCounterToKeep() {
