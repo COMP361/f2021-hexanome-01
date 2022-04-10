@@ -7,6 +7,8 @@ import EdgeMenu from '../../classes/EdgeMenu';
 import RoadManager from '../../managers/RoadManager';
 import {EdgeType} from '../../enums/EdgeType';
 import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
+import SocketManager from '../../managers/SocketManager';
+import ItemManager from '../../managers/ItemManager';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -33,6 +35,7 @@ export default class SelectionScene extends Phaser.Scene {
       this.makeCardsInteractive();
       this.makeEdgesInteractive();
     }
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   // Button to skip turn
@@ -75,9 +78,18 @@ export default class SelectionScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.callback();
+          SocketManager.getInstance().emitStatusChange({
+            nextPhase: true,
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       });
   }
@@ -281,9 +293,11 @@ export default class SelectionScene extends Phaser.Scene {
           PlayerManager.getInstance().getCurrentPlayer(),
           edge
         );
-        currentScene.scene.get('uiscene').scene.restart();
-        console.log('YOOOOO ITS WORKING!');
-        currentScene.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+        });
       } else {
         for (let i = 0; i < selectedCardSprites.length; i++) {
           // remove selection of card
@@ -312,11 +326,16 @@ export default class SelectionScene extends Phaser.Scene {
             .on('pointerup', () => {
               card.clearTint();
             });
-          currentScene.scene.get('uiscene').scene.restart();
-          console.log('Selection not valid');
-          currentScene.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       }
     }
+  }
+  public nextPhase(): void {
+    this.callback();
   }
 }

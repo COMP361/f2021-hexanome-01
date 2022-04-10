@@ -51,4 +51,7 @@ export default class Edge {
   public getItems(): Array<ItemUnit> {
     return this.items;
   }
+  public setItems(items: Array<ItemUnit>): void {
+    this.items = items;
+  }
 }

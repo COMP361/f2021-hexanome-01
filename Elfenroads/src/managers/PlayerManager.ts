@@ -133,4 +133,14 @@ export default class PlayerManager {
 
     console.log(currentPlayer.getVisitedTowns());
   }
+
+  public update(manager: any): void {
+    this.setCurrentPlayerIndex(manager.currentPlayerIndex);
+    this.players.forEach(player => {
+      const updatedPlayerObject = manager.players.find(
+        (newPlayer: any) => newPlayer.bootColour === player.getBootColour()
+      );
+      player.update(updatedPlayerObject);
+    });
+  }
 }

@@ -8,17 +8,20 @@ export abstract class ItemUnit {
   private allowedEdges: Array<EdgeType>;
   private needsCounter: boolean;
   private isHidden: boolean;
+  private type: string;
 
   constructor(
     name: string,
     allowedEdges: Array<EdgeType>,
     needsCounter: boolean,
-    isHidden = false
+    isHidden = false,
+    type = ''
   ) {
     this.name = name;
     this.allowedEdges = allowedEdges;
     this.needsCounter = needsCounter;
     this.isHidden = isHidden;
+    this.type = type;
   }
 
   public getName(): string {
@@ -48,7 +51,7 @@ export class Spell extends ItemUnit {
     allowedEdges: Array<EdgeType>,
     isHidden = false
   ) {
-    super(spellType, allowedEdges, true, isHidden);
+    super(spellType, allowedEdges, true, isHidden, 'spell');
   }
 }
 
@@ -60,7 +63,7 @@ export class Counter extends ItemUnit {
     cardsNeeded: Map<EdgeType, number>,
     isHidden = false
   ) {
-    super(counterType, allowedEdges, false, isHidden);
+    super(counterType, allowedEdges, false, isHidden, 'counter');
     this.cardsNeeded = cardsNeeded;
   }
 
@@ -71,7 +74,7 @@ export class Counter extends ItemUnit {
 
 export class GoldPiece extends ItemUnit {
   constructor(allowedEdges: Array<EdgeType>, isHidden = false) {
-    super('gold-piece', allowedEdges, true, isHidden);
+    super('gold-piece', allowedEdges, true, isHidden, 'gold-piece');
   }
 }
 
@@ -82,6 +85,6 @@ export class Obstacle extends ItemUnit {
     needsCounter: boolean,
     isHidden = false
   ) {
-    super(obstacleType, allowedEdges, needsCounter, isHidden);
+    super(obstacleType, allowedEdges, needsCounter, isHidden, 'obstacle');
   }
 }

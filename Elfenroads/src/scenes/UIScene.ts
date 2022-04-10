@@ -11,6 +11,7 @@ import {GameVariant} from '../enums/GameVariant';
 import GameManager from '../managers/GameManager';
 import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
+import SocketManager from '../managers/SocketManager';
 
 export default class UIScene extends Phaser.Scene {
   private width = 0;
@@ -48,6 +49,8 @@ export default class UIScene extends Phaser.Scene {
     if (gameVariant === GameVariant.elfengold) {
       this.createTownGoldToggle();
     }
+
+    SocketManager.getInstance().setUI(this.scene);
   }
 
   public static getResponsivePosition(
