@@ -101,18 +101,17 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           }
         } else {
           const playerItems = player.getItems();
-          let itemIndex = Math.floor(Math.random() * playerItems.length);
-          let itemIndex2 = itemIndex;
+          const itemIndex =
+            playerItems[Math.floor(Math.random() * playerItems.length)];
+          let itemIndex2 =
+            playerItems[Math.floor(Math.random() * playerItems.length)];
           while (itemIndex === itemIndex2) {
-            itemIndex2 = Math.floor(Math.random() * playerItems.length);
+            itemIndex2 =
+              playerItems[Math.floor(Math.random() * playerItems.length)];
           }
-          for (const item of playerItems) {
-            if (itemIndex !== 0 && itemIndex2 !== 0) {
-              player.removeItem(item);
-            }
-            itemIndex--;
-            itemIndex2--;
-          }
+          player.clearItems();
+          player.addItem(itemIndex);
+          player.addItem(itemIndex2);
         }
 
         player.setPassedTurn(true);
@@ -135,29 +134,31 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           this.scene.restart();
         }
       });
-    if (GameManager.getInstance().getGameVariant() === GameVariant.elfenland) {
-      this.chooseCounterToKeep();
-    }
+    this.chooseCounterToKeep();
   }
 
   chooseCounterToKeep() {
+    this.selectedItem = null;
     const graphics = this.add.graphics();
     if (
       PlayerManager.getInstance().getCurrentPlayer() ===
       PlayerManager.getInstance().getLocalPlayer()
     ) {
       UIScene.itemSprites.forEach(item => {
-        console.log(item);
         item
           .setInteractive()
           .on('pointerdown', () => {
             item.setTint(0xd3d3d3);
           })
-          .on('pointerout', () => {
-            item.clearTint();
-          })
           .on('pointerup', () => {
-            this.selectItem(item, graphics);
+            if (
+              GameManager.getInstance().getGameVariant() ===
+              GameVariant.elfenland
+            ) {
+              this.selectItem(item, graphics);
+            } else {
+              this.selectTwoItems(item, graphics);
+            }
           });
       });
     }
@@ -180,6 +181,48 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           player.removeItem(item);
         }
       }
+      player.setPassedTurn(true);
+      PlayerManager.getInstance().setNextPlayer();
+      this.scene.get('uiscene').scene.restart();
+      let finishedPlayers: integer = 0;
+      PlayerManager.getInstance()
+        .getPlayers()
+        .forEach(player => {
+          if (player.getPassedTurn() === true) {
+            finishedPlayers++;
+          }
+        });
+
+      if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
+        this.cb();
+      } else {
+        this.scene.restart();
+      }
+    }
+  }
+
+  selectTwoItems(
+    item: Phaser.GameObjects.Sprite,
+    graphics: GameObjects.Graphics
+  ) {
+    graphics.clear();
+    const playerItem = item.getData('item');
+    if (this.selectedItem === null) {
+      item.setTint(0xd3d3d3);
+      this.selectedItem = playerItem;
+      this.selectedItemSprite = item;
+    } else if (this.selectedItem === playerItem) {
+      item.clearTint();
+      this.selectedItem = null;
+    } else {
+      item.clearTint();
+      this.selectedItemSprite.clearTint();
+      const player: Player = PlayerManager.getInstance().getCurrentPlayer();
+      const playerItems: Array<ItemUnit> = player.getItems();
+      console.log(playerItems);
+      player.clearItems();
+      player.addItem(playerItem);
+      player.addItem(this.selectedItem);
       player.setPassedTurn(true);
       PlayerManager.getInstance().setNextPlayer();
       this.scene.get('uiscene').scene.restart();
