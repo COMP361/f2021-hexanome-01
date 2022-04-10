@@ -11,6 +11,14 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 
+const demapItem = (item: any) => {
+  const newItem = {...item};
+  if (item instanceof Counter) {
+    newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
+  }
+  return newItem;
+};
+
 export default class SocketManager {
   private static instance: SocketManager;
   private socket: any;
@@ -83,7 +91,7 @@ export default class SocketManager {
       }
 
       // We always restart the UI after receiving a state update.
-      this.getUI()?.restart();
+      this.getUI().restart();
 
       // If we need to move to the next phase, call the scene callback,
       if (managers.nextPhase) {
@@ -130,13 +138,7 @@ export default class SocketManager {
       newPlayerManager.players = data.PlayerManager.players.map(
         (player: any) => {
           const newPlayer = {...player};
-          newPlayer.myItems = player.myItems.map((item: any) => {
-            const newItem = {...item};
-            if (item instanceof Counter) {
-              newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
-            }
-            return newItem;
-          });
+          newPlayer.myItems = player.myItems.map(demapItem);
           return newPlayer;
         }
       );
@@ -144,23 +146,9 @@ export default class SocketManager {
     }
     if (data.ItemManager) {
       const newItemManager = {...data.ItemManager};
-      newItemManager.itemPile = [
-        ...data.ItemManager.itemPile.map((item: any) => {
-          const newItem = {...item};
-          if (item instanceof Counter) {
-            newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
-          }
-          return newItem;
-        }),
-      ];
+      newItemManager.itemPile = [...data.ItemManager.itemPile.map(demapItem)];
       newItemManager.faceUpPile = [
-        ...data.ItemManager.faceUpPile.map((item: any) => {
-          const newItem = {...item};
-          if (item instanceof Counter) {
-            newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
-          }
-          return newItem;
-        }),
+        ...data.ItemManager.faceUpPile.map(demapItem),
       ];
       data.ItemManager = newItemManager;
     }
@@ -169,18 +157,13 @@ export default class SocketManager {
       newRoadManager.allEdges = [
         ...data.RoadManager.allEdges.map((edge: any) => {
           const newEdge = {...edge};
-          newEdge.items = edge.items.map((item: any) => {
-            const newItem = {...item};
-            if (item instanceof Counter) {
-              newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
-            }
-            return newItem;
-          });
+          newEdge.items = edge.items.map(demapItem);
           return newEdge;
         }),
       ];
       data.RoadManager = newRoadManager;
     }
+    // Send the cleaned managers to all active users
     this.socket.emit('statusChange', {
       ...this.headers,
       data: {

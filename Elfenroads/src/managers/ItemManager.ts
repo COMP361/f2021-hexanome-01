@@ -277,7 +277,6 @@ export default class ItemManager {
 
   update(manager: any): void {
     this.itemPile = manager.itemPile.map((item: any) => {
-      console.log(item);
       if (item.type === 'spell') {
         return new Spell(item.name, item.allowedEdges, item.isHidden);
       } else if (item.type === 'counter') {
@@ -319,6 +318,5 @@ export default class ItemManager {
         );
       }
     });
-    console.log(this.itemPile);
   }
 }

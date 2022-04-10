@@ -161,7 +161,7 @@ export default class DrawCountersScene extends Phaser.Scene {
             i
           );
           PlayerManager.getInstance().setNextPlayer();
-          this.scene.get('uiscene').scene.restart();
+          // this.scene.get('uiscene').scene.restart();
 
           let finishedPlayers: integer = 0;
           PlayerManager.getInstance()
@@ -232,7 +232,7 @@ export default class DrawCountersScene extends Phaser.Scene {
           PlayerManager.getInstance()
             .getPlayers()
             .forEach(player => {
-              if (player.getItems().length === 4) {
+              if (player.getItems().length === 5) {
                 finishedPlayers++;
               }
             });
@@ -240,9 +240,20 @@ export default class DrawCountersScene extends Phaser.Scene {
           if (
             finishedPlayers === PlayerManager.getInstance().getPlayers().length
           ) {
-            this.callback();
+            SocketManager.getInstance().emitStatusChange({
+              nextPhase: true,
+              CardManager: CardManager.getInstance(),
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+            });
+            // this.callback();
           } else {
-            this.scene.restart();
+            SocketManager.getInstance().emitStatusChange({
+              CardManager: CardManager.getInstance(),
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+            });
+            // this.scene.restart();
           }
         });
     }

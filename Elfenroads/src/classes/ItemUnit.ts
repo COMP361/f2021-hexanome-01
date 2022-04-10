@@ -16,7 +16,7 @@ export abstract class ItemUnit {
     allowedEdges: Array<EdgeType>,
     needsCounter: boolean,
     isHidden = false,
-    type = ''
+    type: string
   ) {
     this.name = name;
     this.allowedEdges = allowedEdges;
@@ -69,10 +69,22 @@ export class Counter extends ItemUnit {
       this.cardsNeeded = cardsNeeded;
     } else {
       this.cardsNeeded = new Map(
-        Object.entries(cardsNeeded).map(entry => [
-          EdgeType[entry[0] as keyof typeof EdgeType],
-          Number(entry[1]),
-        ])
+        Object.entries(cardsNeeded).map(entry => {
+          return [
+            entry[0] === 'Plain' || entry[0] === '0'
+              ? EdgeType.Plain
+              : entry[0] === 'Wood' || entry[0] === '1'
+              ? EdgeType.Wood
+              : entry[0] === 'Desert' || entry[0] === '2'
+              ? EdgeType.Desert
+              : entry[0] === 'Mountain' || entry[0] === '3'
+              ? EdgeType.Mountain
+              : entry[0] === 'River' || entry[0] === '4'
+              ? EdgeType.River
+              : EdgeType.Lake,
+            Number(entry[1]),
+          ];
+        })
       );
     }
   }

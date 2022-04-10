@@ -49,7 +49,7 @@ export default class GameManager {
     this.initialized = false;
 
     // hard coded this for now
-    this.gameVariant = GameVariant.elfengold;
+    this.gameVariant = GameVariant.elfenland;
     this.numRounds = 3;
     this.round = 1;
 
@@ -74,7 +74,7 @@ export default class GameManager {
   /**
    * SIMULATION OF GAME
    */
-   public playGame(mainScene: Phaser.Scene): void {
+  public playGame(mainScene: Phaser.Scene): void {
     // Step 0: Initialize the main Phaser.Scene
     this.mainScene = mainScene;
 
@@ -126,6 +126,7 @@ export default class GameManager {
       .getSocket()
       .on('statusChange', () => {
         if (!this.initialized) {
+          this.initialized = true;
           // Phase 3: Draw additional Transportation counters
           this.playerManager.readyUpPlayers();
           this.mainScene.scene.launch('drawcountersscene', () => {
@@ -180,6 +181,7 @@ export default class GameManager {
       .getSocket()
       .on('statusChange', () => {
         if (!this.initialized) {
+          this.initialized = true;
           // Phase 3: Draw additional Transportation counters
           this.playerManager.readyUpPlayers();
           this.mainScene.scene.launch('drawcountersscene', () => {
