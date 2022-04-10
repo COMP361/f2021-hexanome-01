@@ -1,40 +1,38 @@
 import {GameObjects} from 'phaser';
-import {CardUnit} from '../../classes/CardUnit';
-import Edge from '../../classes/Edge';
-import EdgeMenu from '../../classes/EdgeMenu';
-import {
-  Counter,
-  GoldPiece,
-  ItemUnit,
-  Obstacle,
-  Spell,
-} from '../../classes/ItemUnit';
+import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 import Player from '../../classes/Player';
 import {GameVariant} from '../../enums/GameVariant';
-import {ObstacleType} from '../../enums/ObstacleType';
-import {SpellType} from '../../enums/SpellType';
-import {CardManager} from '../../managers/CardManager';
 import GameManager from '../../managers/GameManager';
 import PlayerManager from '../../managers/PlayerManager';
-import RoadManager from '../../managers/RoadManager';
 import UIScene from '../UIScene';
 
 export default class RoundCleanUpScene extends Phaser.Scene {
-  public cb: any;
-  selectedItem: ItemUnit | null = null;
-  selectedItemSprite!: Phaser.GameObjects.Sprite;
+  private callback!: Function;
+  private selectedItem: ItemUnit | null = null;
+  private selectedItemSprite!: Phaser.GameObjects.Sprite;
 
   constructor() {
     super('roundcleanupscene');
   }
 
-  create(cb: any) {
-    this.cb = cb;
+  create(callback: Function) {
+    this.callback = callback;
+    this.createUIBanner();
+    this.passTurnButton();
+    this.chooseCounterToKeep();
+  }
+
+  private createUIBanner(): void {
+    let bannerText = 'To Choose Counter To Keep';
+
+    if (GameManager.getInstance().getGameVariant() === GameVariant.elfengold) {
+      bannerText = 'To Choose Two Counters To Keep';
+    }
 
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
       6,
-      'To Choose Counter To Keep',
+      `${bannerText}`,
       {
         fontFamily: 'MedievalSharp',
         fontSize: '30px',
@@ -57,7 +55,9 @@ export default class RoundCleanUpScene extends Phaser.Scene {
     // Render the brown panel and text
     container.add(brownPanel);
     container.add(drawCounterText);
+  }
 
+  private passTurnButton(): void {
     /**
      * SHOWCASE FOR CHANGING PLAYER TURN
      */
@@ -129,15 +129,14 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.cb();
+          this.callback();
         } else {
           this.scene.restart();
         }
       });
-    this.chooseCounterToKeep();
   }
 
-  chooseCounterToKeep() {
+  private chooseCounterToKeep(): void {
     this.selectedItem = null;
     const graphics = this.add.graphics();
     if (
@@ -155,7 +154,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
               GameManager.getInstance().getGameVariant() ===
               GameVariant.elfenland
             ) {
-              this.selectItem(item, graphics);
+              this.selectOneItem(item, graphics);
             } else {
               this.selectTwoItems(item, graphics);
             }
@@ -164,7 +163,10 @@ export default class RoundCleanUpScene extends Phaser.Scene {
     }
   }
 
-  selectItem(item: Phaser.GameObjects.Sprite, graphics: GameObjects.Graphics) {
+  private selectOneItem(
+    item: Phaser.GameObjects.Sprite,
+    graphics: GameObjects.Graphics
+  ): void {
     item.clearTint();
     graphics.clear();
     const playerItem = item.getData('item');
@@ -194,17 +196,17 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
-        this.cb();
+        this.callback();
       } else {
         this.scene.restart();
       }
     }
   }
 
-  selectTwoItems(
+  private selectTwoItems(
     item: Phaser.GameObjects.Sprite,
     graphics: GameObjects.Graphics
-  ) {
+  ): void {
     graphics.clear();
     const playerItem = item.getData('item');
     if (this.selectedItem === null) {
@@ -236,7 +238,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
-        this.cb();
+        this.callback();
       } else {
         this.scene.restart();
       }

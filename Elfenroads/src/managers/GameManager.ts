@@ -144,14 +144,6 @@ export default class GameManager {
               this.playerManager.setNextStartingPlayer();
               this.round++;
               this.playRoundElfenland();
-              for (const player of PlayerManager.getInstance().getPlayers()) {
-                // Deal up to 8 cards
-                while (player.getCards().length < 8) {
-                  const randomCard: CardUnit =
-                    CardManager.getInstance().getRandomCard();
-                  player.addCard(randomCard);
-                }
-              }
             });
           } else {
             this.round++;
