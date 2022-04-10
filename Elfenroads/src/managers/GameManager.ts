@@ -61,7 +61,7 @@ export default class GameManager {
     this.initialized = false;
 
     // hard coded this for now
-    this.gameVariant = GameVariant.elfengold;
+    this.gameVariant = GameVariant.elfenland;
     this.numRounds = 3;
     this.round = 1;
   }
@@ -137,10 +137,26 @@ export default class GameManager {
           this.mainScene.scene.stop('selectionscene');
 
           // Phase 6: Finish the Round
-          // @TODO: Still missing round cleanup function/scene.
-          this.playerManager.setNextStartingPlayer();
-          this.round++;
-          this.playRoundElfenland();
+          if (this.round < this.numRounds) {
+            this.playerManager.readyUpPlayers();
+            this.mainScene.scene.launch('roundcleanupscene', () => {
+              this.mainScene.scene.stop('roundcleanupscene');
+              this.playerManager.setNextStartingPlayer();
+              this.round++;
+              this.playRoundElfenland();
+              for (const player of PlayerManager.getInstance().getPlayers()) {
+                // Deal up to 8 cards
+                while (player.getCards().length < 8) {
+                  const randomCard: CardUnit =
+                    CardManager.getInstance().getRandomCard();
+                  player.addCard(randomCard);
+                }
+              }
+            });
+          } else {
+            this.round++;
+            this.playRoundElfenland();
+          }
         });
       });
     });
