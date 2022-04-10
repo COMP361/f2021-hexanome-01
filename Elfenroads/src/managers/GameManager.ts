@@ -180,30 +180,34 @@ export default class GameManager {
       this.mainScene.scene.stop('drawcountersscene');
 
       // Phase 4: Auction
-
-      // Phase 5: Plan the Travel Routes
       this.playerManager.readyUpPlayers(); // Reinitialize players turn
-      this.mainScene.scene.launch('planroutescene', () => {
-        this.mainScene.scene.stop('planroutescene');
+      this.mainScene.scene.launch('auctionscene', () => {
+        this.mainScene.scene.stop('auctionscene');
 
-        // Phase 6: Move the Elf Boot
+        // Phase 5: Plan the Travel Routes
         this.playerManager.readyUpPlayers(); // Reinitialize players turn
-        this.mainScene.scene.launch('selectionscene', () => {
-          this.mainScene.scene.stop('selectionscene');
+        this.mainScene.scene.launch('planroutescene', () => {
+          this.mainScene.scene.stop('planroutescene');
 
-          // Phase 6: Finish the Round
-          if (this.round < this.numRounds) {
-            this.playerManager.readyUpPlayers();
-            this.mainScene.scene.launch('roundcleanupscene', () => {
-              this.mainScene.scene.stop('roundcleanupscene');
-              this.playerManager.setNextStartingPlayer();
+          // Phase 6: Move the Elf Boot
+          this.playerManager.readyUpPlayers(); // Reinitialize players turn
+          this.mainScene.scene.launch('selectionscene', () => {
+            this.mainScene.scene.stop('selectionscene');
+
+            // Phase 7: Finish the Round
+            if (this.round < this.numRounds) {
+              this.playerManager.readyUpPlayers();
+              this.mainScene.scene.launch('roundcleanupscene', () => {
+                this.mainScene.scene.stop('roundcleanupscene');
+                this.playerManager.setNextStartingPlayer();
+                this.round++;
+                this.playRoundElfengold();
+              });
+            } else {
               this.round++;
               this.playRoundElfengold();
-            });
-          } else {
-            this.round++;
-            this.playRoundElfengold();
-          }
+            }
+          });
         });
       });
     });
