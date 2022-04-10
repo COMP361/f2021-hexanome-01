@@ -116,7 +116,14 @@ export class CardManager {
   ): boolean {
     const isElfengold: boolean =
       GameManager.getInstance().getGameVariant() === GameVariant.elfengold;
-    // only for Elfenland
+    let hasWitchCard = false;
+    for (const card of cards) {
+      // check if a witch card is selected
+      if (card.getName() === TravelCardType.Witch) {
+        hasWitchCard = true;
+      }
+    }
+    // check if it is a normal move boot
     if (
       edge.getDestTown() !== player.getCurrentLocation() &&
       edge.getSrcTown() !== player.getCurrentLocation()
@@ -125,15 +132,18 @@ export class CardManager {
     const edgeType = edge.getType();
     // travel on river
     if (edgeType === EdgeType.River) {
-      // check if all cards are raft card
-      for (const card of cards) {
-        // return false if a card is not raft card
-        if (card.getName() !== TravelCardType.Raft) {
-          return false;
-        }
-      }
       let numcards = cards.length;
       if (isElfengold) {
+        // check if all cards are raft card or witch card
+        for (const card of cards) {
+          // return false if a card is not raft card and not a witch card
+          if (
+            card.getName() !== TravelCardType.Raft &&
+            card.getName() !== TravelCardType.Witch
+          ) {
+            return false;
+          }
+        }
         const edgeItems = edge.getItems();
         let obstacle: Obstacle | undefined = undefined;
         for (const item of edgeItems) {
@@ -145,7 +155,23 @@ export class CardManager {
           }
         }
         if (obstacle !== undefined) {
-          numcards--;
+          if (hasWitchCard) {
+            if (player.hasEnoughCoins(1)) {
+              player.deductCoins(1);
+            } else {
+              return false;
+            }
+          } else {
+            numcards--;
+          }
+        }
+      } else {
+        // check if all cards are raft card
+        for (const card of cards) {
+          // return false if a card is not raft card
+          if (card.getName() !== TravelCardType.Raft) {
+            return false;
+          }
         }
       }
 
@@ -163,15 +189,18 @@ export class CardManager {
     }
     // travel on lake
     else if (edgeType === EdgeType.Lake) {
-      // check if all cards are raft card
-      for (const card of cards) {
-        // return false if a card is not raft card
-        if (card.getName() !== TravelCardType.Raft) {
-          return false;
-        }
-      }
       let numcards = cards.length;
       if (isElfengold) {
+        // check if all cards are raft card or witch card
+        for (const card of cards) {
+          // return false if a card is not raft card and not a witch card
+          if (
+            card.getName() !== TravelCardType.Raft &&
+            card.getName() !== TravelCardType.Witch
+          ) {
+            return false;
+          }
+        }
         const edgeItems = edge.getItems();
         let obstacle: Obstacle | undefined = undefined;
         for (const item of edgeItems) {
@@ -183,7 +212,23 @@ export class CardManager {
           }
         }
         if (obstacle !== undefined) {
-          numcards--;
+          if (hasWitchCard) {
+            if (player.hasEnoughCoins(1)) {
+              player.deductCoins(1);
+            } else {
+              return false;
+            }
+          } else {
+            numcards--;
+          }
+        }
+      } else {
+        // check if all cards are raft card
+        for (const card of cards) {
+          // return false if a card is not raft card
+          if (card.getName() !== TravelCardType.Raft) {
+            return false;
+          }
         }
       }
       if (numcards !== 2) {

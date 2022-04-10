@@ -130,6 +130,14 @@ export default class Player {
     this.goldToAdd = 0;
   }
 
+  public hasEnoughCoins(pAmount: integer): boolean {
+    return this.gold >= pAmount;
+  }
+
+  public deductCoins(pAmount: integer): void {
+    this.gold -= pAmount;
+  }
+
   public setScore(pScore: integer): void {
     this.score = pScore;
   }
