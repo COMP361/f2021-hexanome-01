@@ -99,6 +99,8 @@ export default class PlayerManager {
   public setCurrentTown(playerIndex: number, town: Town): void {
     const tempPlayer: Player = this.players[playerIndex];
     tempPlayer.setCurrentLocation(town);
+    this.addVisitedTown(playerIndex, town);
+    this.updatePlayerScore(tempPlayer);
   }
 
   public addVisitedTown(playerIndex: number, town: Town): void {

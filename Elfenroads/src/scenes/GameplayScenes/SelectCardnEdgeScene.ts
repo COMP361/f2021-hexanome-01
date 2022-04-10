@@ -1,6 +1,6 @@
 import UIScene from '../UIScene';
 import {CardManager} from '../../managers/CardManager';
-import {CardUnit} from '../../classes/CardUnit';
+import {CardUnit, MagicSpellCard} from '../../classes/CardUnit';
 import Edge from '../../classes/Edge';
 import PlayerManager from '../../managers/PlayerManager';
 import EdgeMenu from '../../classes/EdgeMenu';
@@ -9,11 +9,13 @@ import {EdgeType} from '../../enums/EdgeType';
 import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 import GameManager from '../../managers/GameManager';
 import {GameVariant} from '../../enums/GameVariant';
+import Town from '../../classes/Town';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
   private selectedEdge!: Edge;
   private edgeMenus!: Array<EdgeMenu>;
+  private selectedTown!: Town;
   private callback!: Function;
 
   constructor() {
@@ -115,6 +117,156 @@ export default class SelectionScene extends Phaser.Scene {
     container.add(selectCardnEdgeText);
   }
 
+  private chooseMagicFlight(): void {
+    // Create small button with the "next" icon
+    const width = this.cameras.main.width;
+    const height = this.cameras.main.height;
+    const magicFlightButton = this.add.sprite(
+      width - 100,
+      height - 30,
+      'brown-box'
+    );
+    this.add
+      .image(magicFlightButton.x, magicFlightButton.y, 'witch-flight')
+      .setScale(0.1);
+
+    // Add interactive pointer options for passTurnButton
+    // After click, currentPlayer is updated via playerManager
+    magicFlightButton
+      .setInteractive()
+      .on('pointerdown', () => {
+        magicFlightButton.setTint(0xd3d3d3);
+      })
+      .on('pointerout', () => {
+        magicFlightButton.clearTint();
+      })
+      .on('pointerup', () => {
+        magicFlightButton.clearTint();
+        this.makeTownsInteractive();
+      });
+  }
+
+  private makeTownsInteractive(): void {
+    RoadManager.getInstance()
+      .getTowns()
+      .forEach(town => {
+        const pos = UIScene.getResponsivePosition(
+          this,
+          town.getPosition()[0],
+          town.getPosition()[1]
+        );
+        const confirmBtn = this.add
+          .image(pos[0], pos[1], 'green-box')
+          .setScale(0.7);
+        confirmBtn
+          .setInteractive()
+          .on('pointerdown', () => {
+            confirmBtn.setTint(0xd3d3d3);
+          })
+          .on('pointerout', () => {
+            confirmBtn.clearTint();
+          })
+          .on('pointerup', () => {
+            confirmBtn.clearTint();
+            this.selectedTown = town;
+            this.attemptMagicFlight(
+              this.selectedCardSprites,
+              this.selectedTown,
+              this
+            );
+          });
+      });
+  }
+
+  private attemptMagicFlight(
+    selectedCardSprites: Array<Phaser.GameObjects.Sprite>,
+    selectedTown: Town,
+    currentScene: Phaser.Scene
+  ): void {
+    let selectedCard: CardUnit | undefined = undefined;
+    if (selectedCardSprites.length > 0) {
+      // check if each card sprites are valid and collect each cards
+      for (const card of selectedCardSprites) {
+        const c = CardManager.getInstance().getSelectedCard(
+          PlayerManager.getInstance().getCurrentPlayer(),
+          card.name
+        );
+        if (c === undefined) {
+          card.y += 50;
+          selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
+        } else {
+          card.removeInteractive();
+          if (c instanceof MagicSpellCard) {
+            selectedCard = c;
+          }
+        }
+      }
+      const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
+      const town = selectedTown;
+      if (
+        town !== undefined &&
+        selectedCard !== undefined &&
+        CardManager.getInstance().isMagicFlight(currPlayer, selectedCard)
+      ) {
+        // remove played witch cards sprite and update the player's hand
+        for (const card of selectedCardSprites) {
+          const c = CardManager.getInstance().getSelectedCard(
+            PlayerManager.getInstance().getCurrentPlayer(),
+            card.name
+          );
+          if (c === undefined) {
+            selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
+          } else {
+            if (c instanceof MagicSpellCard) {
+              card.destroy();
+              CardManager.getInstance().addToPile(
+                PlayerManager.getInstance().getCurrentPlayer(),
+                c
+              );
+            }
+          }
+        }
+        PlayerManager.getInstance().setCurrentTown(
+          PlayerManager.getInstance().getCurrentPlayerIndex(),
+          town
+        );
+        currentScene.scene.get('uiscene').scene.restart();
+        currentScene.scene.restart();
+      } else {
+        for (let i = 0; i < selectedCardSprites.length; i++) {
+          // remove selection of card
+          const card = selectedCardSprites[i];
+          card.y += 50;
+          selectedCardSprites.splice(i, 1);
+          // set the card be interactive again
+          card
+            .setInteractive()
+            .on('pointerover', () => {
+              card.setTint(0xd3d3d3);
+            })
+            .on('pointerdown', () => {
+              const index: number = this.selectedCardSprites.indexOf(card);
+              if (index === -1) {
+                card.y -= 50;
+                this.selectedCardSprites.push(card);
+              } else {
+                card.y += 50;
+                this.selectedCardSprites.splice(index, 1);
+              }
+            })
+            .on('pointerout', () => {
+              card.clearTint();
+            })
+            .on('pointerup', () => {
+              card.clearTint();
+            });
+          currentScene.scene.get('uiscene').scene.restart();
+          currentScene.scene.restart();
+        }
+      }
+    }
+  }
+
   // Sets interactive options for CurrentPlayer's Cards.
   private makeCardsInteractive(): void {
     // make every cards in hand selectable
@@ -130,6 +282,18 @@ export default class SelectionScene extends Phaser.Scene {
           if (index === -1) {
             cardSprite.y -= 50;
             this.selectedCardSprites.push(cardSprite);
+            const c = CardManager.getInstance().getSelectedCard(
+              PlayerManager.getInstance().getCurrentPlayer(),
+              cardSprite.name
+            );
+            if (c === undefined) {
+              cardSprite.y += 50;
+              this.selectedCardSprites.splice(index, 1);
+            } else {
+              if (c instanceof MagicSpellCard) {
+                this.chooseMagicFlight();
+              }
+            }
           } else {
             cardSprite.y += 50;
             this.selectedCardSprites.splice(index, 1);
@@ -250,31 +414,7 @@ export default class SelectionScene extends Phaser.Scene {
       }
       const currPlayer = PlayerManager.getInstance().getCurrentPlayer();
       const edge = selectedEdge;
-      if (CardManager.getInstance().isMagicFlight(currPlayer, selectedCards)) {
-        // remove all played cards sprite and update the player's hand
-        for (const card of selectedCardSprites) {
-          const c = CardManager.getInstance().getSelectedCard(
-            PlayerManager.getInstance().getCurrentPlayer(),
-            card.name
-          );
-          if (c === undefined) {
-            selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
-          } else {
-            card.destroy();
-            CardManager.getInstance().addToPile(
-              PlayerManager.getInstance().getCurrentPlayer(),
-              c
-            );
-          }
-        }
-        PlayerManager.getInstance().movePlayer(
-          PlayerManager.getInstance().getCurrentPlayer(),
-          edge,
-          false
-        );
-        currentScene.scene.get('uiscene').scene.restart();
-        currentScene.scene.restart();
-      } else if (
+      if (
         edge !== undefined &&
         selectedCards.length > 0 &&
         CardManager.getInstance().isValidSelection(

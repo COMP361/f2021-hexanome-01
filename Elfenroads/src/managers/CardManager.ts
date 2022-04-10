@@ -389,18 +389,13 @@ export class CardManager {
     return true;
   }
 
-  public isMagicFlight(player: Player, cards: Array<CardUnit>): boolean {
-    if (
-      GameManager.getInstance().getGameVariant() === GameVariant.elfengold &&
-      cards.length === 1
-    ) {
-      for (const card of cards) {
-        // check if a witch card is selected
-        if (card.getName() === TravelCardType.Witch) {
-          if (player.hasEnoughCoins(3)) {
-            player.deductCoins(3);
-            return true;
-          }
+  public isMagicFlight(player: Player, card: CardUnit): boolean {
+    if (GameManager.getInstance().getGameVariant() === GameVariant.elfengold) {
+      // check if a witch card is selected
+      if (card.getName() === TravelCardType.Witch) {
+        if (player.hasEnoughCoins(3)) {
+          player.deductCoins(3);
+          return true;
         }
       }
     }

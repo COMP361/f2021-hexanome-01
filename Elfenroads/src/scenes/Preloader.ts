@@ -146,6 +146,7 @@ export default class Preloader extends Phaser.Scene {
 
     // Assets for ChooseCoinScene
     this.load.image('get-cards', 'assets/boardgame/playing-cards.png');
+    this.load.image('witch-flight', 'assets/boardgame/witch_flight.png');
 
     // music
     this.load.audio('medieval-music', 'audio/medieval-music.mp3');
