@@ -114,6 +114,10 @@ export default class Player {
     return this.myItems;
   }
 
+  public clearItems(): void {
+    this.myItems = [];
+  }
+
   public getCards(): Array<CardUnit> {
     return this.myCards;
   }
