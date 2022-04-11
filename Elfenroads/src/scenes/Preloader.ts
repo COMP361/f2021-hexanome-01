@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import DrawCardsScene from './GameplayScenes/DrawCardsScene';
 
 export default class Preloader extends Phaser.Scene {
   constructor() {
@@ -29,11 +30,14 @@ export default class Preloader extends Phaser.Scene {
       'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'
     );
 
-    // Assets for BoardScene.js
+    // Assets for DrawCardsScene.ts
+    this.load.image('unknown-card', 'assets/boardgame/blue.png');
+
+    // Assets for BoardScene.ts
     this.load.image('brownBackground', 'assets/background/brown.jpg');
     this.load.image('map', 'assets/boardgame/mapNEW.png');
 
-    // Assets for UIScene.js
+    // Assets for UIScene.ts
     this.load.image(
       'brown-cirle',
       'assets/ui/rpgpack/PNG/buttonRound_brown.png'
