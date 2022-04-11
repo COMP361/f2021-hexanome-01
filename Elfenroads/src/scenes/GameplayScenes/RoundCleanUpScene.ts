@@ -2,8 +2,12 @@ import {GameObjects} from 'phaser';
 import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 import Player from '../../classes/Player';
 import {GameVariant} from '../../enums/GameVariant';
+import {CardManager} from '../../managers/CardManager';
 import GameManager from '../../managers/GameManager';
+import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
+import RoadManager from '../../managers/RoadManager';
+import SocketManager from '../../managers/SocketManager';
 import UIScene from '../UIScene';
 
 export default class RoundCleanUpScene extends Phaser.Scene {
@@ -20,6 +24,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
     this.createUIBanner();
     this.passTurnButton();
     this.chooseCounterToKeep();
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner(): void {
@@ -134,9 +139,20 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.callback();
+          SocketManager.getInstance().emitStatusChange({
+            nextPhase: true,
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+            RoadManager: RoadManager.getInstance(),
+          });
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+            RoadManager: RoadManager.getInstance(),
+          });
         }
       });
   }
@@ -201,9 +217,20 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
-        this.callback();
+        SocketManager.getInstance().emitStatusChange({
+          nextPhase: true,
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+          RoadManager: RoadManager.getInstance(),
+        });
       } else {
-        this.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+          RoadManager: RoadManager.getInstance(),
+        });
       }
     }
   }
@@ -243,10 +270,25 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
-        this.callback();
+        SocketManager.getInstance().emitStatusChange({
+          nextPhase: true,
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+          RoadManager: RoadManager.getInstance(),
+        });
       } else {
-        this.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+          RoadManager: RoadManager.getInstance(),
+        });
       }
     }
+  }
+
+  public nextPhase(): void {
+    this.callback();
   }
 }

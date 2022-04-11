@@ -2,23 +2,27 @@ import {CounterType} from '../enums/CounterType';
 import {EdgeType} from '../enums/EdgeType';
 import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
+import Edge from './Edge';
 
 export abstract class ItemUnit {
   private name: string;
   private allowedEdges: Array<EdgeType>;
   private needsCounter: boolean;
   private isHidden: boolean;
+  private type: string;
 
   constructor(
     name: string,
     allowedEdges: Array<EdgeType>,
     needsCounter: boolean,
-    isHidden = false
+    isHidden = false,
+    type: string
   ) {
     this.name = name;
     this.allowedEdges = allowedEdges;
     this.needsCounter = needsCounter;
     this.isHidden = isHidden;
+    this.type = type;
   }
 
   public getName(): string {
@@ -48,7 +52,7 @@ export class Spell extends ItemUnit {
     allowedEdges: Array<EdgeType>,
     isHidden = false
   ) {
-    super(spellType, allowedEdges, true, isHidden);
+    super(spellType, allowedEdges, true, isHidden, 'spell');
   }
 }
 
@@ -57,11 +61,32 @@ export class Counter extends ItemUnit {
   constructor(
     counterType: CounterType,
     allowedEdges: Array<EdgeType>,
-    cardsNeeded: Map<EdgeType, number>,
+    cardsNeeded: any,
     isHidden = false
   ) {
-    super(counterType, allowedEdges, false, isHidden);
-    this.cardsNeeded = cardsNeeded;
+    super(counterType, allowedEdges, false, isHidden, 'counter');
+    if (cardsNeeded instanceof Map) {
+      this.cardsNeeded = cardsNeeded;
+    } else {
+      this.cardsNeeded = new Map(
+        Object.entries(cardsNeeded).map(entry => {
+          return [
+            entry[0] === 'Plain' || entry[0] === '0'
+              ? EdgeType.Plain
+              : entry[0] === 'Wood' || entry[0] === '1'
+              ? EdgeType.Wood
+              : entry[0] === 'Desert' || entry[0] === '2'
+              ? EdgeType.Desert
+              : entry[0] === 'Mountain' || entry[0] === '3'
+              ? EdgeType.Mountain
+              : entry[0] === 'River' || entry[0] === '4'
+              ? EdgeType.River
+              : EdgeType.Lake,
+            Number(entry[1]),
+          ];
+        })
+      );
+    }
   }
 
   public getCardsNeeded(): Map<EdgeType, number> {
@@ -71,7 +96,7 @@ export class Counter extends ItemUnit {
 
 export class GoldPiece extends ItemUnit {
   constructor(allowedEdges: Array<EdgeType>, isHidden = false) {
-    super('gold-piece', allowedEdges, true, isHidden);
+    super('gold-piece', allowedEdges, true, isHidden, 'gold-piece');
   }
 }
 
@@ -82,6 +107,6 @@ export class Obstacle extends ItemUnit {
     needsCounter: boolean,
     isHidden = false
   ) {
-    super(obstacleType, allowedEdges, needsCounter, isHidden);
+    super(obstacleType, allowedEdges, needsCounter, isHidden, 'obstacle');
   }
 }

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import {CardUnit} from '../../classes/CardUnit';
 import {CardManager} from '../../managers/CardManager';
 import PlayerManager from '../../managers/PlayerManager';
+import SocketManager from '../../managers/SocketManager';
 
 export default class DrawCardsScene extends Phaser.Scene {
   public cardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -23,6 +24,8 @@ export default class DrawCardsScene extends Phaser.Scene {
 
     // Render the three face up cards
     this.renderCards();
+
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner() {
@@ -95,9 +98,16 @@ export default class DrawCardsScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.callback();
+          SocketManager.getInstance().emitStatusChange({
+            nextPhase: true,
+            CardManager: CardManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       });
   }
