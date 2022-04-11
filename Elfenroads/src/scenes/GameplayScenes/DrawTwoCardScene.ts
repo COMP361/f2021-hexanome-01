@@ -82,25 +82,10 @@ export default class DrawTwoCardScene extends Phaser.Scene {
       .on('pointerup', () => {
         passTurnButton.clearTint();
         this.sound.play('pass');
+        CardManager.getInstance().setAmountDrawn(0);
         PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
         this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
-
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          this.callback();
-        } else {
-          this.scene.restart();
-        }
+        this.callback();
       });
   }
 

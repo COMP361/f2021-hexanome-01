@@ -1,49 +1,68 @@
-import {CardUnit} from '../../classes/CardUnit';
-import {CardManager} from '../../managers/CardManager';
 import PlayerManager from '../../managers/PlayerManager';
 
 export default class ChooseCoinScene extends Phaser.Scene {
   private callback!: Function;
+
   constructor() {
     super('choosecoinscene');
   }
 
   create(callback: Function) {
     this.createUIBanner();
-    this.createUIChooseButton();
+    this.createUIGetButton();
     this.createUIPassButton();
     this.callback = callback;
   }
 
-  // Button to skip turn
-  private createUIChooseButton(): void {
-    // Create small button with the "next" icon
+  // Button to make a choice
+  private createUIGetButton(): void {
+    // Create small button with the "get-cards" icon
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
-    const passTurnButton = this.add.sprite(
-      width - 60,
+    const getCardsButton = this.add.sprite(
+      width - 90,
       height - 30,
       'brown-box'
     );
     this.add
-      .image(passTurnButton.x, passTurnButton.y, 'get-cards')
-      .setScale(0.1);
+      .image(getCardsButton.x, getCardsButton.y, 'get-cards')
+      .setScale(0.05);
 
     // Add interactive pointer options for passTurnButton
     // After click, currentPlayer is updated via playerManager
-    passTurnButton
+    getCardsButton
       .setInteractive()
       .on('pointerdown', () => {
-        passTurnButton.setTint(0xd3d3d3);
+        getCardsButton.setTint(0xd3d3d3);
       })
       .on('pointerout', () => {
-        passTurnButton.clearTint();
+        getCardsButton.clearTint();
       })
       .on('pointerup', () => {
-        passTurnButton.clearTint();
+        getCardsButton.clearTint();
         PlayerManager.getInstance().getCurrentPlayer().chooseCards();
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+        PlayerManager.getInstance().setNextPlayer();
         this.scene.get('uiscene').scene.restart();
-        this.callback();
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getPassedTurn() === true) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.callback();
+        } else {
+          this.scene.launch('drawtwocardscene', () => {
+            this.scene.stop('drawtwocardscene');
+          });
+          this.scene.restart();
+        }
       });
   }
 
@@ -73,8 +92,25 @@ export default class ChooseCoinScene extends Phaser.Scene {
         passTurnButton.clearTint();
         this.sound.play('pass');
         PlayerManager.getInstance().getCurrentPlayer().chooseGold();
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+        PlayerManager.getInstance().setNextPlayer();
         this.scene.get('uiscene').scene.restart();
-        this.callback();
+        let finishedPlayers: integer = 0;
+        PlayerManager.getInstance()
+          .getPlayers()
+          .forEach(player => {
+            if (player.getPassedTurn() === true) {
+              finishedPlayers++;
+            }
+          });
+
+        if (
+          finishedPlayers === PlayerManager.getInstance().getPlayers().length
+        ) {
+          this.callback();
+        } else {
+          this.scene.restart();
+        }
       });
   }
 
