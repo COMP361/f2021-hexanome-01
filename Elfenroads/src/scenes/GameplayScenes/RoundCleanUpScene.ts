@@ -7,6 +7,8 @@ import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
 import UIScene from '../UIScene';
+import RoadManager from '../../managers/RoadManager';
+import ItemManager from '../../managers/ItemManager';
 
 export default class RoundCleanUpScene extends Phaser.Scene {
   private callback!: Function;
@@ -226,6 +228,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
     if (playerItem instanceof Counter) {
       for (const item of validItems) {
         if (playerItem !== item) {
+          ItemManager.getInstance().addToPile(item);
           player.removeItem(item);
         }
       }
@@ -267,7 +270,12 @@ export default class RoundCleanUpScene extends Phaser.Scene {
       this.selectedItemSprite.clearTint();
       const player: Player = PlayerManager.getInstance().getCurrentPlayer();
       const playerItems: Array<ItemUnit> = player.getItems();
-      console.log(playerItems);
+      for (const item of playerItems) {
+        if (item !== playerItem || item !== this.selectedItem) {
+          ItemManager.getInstance().addToPile(item);
+        }
+      }
+      console.log(ItemManager.getInstance().getItemPile().length);
       player.clearItems();
       player.addItem(playerItem);
       player.addItem(this.selectedItem);
