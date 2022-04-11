@@ -162,14 +162,14 @@ export default class GameManager {
       return;
     }
 
-    // Phase 1 & 2
+    // Phase 1
     this.dealCardsAndCounter();
     this.itemManager.flipCounters();
 
     // Phase 3: Draw additional Transportation counters
     this.playerManager.readyUpPlayers();
-    this.mainScene.scene.launch('drawcountersscene', () => {
-      this.mainScene.scene.stop('drawcountersscene');
+    this.mainScene.scene.launch('drawtwocounterscene', () => {
+      this.mainScene.scene.stop('drawtwocounterscene');
 
       // Phase 4: Auction
       this.playerManager.readyUpPlayers(); // Reinitialize players turn
