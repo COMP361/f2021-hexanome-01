@@ -130,18 +130,16 @@ export default class Player {
     this.goldToAdd += pGold;
   }
 
+  public getGoldToAdd(): integer {
+    return this.goldToAdd;
+  }
+
   public chooseGold(): void {
     this.gold += this.goldToAdd;
     this.goldToAdd = 0;
   }
 
   public chooseCards(): void {
-    // let numcards = 2;
-    // while (this.getCards().length < 8 && numcards > 0) {
-    //   const randomCard: CardUnit = CardManager.getInstance().getRandomCard();
-    //   this.addCard(randomCard);
-    //   numcards--;
-    // }
     this.goldToAdd = 0;
   }
 

@@ -203,7 +203,5 @@ export default class PlayerManager {
 
     // Subtract 1 because of starting town Elvenhold
     currentPlayer.setScore(score - 1);
-
-    console.log(currentPlayer.getVisitedTowns());
   }
 }

@@ -64,11 +64,16 @@ export default class ChooseCoinScene extends Phaser.Scene {
       .setScale(1);
 
     this.add
-      .text(goldImage.getCenter().x, goldImage.getCenter().y, `${100}`, {
-        fontFamily: 'MedievalSharp',
-        fontSize: '19px',
-        color: 'black',
-      })
+      .text(
+        goldImage.getCenter().x,
+        goldImage.getCenter().y,
+        `${PlayerManager.getInstance().getCurrentPlayer().getGoldToAdd()}`,
+        {
+          fontFamily: 'MedievalSharp',
+          fontSize: '19px',
+          color: 'black',
+        }
+      )
       .setOrigin(0.5, 0.5)
       .setDepth(4);
 

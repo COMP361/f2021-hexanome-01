@@ -132,7 +132,7 @@ export default class SelectionScene extends Phaser.Scene {
     );
     this.add
       .image(magicFlightButton.x, magicFlightButton.y, 'witch-flight')
-      .setScale(0.1);
+      .setScale(0.07);
 
     // Add interactive pointer options for passTurnButton
     // After click, currentPlayer is updated via playerManager

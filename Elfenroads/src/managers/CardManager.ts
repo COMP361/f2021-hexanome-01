@@ -160,6 +160,7 @@ export class CardManager {
       // check if a witch card is selected
       if (card.getName() === TravelCardType.Witch) {
         hasWitchCard = true;
+        cards.splice(cards.indexOf(card), 1);
       }
     }
     // check if it is a normal move boot
@@ -196,7 +197,19 @@ export class CardManager {
         if (obstacle !== undefined) {
           if (hasWitchCard) {
             if (player.hasEnoughCoins(1)) {
+              // 1 raft if traveling with current
+              if (player.getCurrentLocation() === edge.getSrcTown()) {
+                // only need 1 raft
+                if (numcards !== 1) {
+                  return false;
+                }
+              }
+              // against current
+              else if (numcards !== 2) {
+                return false;
+              }
               player.deductCoins(1);
+              return true;
             } else {
               return false;
             }
@@ -253,7 +266,11 @@ export class CardManager {
         if (obstacle !== undefined) {
           if (hasWitchCard) {
             if (player.hasEnoughCoins(1)) {
+              if (numcards !== 2) {
+                return false;
+              }
               player.deductCoins(1);
+              return true;
             } else {
               return false;
             }
@@ -324,8 +341,9 @@ export class CardManager {
             } else {
               if (hasWitchCard) {
                 if (player.hasEnoughCoins(1)) {
-                  player.deductCoins(1);
                   if (cards.length !== 3) return false;
+                  player.deductCoins(1);
+                  return true;
                 } else {
                   return false;
                 }
@@ -345,7 +363,26 @@ export class CardManager {
             if (obstacle !== undefined) {
               if (hasWitchCard) {
                 if (player.hasEnoughCoins(1)) {
+                  for (const card of cards) {
+                    // check if the card type correspond to the counter type
+                    if (card.getName().includes(travelcounter1.getName())) {
+                      numCardsRequired1 -= 1;
+                    } else if (
+                      card.getName().includes(travelcounter2.getName())
+                    ) {
+                      numCardsRequired2 -= 1;
+                    }
+                  }
+                  if (numCardsRequired1 !== 0 && numCardsRequired2 !== 0) {
+                    return false;
+                  } else if (
+                    numCardsRequired1 === 0 &&
+                    numCardsRequired2 === 0
+                  ) {
+                    return false;
+                  }
                   player.deductCoins(1);
+                  return true;
                 } else {
                   return false;
                 }
@@ -364,13 +401,12 @@ export class CardManager {
             }
             if (numCardsRequired1 !== 0 && numCardsRequired2 !== 0) {
               return false;
-            } else if (numCardsRequired1 === 0 && numCardsRequired2 === 0) {
-              return false;
             }
           }
           return true;
         }
       }
+      // for Elfenland
       const edgeItems = edge.getItems();
       let travelcounter: Counter | undefined = undefined;
       let obstacle: Obstacle | undefined = undefined;
@@ -397,10 +433,11 @@ export class CardManager {
         if (obstacle === undefined) {
           if (cards.length !== 3) return false;
         } else {
-          if (hasWitchCard) {
+          if (isElfengold && hasWitchCard) {
             if (player.hasEnoughCoins(1)) {
-              player.deductCoins(1);
               if (cards.length !== 3) return false;
+              player.deductCoins(1);
+              return true;
             } else {
               return false;
             }
@@ -412,9 +449,11 @@ export class CardManager {
         let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
         if (numCardsRequired === undefined) return false;
         if (obstacle !== undefined) {
-          if (hasWitchCard) {
+          if (isElfengold && hasWitchCard) {
             if (player.hasEnoughCoins(1)) {
+              if (cards.length !== numCardsRequired) return false;
               player.deductCoins(1);
+              return true;
             } else {
               return false;
             }
