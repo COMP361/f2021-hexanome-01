@@ -3,7 +3,9 @@ import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 import Player from '../../classes/Player';
 import {GameVariant} from '../../enums/GameVariant';
 import GameManager from '../../managers/GameManager';
+import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
+import RoadManager from '../../managers/RoadManager';
 import UIScene from '../UIScene';
 
 export default class RoundCleanUpScene extends Phaser.Scene {
@@ -17,9 +19,29 @@ export default class RoundCleanUpScene extends Phaser.Scene {
 
   create(callback: Function) {
     this.callback = callback;
+    this.cleanUpCounters();
     this.createUIBanner();
     this.passTurnButton();
     this.chooseCounterToKeep();
+  }
+
+  private cleanUpCounters(): void {
+    const edges = RoadManager.getInstance().getEdges();
+    for (const edge of edges) {
+      const items = edge.getItems();
+      for (const item of items) {
+        if (
+          !(
+            GameManager.getInstance().getGameVariant() ===
+              GameVariant.elfenland && item instanceof Obstacle
+          )
+        ) {
+          ItemManager.getInstance().addToPile(item);
+          console.log(item);
+        }
+        edge.removeItem(item);
+      }
+    }
   }
 
   private createUIBanner(): void {
@@ -86,8 +108,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         passTurnButton.clearTint();
         this.sound.play('pass');
         const player: Player = PlayerManager.getInstance().getCurrentPlayer();
-
-        if (player.getItems().length !== 0) {
+        if (player.getItems().length < 2) {
           if (
             GameManager.getInstance().getGameVariant() === GameVariant.elfenland
           ) {
@@ -142,29 +163,49 @@ export default class RoundCleanUpScene extends Phaser.Scene {
   }
 
   private chooseCounterToKeep(): void {
-    this.selectedItem = null;
-    const graphics = this.add.graphics();
-    if (
-      PlayerManager.getInstance().getCurrentPlayer() ===
-      PlayerManager.getInstance().getLocalPlayer()
-    ) {
-      UIScene.itemSprites.forEach(item => {
-        item
-          .setInteractive()
-          .on('pointerdown', () => {
-            item.setTint(0xd3d3d3);
-          })
-          .on('pointerup', () => {
-            if (
-              GameManager.getInstance().getGameVariant() ===
-              GameVariant.elfenland
-            ) {
-              this.selectOneItem(item, graphics);
-            } else {
-              this.selectTwoItems(item, graphics);
-            }
-          });
-      });
+    if (PlayerManager.getInstance().getCurrentPlayer().getItems().length < 2) {
+      PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+      PlayerManager.getInstance().setNextPlayer();
+      this.scene.get('uiscene').scene.restart();
+      let finishedPlayers: integer = 0;
+      PlayerManager.getInstance()
+        .getPlayers()
+        .forEach(player => {
+          if (player.getPassedTurn() === true) {
+            finishedPlayers++;
+          }
+        });
+
+      if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
+        this.callback();
+      } else {
+        this.scene.restart();
+      }
+    } else {
+      this.selectedItem = null;
+      const graphics = this.add.graphics();
+      if (
+        PlayerManager.getInstance().getCurrentPlayer() ===
+        PlayerManager.getInstance().getLocalPlayer()
+      ) {
+        UIScene.itemSprites.forEach(item => {
+          item
+            .setInteractive()
+            .on('pointerdown', () => {
+              item.setTint(0xd3d3d3);
+            })
+            .on('pointerup', () => {
+              if (
+                GameManager.getInstance().getGameVariant() ===
+                GameVariant.elfenland
+              ) {
+                this.selectOneItem(item, graphics);
+              } else {
+                this.selectTwoItems(item, graphics);
+              }
+            });
+        });
+      }
     }
   }
 

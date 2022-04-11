@@ -12,11 +12,13 @@ export class CardManager {
   private cardPile: Array<CardUnit>;
   private faceUpPile: Array<CardUnit>;
   private goldCardPile: Array<GoldCard>;
+  private amountDrawn: number;
 
   private constructor() {
     this.cardPile = [];
     this.faceUpPile = [];
     this.goldCardPile = [];
+    this.amountDrawn = 0;
   }
 
   public static getInstance(): CardManager {
@@ -44,6 +46,14 @@ export class CardManager {
         this.cardPile.push(new TravelCard(TravelCardType.Raft));
       }
     }
+  }
+
+  public getAmountDrawn(): number {
+    return this.amountDrawn;
+  }
+
+  public setAmountDrawn(amountDrawn: number): void {
+    this.amountDrawn = amountDrawn;
   }
 
   public getCardPile(): Array<CardUnit> {
@@ -81,6 +91,19 @@ export class CardManager {
     return this.goldCardPile;
   }
 
+  public claimFaceUpCard(player: Player, index: number): void {
+    const faceUpCard = this.faceUpPile[index];
+    player.addCard(faceUpCard);
+
+    let newCard = this.getRandomCard();
+    while (newCard instanceof GoldCard) {
+      newCard = this.getRandomCard();
+    }
+
+    this.faceUpPile[index] = newCard;
+    this.amountDrawn++;
+  }
+
   public claimGoldCardPile(player: Player): void {
     let totalGold = 0;
     this.goldCardPile.forEach(card => {
@@ -88,6 +111,16 @@ export class CardManager {
     });
     const newBalance = player.getGold() + totalGold;
     player.setGold(newBalance);
+    this.goldCardPile = [];
+    this.amountDrawn++;
+  }
+
+  public claimFaceDownCard(player: Player): void {
+    const randomCard = this.getRandomCard();
+    if (!(randomCard instanceof GoldCard)) {
+      player.addCard(randomCard);
+      this.amountDrawn++;
+    }
   }
 
   public addToPile(player: Player, card: CardUnit): void {
@@ -101,6 +134,8 @@ export class CardManager {
     const randomCard = this.getRandomCard();
     if (!(randomCard instanceof GoldCard)) {
       this.faceUpPile.push(randomCard);
+    } else {
+      this.flipCard();
     }
   }
 
