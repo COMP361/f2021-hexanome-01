@@ -12,7 +12,6 @@ import {EdgeType} from '../enums/EdgeType';
 import {GameVariant} from '../enums/GameVariant';
 import {TravelCardType} from '../enums/TravelCardType';
 import GameManager from './GameManager';
-import PlayerManager from './PlayerManager';
 
 export class CardManager {
   private static cardManagerInstance: CardManager;
@@ -80,6 +79,10 @@ export class CardManager {
     return;
   }
 
+  public getFaceUpPile(): Array<CardUnit> {
+    return this.faceUpPile;
+  }
+
   public getGoldCardPile(): Array<GoldCard> {
     return this.goldCardPile;
   }
@@ -98,7 +101,7 @@ export class CardManager {
     this.cardPile.push(card);
   }
 
-  // this must be called 5 times after 5 cards are distributed to every player
+  // this must be called 3 times after 3 cards are distributed to every player
   // also called every time a player picked a card or picked a gold card.
   public flipCard(): void {
     const randomCard = this.getRandomCard();
@@ -107,7 +110,7 @@ export class CardManager {
     }
   }
 
-  // must call this function after flipping 5 cards
+  // must call this function after flipping 3 cards
   public addGoldCardsToPile(): void {
     for (let i = 0; i < 7; i++) {
       this.cardPile.push(new GoldCard(3));

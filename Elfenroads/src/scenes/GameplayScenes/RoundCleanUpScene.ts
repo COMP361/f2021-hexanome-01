@@ -91,32 +91,37 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         passTurnButton.clearTint();
         this.sound.play('pass');
         const player: Player = PlayerManager.getInstance().getCurrentPlayer();
-        if (
-          GameManager.getInstance().getGameVariant() === GameVariant.elfenland
-        ) {
-          const validItems: Array<ItemUnit> = player.getItems().filter(item => {
-            return !(item instanceof Obstacle);
-          });
-          let itemIndex = Math.floor(Math.random() * validItems.length);
-          for (const item of validItems) {
-            if (itemIndex !== 0) {
-              player.removeItem(item);
+
+        if (player.getItems().length !== 0) {
+          if (
+            GameManager.getInstance().getGameVariant() === GameVariant.elfenland
+          ) {
+            const validItems: Array<ItemUnit> = player
+              .getItems()
+              .filter(item => {
+                return !(item instanceof Obstacle);
+              });
+            let itemIndex = Math.floor(Math.random() * validItems.length);
+            for (const item of validItems) {
+              if (itemIndex !== 0) {
+                player.removeItem(item);
+              }
+              itemIndex--;
             }
-            itemIndex--;
-          }
-        } else {
-          const playerItems = player.getItems();
-          const itemIndex =
-            playerItems[Math.floor(Math.random() * playerItems.length)];
-          let itemIndex2 =
-            playerItems[Math.floor(Math.random() * playerItems.length)];
-          while (itemIndex === itemIndex2) {
-            itemIndex2 =
+          } else {
+            const playerItems = player.getItems();
+            const itemIndex =
               playerItems[Math.floor(Math.random() * playerItems.length)];
+            let itemIndex2 =
+              playerItems[Math.floor(Math.random() * playerItems.length)];
+            while (itemIndex === itemIndex2) {
+              itemIndex2 =
+                playerItems[Math.floor(Math.random() * playerItems.length)];
+            }
+            player.clearItems();
+            player.addItem(itemIndex);
+            player.addItem(itemIndex2);
           }
-          player.clearItems();
-          player.addItem(itemIndex);
-          player.addItem(itemIndex2);
         }
 
         player.setPassedTurn(true);
