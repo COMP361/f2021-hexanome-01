@@ -1,14 +1,7 @@
 import {BootColour} from '../enums/BootColour';
 import RoadManager from '../managers/RoadManager';
-import {
-  CardUnit,
-  GoldCard,
-  MagicSpellCard,
-  TownCard,
-  TravelCard,
-} from './CardUnit';
-import ItemInventory from './ItemInventory';
-import {Counter, GoldPiece, ItemUnit, Obstacle, Spell} from './ItemUnit';
+import {CardUnit} from './CardUnit';
+import {ItemUnit} from './ItemUnit';
 import Town from './Town';
 
 export default class Player {
@@ -175,53 +168,5 @@ export default class Player {
     this.score = 0;
     this.myItems = [];
     this.visitedTowns = [];
-  }
-
-  public update(player: any): Player {
-    this.currentLocation = RoadManager.getInstance()
-      .getTowns()
-      .get(player.currentLocation.name)!;
-    this.gold = player.gold;
-    this.score = player.score;
-    this.myItems = player.myItems.map((item: any) => {
-      if (item.type === 'spell') {
-        return new Spell(item.name, item.allowedEdges, item.isHidden);
-      } else if (item.type === 'counter') {
-        return new Counter(
-          item.name,
-          item.allowedEdges,
-          item.cardsNeeded,
-          item.isHidden
-        );
-      } else if (item.type === 'gold-piece') {
-        return new GoldPiece(item.allowedEdges, item.isHidden);
-      } else {
-        return new Obstacle(
-          item.name,
-          item.allowedEdges,
-          item.needsCounter,
-          item.isHidden
-        );
-      }
-    });
-    this.myCards = player.myCards.map((card: any) => {
-      if (card.type === 'magic-spell-card') {
-        return new MagicSpellCard(card.name);
-      } else if (card.type === 'travel-card') {
-        return new TravelCard(card.name);
-      } else if (card.type === 'gold-card') {
-        return new GoldCard(card.amount);
-      } else {
-        return new TownCard(card.name);
-      }
-    });
-    this.visitedTowns = player.visitedTowns.map((town: any) => {
-      return RoadManager.getInstance().getTowns().get(town.name)!;
-    });
-    this.secretTown =
-      RoadManager.getInstance().getTowns().get(player.secretTown.name)! ||
-      undefined;
-    this.passedTurn = player.passedTurn;
-    return this;
   }
 }

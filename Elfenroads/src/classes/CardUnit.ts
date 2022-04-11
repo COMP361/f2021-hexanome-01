@@ -4,11 +4,9 @@ import Town from './Town';
 
 export abstract class CardUnit {
   private name: string;
-  private type: string;
 
-  constructor(name: string, type: string) {
+  constructor(name: string) {
     this.name = name;
-    this.type = type;
   }
 
   public getName(): string {
@@ -18,13 +16,13 @@ export abstract class CardUnit {
 
 export class MagicSpellCard extends CardUnit {
   constructor(spellType: SpellType) {
-    super(spellType, 'magic-spell-card');
+    super(spellType);
   }
 }
 
 export class TravelCard extends CardUnit {
   constructor(travelType: TravelCardType) {
-    super(travelType, 'travel-card');
+    super(travelType);
   }
 }
 
@@ -32,7 +30,7 @@ export class GoldCard extends CardUnit {
   private amount: number;
 
   constructor(amount: number) {
-    super('gold-card', 'gold-card');
+    super('gold-card');
     this.amount = amount;
   }
 
@@ -42,7 +40,7 @@ export class GoldCard extends CardUnit {
 }
 
 export class TownCard extends CardUnit {
-  constructor(town: any) {
-    super(town.getName ? town.getName()! : town, 'town-card');
+  constructor(town: Town) {
+    super(town.getName()!);
   }
 }

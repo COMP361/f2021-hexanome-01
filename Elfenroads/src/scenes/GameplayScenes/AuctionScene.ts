@@ -1,9 +1,7 @@
 import Phaser from 'phaser';
 import {ItemUnit} from '../../classes/ItemUnit';
 import {BidManager} from '../../managers/BidManager';
-import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
-import SocketManager from '../../managers/SocketManager';
 import UIScene from '../UIScene';
 
 export default class AuctionScene extends Phaser.Scene {
@@ -22,7 +20,6 @@ export default class AuctionScene extends Phaser.Scene {
     this.createUIBanner();
     this.createPassTurnButton();
     this.createAuction();
-    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner(): void {
@@ -106,25 +103,12 @@ export default class AuctionScene extends Phaser.Scene {
               player.setPassedTurn(false);
             });
           if (this.bidManager.endBid()) {
-            SocketManager.getInstance().emitStatusChange({
-              nextPhase: true,
-              ItemManager: ItemManager.getInstance(),
-              PlayerManager: PlayerManager.getInstance(),
-              BidManager: BidManager.getInstance(),
-            });
+            this.callback();
           } else {
-            SocketManager.getInstance().emitStatusChange({
-              ItemManager: ItemManager.getInstance(),
-              PlayerManager: PlayerManager.getInstance(),
-              BidManager: BidManager.getInstance(),
-            });
+            this.scene.restart();
           }
         } else {
-          SocketManager.getInstance().emitStatusChange({
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-            BidManager: BidManager.getInstance(),
-          });
+          this.scene.restart();
         }
       });
   }
@@ -330,11 +314,8 @@ export default class AuctionScene extends Phaser.Scene {
       this.bidManager.setBid(currentPlayer, this.currentBid);
 
       playerManager.setNextPlayer();
-      SocketManager.getInstance().emitStatusChange({
-        ItemManager: ItemManager.getInstance(),
-        PlayerManager: PlayerManager.getInstance(),
-        BidManager: BidManager.getInstance(),
-      });
+      this.scene.get('uiscene').scene.restart();
+      this.scene.restart();
     }
   }
 
@@ -344,9 +325,5 @@ export default class AuctionScene extends Phaser.Scene {
     this.renderPointer();
     this.createBidCounter();
     this.showCurrentBid();
-  }
-
-  public nextPhase(): void {
-    this.callback();
   }
 }

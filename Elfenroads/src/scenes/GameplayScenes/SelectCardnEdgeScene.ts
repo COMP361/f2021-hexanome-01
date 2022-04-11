@@ -7,8 +7,6 @@ import EdgeMenu from '../../classes/EdgeMenu';
 import RoadManager from '../../managers/RoadManager';
 import {EdgeType} from '../../enums/EdgeType';
 import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
-import SocketManager from '../../managers/SocketManager';
-import ItemManager from '../../managers/ItemManager';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -35,7 +33,6 @@ export default class SelectionScene extends Phaser.Scene {
       this.makeCardsInteractive();
       this.makeEdgesInteractive();
     }
-    SocketManager.getInstance().setScene(this.scene);
   }
 
   // Button to skip turn
@@ -78,18 +75,9 @@ export default class SelectionScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          SocketManager.getInstance().emitStatusChange({
-            nextPhase: true,
-            CardManager: CardManager.getInstance(),
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-          });
+          this.callback();
         } else {
-          SocketManager.getInstance().emitStatusChange({
-            CardManager: CardManager.getInstance(),
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-          });
+          this.scene.restart();
         }
       });
   }
@@ -293,11 +281,9 @@ export default class SelectionScene extends Phaser.Scene {
           PlayerManager.getInstance().getCurrentPlayer(),
           edge
         );
-        SocketManager.getInstance().emitStatusChange({
-          CardManager: CardManager.getInstance(),
-          ItemManager: ItemManager.getInstance(),
-          PlayerManager: PlayerManager.getInstance(),
-        });
+        currentScene.scene.get('uiscene').scene.restart();
+        console.log('YOOOOO ITS WORKING!');
+        currentScene.scene.restart();
       } else {
         for (let i = 0; i < selectedCardSprites.length; i++) {
           // remove selection of card
@@ -332,8 +318,5 @@ export default class SelectionScene extends Phaser.Scene {
         }
       }
     }
-  }
-  public nextPhase(): void {
-    this.callback();
   }
 }
