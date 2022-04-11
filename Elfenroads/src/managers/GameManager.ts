@@ -117,8 +117,11 @@ export default class GameManager {
     // Each round, the host is in charge of the initial state
     if (getUser().name === getSession().gameSession.creator) {
       // Phase 1 & 2
-      this.dealCardsAndCounter();
-      this.itemManager.flipCounters();
+      if (this.gameVariant === GameVariant.elfenland) {
+        this.setUpRoundElfenland();
+      } else {
+        this.setUpRoundElfengold();
+      }
 
       // Once all cards / items have been distibuted, we send
       // the relevant managers to the other players
@@ -151,7 +154,7 @@ export default class GameManager {
       });
   }
 
-  private dealCardsAndCounter(): void {
+  private setUpRoundElfenland(): void {
     for (const player of this.playerManager.getPlayers()) {
       // Deal up to 8 cards
       while (player.getCards().length < 8) {
@@ -163,8 +166,41 @@ export default class GameManager {
       const randomItem: ItemUnit = this.itemManager.getRandomItem();
       randomItem.setHidden(true);
       player.addItem(randomItem);
-      const tree: Obstacle = this.itemManager.getTreeObstacle();
-      player.addItem(tree);
+
+      if (this.round === 1) {
+        const tree: Obstacle = this.itemManager.getTreeObstacle();
+        player.addItem(tree);
+      }
+
+      this.itemManager.flipCounters();
+    }
+  }
+
+  private setUpRoundElfengold(): void {
+    const isFirstRound: boolean = this.round === 1;
+
+    // If firstRound, Deal up to 5 cards and initlaize faceUpPile
+    if (isFirstRound) {
+      for (const player of this.playerManager.getPlayers()) {
+        while (player.getCards().length < 5) {
+          const randomCard: CardUnit = this.cardManager.getRandomCard();
+          player.addCard(randomCard);
+        }
+        player.setGold(12);
+      }
+
+      // Initialze faceUpPile for subsequence rounds
+      for (let i = 0; i < 3; i++) {
+        CardManager.getInstance().flipCard();
+      }
+      CardManager.getInstance().addGoldCardsToPile();
+    }
+
+    // If not first round, then only give them gold
+    else {
+      this.playerManager.getPlayers().forEach(player => {
+        player.setGold(player.getGold() + 2);
+      });
     }
   }
 
