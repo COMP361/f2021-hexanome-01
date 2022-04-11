@@ -7,8 +7,6 @@ import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
 import UIScene from '../UIScene';
-import RoadManager from '../../managers/RoadManager';
-import ItemManager from '../../managers/ItemManager';
 
 export default class RoundCleanUpScene extends Phaser.Scene {
   private callback!: Function;
