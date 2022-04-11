@@ -12,14 +12,12 @@ export default class DrawTwoCardScene extends Phaser.Scene {
   }
 
   create(callback: Function) {
+    this.scene.get('choosecoinscene').scene.stop();
     this.callback = callback;
     this.amountToDraw = 2;
 
     // Create UI banner in the middle of the screen
     this.createUIBanner();
-
-    // Create pass turn button
-    this.createPassTurnButton();
 
     // Render all cards
     this.renderFaceUpPile();
@@ -32,7 +30,7 @@ export default class DrawTwoCardScene extends Phaser.Scene {
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
       6,
-      'To Draw Card',
+      'Has Chosen to Select Two Cards',
       {
         fontFamily: 'MedievalSharp',
         fontSize: '30px',
@@ -55,38 +53,6 @@ export default class DrawTwoCardScene extends Phaser.Scene {
     // Render the brown panel and text
     container.add(brownPanel);
     container.add(drawCounterText);
-  }
-
-  private createPassTurnButton() {
-    // Create small button with the "next" icon
-    const width = this.cameras.main.width;
-    const height = this.cameras.main.height;
-    const passTurnButton = this.add.sprite(
-      width - 30,
-      height - 30,
-      'brown-box'
-    );
-    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
-
-    // Add interactive pointer options for passTurnButton
-    // After click, currentPlayer is updated via playerManager
-    // PlayerTurnScene is rerendered to show whose turn it is
-    passTurnButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        passTurnButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        passTurnButton.clearTint();
-      })
-      .on('pointerup', () => {
-        passTurnButton.clearTint();
-        this.sound.play('pass');
-        CardManager.getInstance().setAmountDrawn(0);
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        this.scene.get('uiscene').scene.restart();
-        this.callback();
-      });
   }
 
   private renderFaceUpPile() {

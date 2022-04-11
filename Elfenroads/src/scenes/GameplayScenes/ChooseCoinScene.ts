@@ -8,6 +8,7 @@ export default class ChooseCoinScene extends Phaser.Scene {
   }
 
   create(callback: Function) {
+    this.scene.get('selectionscene').scene.pause();
     this.createUIBanner();
     this.createUIGetButton();
     this.createUIGoldButton();
@@ -95,7 +96,7 @@ export default class ChooseCoinScene extends Phaser.Scene {
     const selectCardnEdgeText: Phaser.GameObjects.Text = this.add.text(
       10,
       6,
-      'Choose draw 2 card or getting coins',
+      'To Draw Two Cards or Collect Coins',
       {
         fontFamily: 'MedievalSharp',
         fontSize: '30px',
