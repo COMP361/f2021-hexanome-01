@@ -1,6 +1,5 @@
 import {GameObjects} from 'phaser';
 import Edge from '../../classes/Edge';
-import EdgeMenu from '../../classes/EdgeMenu';
 import {
   Counter,
   GoldPiece,
@@ -8,7 +7,6 @@ import {
   Obstacle,
   Spell,
 } from '../../classes/ItemUnit';
-import {ObstacleType} from '../../enums/ObstacleType';
 import {SpellType} from '../../enums/SpellType';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';

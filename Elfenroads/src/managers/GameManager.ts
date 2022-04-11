@@ -163,32 +163,32 @@ export default class GameManager {
     // In first round, we skip phase 1 & 2
     if (this.round === 1) {
       // Phase 3: Draw Tokens and Counters
-      /**
-       * @TODO Make a new draw counter scene for elfengold
-       */
-
-      // Phase 4: Auction
       this.playerManager.readyUpPlayers(); // Reinitialize players turn
-      this.mainScene.scene.launch('auctionscene', () => {
-        this.mainScene.scene.stop('auctionscene');
-
-        // Phase 5: Plan the Travel Routes
+      this.mainScene.scene.launch('drawtwocounterscene', () => {
+        this.mainScene.scene.stop('drawtwocounterscene');
+        // Phase 4: Auction
         this.playerManager.readyUpPlayers(); // Reinitialize players turn
-        this.mainScene.scene.launch('planroutescene', () => {
-          this.mainScene.scene.stop('planroutescene');
+        this.mainScene.scene.launch('auctionscene', () => {
+          this.mainScene.scene.stop('auctionscene');
 
-          // Phase 6: Move the Elf Boot
+          // Phase 5: Plan the Travel Routes
           this.playerManager.readyUpPlayers(); // Reinitialize players turn
-          this.mainScene.scene.launch('selectionscene', () => {
-            this.mainScene.scene.stop('selectionscene');
+          this.mainScene.scene.launch('planroutescene', () => {
+            this.mainScene.scene.stop('planroutescene');
 
-            // Phase 7: Finish the Round
-            this.playerManager.readyUpPlayers();
-            this.mainScene.scene.launch('roundcleanupscene', () => {
-              this.mainScene.scene.stop('roundcleanupscene');
-              this.playerManager.setNextStartingPlayer();
-              this.round++;
-              this.playRoundElfengold();
+            // Phase 6: Move the Elf Boot
+            this.playerManager.readyUpPlayers(); // Reinitialize players turn
+            this.mainScene.scene.launch('selectionscene', () => {
+              this.mainScene.scene.stop('selectionscene');
+
+              // Phase 7: Finish the Round
+              this.playerManager.readyUpPlayers();
+              this.mainScene.scene.launch('roundcleanupscene', () => {
+                this.mainScene.scene.stop('roundcleanupscene');
+                this.playerManager.setNextStartingPlayer();
+                this.round++;
+                this.playRoundElfengold();
+              });
             });
           });
         });
@@ -206,38 +206,38 @@ export default class GameManager {
         // Handled by setUpRoundElfengold()
 
         // Phase 3: Draw Tokens and Counters
-        /**
-         * @TODO Make a new draw counter scene for elfengold
-         */
-
-        // Phase 4: Auction
         this.playerManager.readyUpPlayers(); // Reinitialize players turn
-        this.mainScene.scene.launch('auctionscene', () => {
-          this.mainScene.scene.stop('auctionscene');
-
-          // Phase 5: Plan the Travel Routes
+        this.mainScene.scene.launch('drawtwocounterscene', () => {
+          this.mainScene.scene.stop('drawtwocounterscene');
+          // Phase 4: Auction
           this.playerManager.readyUpPlayers(); // Reinitialize players turn
-          this.mainScene.scene.launch('planroutescene', () => {
-            this.mainScene.scene.stop('planroutescene');
+          this.mainScene.scene.launch('auctionscene', () => {
+            this.mainScene.scene.stop('auctionscene');
 
-            // Phase 6: Move the Elf Boot
+            // Phase 5: Plan the Travel Routes
             this.playerManager.readyUpPlayers(); // Reinitialize players turn
-            this.mainScene.scene.launch('selectionscene', () => {
-              this.mainScene.scene.stop('selectionscene');
+            this.mainScene.scene.launch('planroutescene', () => {
+              this.mainScene.scene.stop('planroutescene');
 
-              // Phase 7: Finish the Round
-              if (this.round < this.numRounds) {
-                this.playerManager.readyUpPlayers();
-                this.mainScene.scene.launch('roundcleanupscene', () => {
-                  this.mainScene.scene.stop('roundcleanupscene');
-                  this.playerManager.setNextStartingPlayer();
+              // Phase 6: Move the Elf Boot
+              this.playerManager.readyUpPlayers(); // Reinitialize players turn
+              this.mainScene.scene.launch('selectionscene', () => {
+                this.mainScene.scene.stop('selectionscene');
+
+                // Phase 7: Finish the Round
+                if (this.round < this.numRounds) {
+                  this.playerManager.readyUpPlayers();
+                  this.mainScene.scene.launch('roundcleanupscene', () => {
+                    this.mainScene.scene.stop('roundcleanupscene');
+                    this.playerManager.setNextStartingPlayer();
+                    this.round++;
+                    this.playRoundElfengold();
+                  });
+                } else {
                   this.round++;
                   this.playRoundElfengold();
-                });
-              } else {
-                this.round++;
-                this.playRoundElfengold();
-              }
+                }
+              });
             });
           });
         });
