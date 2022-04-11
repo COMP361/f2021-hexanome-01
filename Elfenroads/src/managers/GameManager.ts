@@ -270,19 +270,9 @@ export default class GameManager {
   private setUpRoundElfengold(): void {
     const isFirstRound: boolean = this.round === 1;
 
-    // Initialze faceUpPile for subsequence rounds
+    // If firstRound, Deal up to 5 cards and initlaize faceUpPile
     if (isFirstRound) {
-      for (let i = 0; i < 3; i++) {
-        CardManager.getInstance().flipCard();
-      }
-      CardManager.getInstance().addGoldCardsToPile();
-    }
-
-    // Loop through players
-    for (const player of this.playerManager.getPlayers()) {
-      // Initialize players if it is the first round
-      if (isFirstRound) {
-        // Deal up to 5 cards
+      for (const player of this.playerManager.getPlayers()) {
         while (player.getCards().length < 5) {
           const randomCard: CardUnit = this.cardManager.getRandomCard();
           player.addCard(randomCard);
@@ -290,10 +280,18 @@ export default class GameManager {
         player.setGold(12);
       }
 
-      // If not first round, then only give them gold
-      else {
-        player.setGold(player.getGold() + 2);
+      // Initialze faceUpPile for subsequence rounds
+      for (let i = 0; i < 3; i++) {
+        CardManager.getInstance().flipCard();
       }
+      CardManager.getInstance().addGoldCardsToPile();
+    }
+
+    // If not first round, then only give them gold
+    else {
+      this.playerManager.getPlayers().forEach(player => {
+        player.setGold(player.getGold() + 2);
+      });
     }
   }
 

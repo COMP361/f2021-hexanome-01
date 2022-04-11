@@ -3,10 +3,10 @@ import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 import Player from '../../classes/Player';
 import {GameVariant} from '../../enums/GameVariant';
 import GameManager from '../../managers/GameManager';
-import PlayerManager from '../../managers/PlayerManager';
-import UIScene from '../UIScene';
-import RoadManager from '../../managers/RoadManager';
 import ItemManager from '../../managers/ItemManager';
+import PlayerManager from '../../managers/PlayerManager';
+import RoadManager from '../../managers/RoadManager';
+import UIScene from '../UIScene';
 
 export default class RoundCleanUpScene extends Phaser.Scene {
   private callback!: Function;
