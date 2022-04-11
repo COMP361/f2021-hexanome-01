@@ -10,11 +10,8 @@ import {
 } from '../../classes/ItemUnit';
 import {ObstacleType} from '../../enums/ObstacleType';
 import {SpellType} from '../../enums/SpellType';
-import {CardManager} from '../../managers/CardManager';
-import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
 import RoadManager from '../../managers/RoadManager';
-import SocketManager from '../../managers/SocketManager';
 import UIScene from '../UIScene';
 
 export default class PlanRouteScene extends Phaser.Scene {
@@ -26,7 +23,7 @@ export default class PlanRouteScene extends Phaser.Scene {
   exchangeItemSprites!: Array<Phaser.GameObjects.Sprite>;
   checkmarkSprites!: Array<Phaser.GameObjects.Sprite>;
   edgeSprites!: Array<Phaser.GameObjects.Sprite>;
-  callback: any;
+  cb: any;
 
   constructor() {
     super('planroutescene');
@@ -36,7 +33,7 @@ export default class PlanRouteScene extends Phaser.Scene {
   }
 
   create(cb: any) {
-    this.callback = cb;
+    this.cb = cb;
     // Create text to notify that it is draw counter phase
 
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
@@ -108,23 +105,13 @@ export default class PlanRouteScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          SocketManager.getInstance().emitStatusChange({
-            nextPhase: true,
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-            RoadManager: RoadManager.getInstance(),
-          });
+          this.cb();
         } else {
-          SocketManager.getInstance().emitStatusChange({
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-            RoadManager: RoadManager.getInstance(),
-          });
+          this.scene.restart();
         }
       });
 
     this.planRoute();
-    SocketManager.getInstance().setScene(this.scene);
   }
 
   goldOrObsExist(items: Array<ItemUnit>) {
@@ -333,12 +320,7 @@ export default class PlanRouteScene extends Phaser.Scene {
         this.sound.play('place');
         graphics.clear();
         PlayerManager.getInstance().setNextPlayer();
-
-        SocketManager.getInstance().emitStatusChange({
-          ItemManager: ItemManager.getInstance(),
-          PlayerManager: PlayerManager.getInstance(),
-          RoadManager: RoadManager.getInstance(),
-        });
+        this.scene.get('uiscene').scene.restart();
       }
     }
   }
@@ -437,9 +419,5 @@ export default class PlanRouteScene extends Phaser.Scene {
           });
       });
     }
-  }
-
-  public nextPhase(): void {
-    this.callback();
   }
 }
