@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import Player from '../../classes/Player';
-import {GameVariant} from '../../enums/GameVariant';
+import {GameVariant, SubVariant} from '../../enums/GameVariant';
 import GameManager from '../../managers/GameManager';
 import PlayerManager from '../../managers/PlayerManager';
 
@@ -187,7 +187,10 @@ export default class WinnerScene extends Phaser.Scene {
         }
       );
       let distanceString = '';
-      if (player.getTownDistance() !== -1) {
+      if (
+        player.getTownDistance() !== -1 &&
+        GameManager.getInstance().getSubVariant() === SubVariant.destination
+      ) {
         distanceString = ` - ${player.getTownDistance()}`;
       }
       const playerScore: Phaser.GameObjects.Text = this.add

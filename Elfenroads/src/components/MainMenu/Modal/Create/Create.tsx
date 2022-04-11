@@ -16,6 +16,7 @@ export default function Create({wait}: any) {
     if (game) {
       changeColor(boot, accessToken, name)
         .then(() => {
+          console.log(game);
           console.log(createSession);
           createSession(accessToken, name, game)
             .then(res => res.data)
@@ -42,9 +43,9 @@ export default function Create({wait}: any) {
             <h3>Elfenland</h3>
             <input
               type="radio"
-              id="ElfenlandVer1"
+              id="elfenland-base"
               name="game"
-              value="ElfenlandVer1"
+              value="Elfenland-base"
             />
             <label htmlFor="Elfenland">Base Game</label>
             <br />
@@ -52,22 +53,51 @@ export default function Create({wait}: any) {
               type="radio"
               id="ElfenlandVer1"
               name="game"
-              value="ElfenlandVer1"
+              value="Elfenland-4rounds"
             />
-            <label htmlFor="Elfenland">4 rounds</label>
+            <label htmlFor="Elfenland">4 Rounds</label>
             <br />
             <input
               type="radio"
               id="ElfenlandVer2"
               name="game"
-              value="ElfenlandVer2"
+              value="Elfenland-destination"
             />
-            <label htmlFor="Elfenland">Destination Town</label>
+            <label htmlFor="Elfenland">Destination Towns</label>
           </div>
           <div className="form__input form__input--radio">
             <h3>Elfengold</h3>
-            <input type="radio" id="Elfengold" name="game" value="elfengold" />
-            <label htmlFor="Elfengold">Elfengold</label>
+            <input
+              type="radio"
+              id="Elfengold"
+              name="game"
+              value="Elfengold-base"
+            />
+            <label htmlFor="Elfengold">Base Game</label>
+            <br />
+            <input
+              type="radio"
+              id="Elfengold"
+              name="game"
+              value="Elfengold-random"
+            />
+            <label htmlFor="Elfengold">Random Gold Values</label>
+            <br />
+            <input
+              type="radio"
+              id="Elfengold"
+              name="game"
+              value="Elfengold-destination"
+            />
+            <label htmlFor="Elfengold">Destination Towns</label>
+            <br />
+            <input
+              type="radio"
+              id="Elfengold"
+              name="game"
+              value="Elfengold-witch"
+            />
+            <label htmlFor="Elfengold">Witch Card</label>
           </div>
         </div>
         <div

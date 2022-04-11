@@ -14,7 +14,7 @@ export default function Join({choose}: any) {
   }, []);
 
   const attemptJoin = (sessionId: any) => {
-    storeSessionId(sessionId, 'ElfenlandVer1', choose);
+    storeSessionId(sessionId, 'Elfenland-base', choose);
   };
 
   return (

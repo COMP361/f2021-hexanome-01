@@ -7,7 +7,7 @@ import Player from '../classes/Player';
 import PlayerIcon from '../classes/PlayerIcon';
 import SettingsMenu from '../classes/SettingsMenu';
 import Town from '../classes/Town';
-import {GameVariant} from '../enums/GameVariant';
+import {GameVariant, SubVariant} from '../enums/GameVariant';
 import GameManager from '../managers/GameManager';
 import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
@@ -484,6 +484,11 @@ export default class UIScene extends Phaser.Scene {
     // Add the text and brown panel to container to be displayed
     container.add(brownPanel);
     container.add(secretTownText);
+    if (
+      !(GameManager.getInstance().getSubVariant() === SubVariant.destination)
+    ) {
+      container.setVisible(false);
+    }
   }
 
   // Renders the current Counters/Items on each edge.
