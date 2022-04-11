@@ -21,6 +21,8 @@ import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
 import PlanRouteScene from '../../scenes/GameplayScenes/PlanRouteScene';
 import SelectionScene from '../../scenes/GameplayScenes/SelectCardnEdgeScene';
 import WinnerScene from '../../scenes/GameplayScenes/WinnerScene';
+import RoundCleanUpScene from '../../scenes/GameplayScenes/RoundCleanUpScene';
+import AuctionScene from '../../scenes/GameplayScenes/AuctionScene';
 
 // Phaser Game config
 const game = {
@@ -51,6 +53,8 @@ const game = {
     PlanRouteScene,
     SelectionScene,
     WinnerScene,
+    RoundCleanUpScene,
+    AuctionScene,
   ],
 };
 

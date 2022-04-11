@@ -39,10 +39,14 @@ export default class UIScene extends Phaser.Scene {
     this.createCheatSheetMenu();
     this.createSettingsMenu();
     this.createTownPieceToggle();
-    this.createSecretTownBanner();
     this.renderEdges();
     this.renderBoots();
     this.createPlayerInventory();
+
+    /**
+     * @TODO Only render secret town if appropriate game variant
+     */
+    this.createSecretTownBanner();
 
     // only show town gold values in elfengold
     const gameVariant: GameVariant = GameManager.getInstance().getGameVariant();
@@ -478,10 +482,7 @@ export default class UIScene extends Phaser.Scene {
       .setOrigin(0, 0);
 
     // Create Phaser container to render the text and brown panel
-    const container: Phaser.GameObjects.Container = this.add.container(
-      this.width - 360,
-      8
-    );
+    const container: Phaser.GameObjects.Container = this.add.container(10, 8);
 
     // Add the text and brown panel to container to be displayed
     container.add(brownPanel);
