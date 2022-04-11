@@ -38,10 +38,14 @@ export default class UIScene extends Phaser.Scene {
     this.createCheatSheetMenu();
     this.createSettingsMenu();
     this.createTownPieceToggle();
-    this.createSecretTownBanner();
     this.renderEdges();
     this.renderBoots();
     this.createPlayerInventory();
+
+    /**
+     * @TODO Only render secret town if appropriate game variant
+     */
+    this.createSecretTownBanner();
 
     // only show town gold values in elfengold
     const gameVariant: GameVariant = GameManager.getInstance().getGameVariant();
@@ -108,17 +112,44 @@ export default class UIScene extends Phaser.Scene {
   private createPlayerIcons(): void {
     const players: Array<Player> = PlayerManager.getInstance().getPlayers();
 
+    // For rendering purposes, we want to potentially display if player is currentPlayer
+    const currentPlayer: Player =
+      PlayerManager.getInstance().getCurrentPlayer();
+
     // For rendering purposes, we want to display all counters face up for local player
     const localPlayer: Player = PlayerManager.getInstance().getLocalPlayer();
 
+    // For rendering purposes, we want to potentially display player gold amount
+    const gameVariant: GameVariant = GameManager.getInstance().getGameVariant();
+
     for (let i = 0; i < players.length; i++) {
+      // Initialize isCurrentPlayer for renderpointer() in PlayerIcon
+      let isCurrentPlayer = false;
+      if (players[i] === currentPlayer) {
+        isCurrentPlayer = true;
+      }
+
+      // Initialize goldScore and isElfengold for renderGold() in PlayerIcon
+      let goldScore = 0;
+      let isElfengold = false;
+      if (gameVariant === GameVariant.elfengold) {
+        goldScore = players[i].getGold();
+        isElfengold = true;
+      }
+
+      // Create icon based on player[i] data
       const icon: PlayerIcon = new PlayerIcon(
         this,
         this.width / 7,
         this.height / 4 + 70 * i,
         players[i].getBootColour(),
-        players[i].getScore()
+        isCurrentPlayer,
+        players[i].getScore(),
+        goldScore,
+        isElfengold
       );
+
+      // Add items to container in PlayerIcon
       const items: Array<ItemUnit> = players[i].getItems();
       for (let j = 0; j < items.length; j++) {
         if (items[j].getHidden() && players[i] !== localPlayer) {
@@ -448,10 +479,7 @@ export default class UIScene extends Phaser.Scene {
       .setOrigin(0, 0);
 
     // Create Phaser container to render the text and brown panel
-    const container: Phaser.GameObjects.Container = this.add.container(
-      this.width - 360,
-      8
-    );
+    const container: Phaser.GameObjects.Container = this.add.container(10, 8);
 
     // Add the text and brown panel to container to be displayed
     container.add(brownPanel);

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import DrawCardsScene from './GameplayScenes/DrawCardsScene';
 
 export default class Preloader extends Phaser.Scene {
   constructor() {
@@ -9,6 +10,13 @@ export default class Preloader extends Phaser.Scene {
     // /////////////////////////////////////////////////////////
     // ///// THIS IS WHERE ALL ASSETS WILL BE PRELOADED IN ////////
     // /////////////////////////////////////////////////////////
+
+    // Assets for WinnerScene
+    this.load.atlas(
+      'flares',
+      'http://labs.phaser.io/assets/particles/flares.png',
+      'http://labs.phaser.io/assets/particles/flares.json'
+    );
 
     // Assets for Round
     this.load.image('R1', 'assets/boardgame/R1.png');
@@ -22,11 +30,14 @@ export default class Preloader extends Phaser.Scene {
       'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'
     );
 
-    // Assets for BoardScene.js
+    // Assets for DrawCardsScene.ts
+    this.load.image('unknown-card', 'assets/boardgame/blue.png');
+
+    // Assets for BoardScene.ts
     this.load.image('brownBackground', 'assets/background/brown.jpg');
     this.load.image('map', 'assets/boardgame/mapNEW.png');
 
-    // Assets for UIScene.js
+    // Assets for UIScene.ts
     this.load.image(
       'brown-cirle',
       'assets/ui/rpgpack/PNG/buttonRound_brown.png'
@@ -99,10 +110,13 @@ export default class Preloader extends Phaser.Scene {
       'purple-panel',
       'assets/ui/uipack_fixed/PNG/purple_panel.png'
     );
-
     this.load.image(
       'grey-slider',
       'assets/ui/uipack_fixed/PNG/grey_sliderRight.png'
+    );
+    this.load.image(
+      'yellow-slider',
+      'assets/ui/uipack_fixed/PNG/yellow_sliderRight.png'
     );
 
     // Assets for CounterScene.js

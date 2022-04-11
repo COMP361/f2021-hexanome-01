@@ -20,6 +20,11 @@ import Preloader from '../../scenes/Preloader';
 import DrawCountersScene from '../../scenes/GameplayScenes/DrawCountersScene';
 import PlanRouteScene from '../../scenes/GameplayScenes/PlanRouteScene';
 import SelectionScene from '../../scenes/GameplayScenes/SelectCardnEdgeScene';
+import WinnerScene from '../../scenes/GameplayScenes/WinnerScene';
+import RoundCleanUpScene from '../../scenes/GameplayScenes/RoundCleanUpScene';
+import AuctionScene from '../../scenes/GameplayScenes/AuctionScene';
+import DrawTwoCounterScene from '../../scenes/GameplayScenes/DrawTwoCounterScene';
+import DrawCardsScene from '../../scenes/GameplayScenes/DrawCardsScene';
 
 // Phaser Game config
 const game = {
@@ -36,6 +41,12 @@ const game = {
       },
     ],
   },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {y: 600},
+    },
+  },
   scene: [
     Preloader,
     MainScene,
@@ -43,6 +54,11 @@ const game = {
     DrawCountersScene,
     PlanRouteScene,
     SelectionScene,
+    WinnerScene,
+    RoundCleanUpScene,
+    AuctionScene,
+    DrawTwoCounterScene,
+    DrawCardsScene,
   ],
 };
 

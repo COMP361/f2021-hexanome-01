@@ -83,6 +83,17 @@ export default class Player {
     }
   }
 
+  public getTownDistance(): integer {
+    if (this.secretTown.isNull()) {
+      return -1;
+    } else {
+      return RoadManager.getInstance().getDistance(
+        this.currentLocation,
+        this.secretTown
+      );
+    }
+  }
+
   public getBootColour(): BootColour {
     return this.bootColour;
   }
@@ -98,6 +109,10 @@ export default class Player {
   // Not well encapsulated...
   public getItems(): Array<ItemUnit> {
     return this.myItems;
+  }
+
+  public clearItems(): void {
+    this.myItems = [];
   }
 
   public getCards(): Array<CardUnit> {

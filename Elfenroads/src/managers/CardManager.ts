@@ -6,18 +6,19 @@ import {EdgeType} from '../enums/EdgeType';
 import {GameVariant} from '../enums/GameVariant';
 import {TravelCardType} from '../enums/TravelCardType';
 import GameManager from './GameManager';
-import PlayerManager from './PlayerManager';
 
 export class CardManager {
   private static cardManagerInstance: CardManager;
   private cardPile: Array<CardUnit>;
   private faceUpPile: Array<CardUnit>;
   private goldCardPile: Array<GoldCard>;
+  private amountDrawn: number;
 
   private constructor() {
     this.cardPile = [];
     this.faceUpPile = [];
     this.goldCardPile = [];
+    this.amountDrawn = 0;
   }
 
   public static getInstance(): CardManager {
@@ -47,6 +48,14 @@ export class CardManager {
     }
   }
 
+  public getAmountDrawn(): number {
+    return this.amountDrawn;
+  }
+
+  public setAmountDrawn(amountDrawn: number): void {
+    this.amountDrawn = amountDrawn;
+  }
+
   public getCardPile(): Array<CardUnit> {
     return this.cardPile;
   }
@@ -74,8 +83,25 @@ export class CardManager {
     return;
   }
 
+  public getFaceUpPile(): Array<CardUnit> {
+    return this.faceUpPile;
+  }
+
   public getGoldCardPile(): Array<GoldCard> {
     return this.goldCardPile;
+  }
+
+  public claimFaceUpCard(player: Player, index: number): void {
+    const faceUpCard = this.faceUpPile[index];
+    player.addCard(faceUpCard);
+
+    let newCard = this.getRandomCard();
+    while (newCard instanceof GoldCard) {
+      newCard = this.getRandomCard();
+    }
+
+    this.faceUpPile[index] = newCard;
+    this.amountDrawn++;
   }
 
   public claimGoldCardPile(player: Player): void {
@@ -85,6 +111,16 @@ export class CardManager {
     });
     const newBalance = player.getGold() + totalGold;
     player.setGold(newBalance);
+    this.goldCardPile = [];
+    this.amountDrawn++;
+  }
+
+  public claimFaceDownCard(player: Player): void {
+    const randomCard = this.getRandomCard();
+    if (!(randomCard instanceof GoldCard)) {
+      player.addCard(randomCard);
+      this.amountDrawn++;
+    }
   }
 
   public addToPile(player: Player, card: CardUnit): void {
@@ -92,16 +128,18 @@ export class CardManager {
     this.cardPile.push(card);
   }
 
-  // this must be called 5 times after 5 cards are distributed to every player
+  // this must be called 3 times after 3 cards are distributed to every player
   // also called every time a player picked a card or picked a gold card.
   public flipCard(): void {
     const randomCard = this.getRandomCard();
     if (!(randomCard instanceof GoldCard)) {
       this.faceUpPile.push(randomCard);
+    } else {
+      this.flipCard();
     }
   }
 
-  // must call this function after flipping 5 cards
+  // must call this function after flipping 3 cards
   public addGoldCardsToPile(): void {
     for (let i = 0; i < 7; i++) {
       this.cardPile.push(new GoldCard(3));

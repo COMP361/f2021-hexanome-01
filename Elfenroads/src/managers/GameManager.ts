@@ -61,7 +61,7 @@ export default class GameManager {
     this.initialized = false;
 
     // hard coded this for now
-    this.gameVariant = GameVariant.elfenland;
+    this.gameVariant = GameVariant.elfengold;
     this.numRounds = 3;
     this.round = 1;
   }
@@ -81,9 +81,6 @@ export default class GameManager {
     return this.gameVariant;
   }
 
-  /**
-   * SIMULATION OF GAME
-   */
   public playGame(mainScene: Phaser.Scene): void {
     // Step 0: Initialize the main Phaser.Scene
     this.mainScene = mainScene;
@@ -112,13 +109,13 @@ export default class GameManager {
     console.log(`Playing Elfenland Round: ${this.round}`);
     // Check to see if we have played enough rounds
     if (this.round > this.numRounds) {
-      this.displayGameOver();
+      this.mainScene.scene.pause('uiscene');
+      this.mainScene.scene.launch('winnerscene');
       return;
     }
 
     // Phase 1 & 2
-    this.dealCardsAndCounter();
-    this.itemManager.flipCounters();
+    this.setUpRoundElfenland();
 
     // Phase 3: Draw additional Transportation counters
     this.playerManager.readyUpPlayers();
@@ -136,10 +133,18 @@ export default class GameManager {
           this.mainScene.scene.stop('selectionscene');
 
           // Phase 6: Finish the Round
-          // @TODO: Still missing round cleanup function/scene.
-          this.playerManager.setNextStartingPlayer();
-          this.round++;
-          this.playRoundElfenland();
+          if (this.round < this.numRounds) {
+            this.playerManager.readyUpPlayers();
+            this.mainScene.scene.launch('roundcleanupscene', () => {
+              this.mainScene.scene.stop('roundcleanupscene');
+              this.playerManager.setNextStartingPlayer();
+              this.round++;
+              this.playRoundElfenland();
+            });
+          } else {
+            this.round++;
+            this.playRoundElfenland();
+          }
         });
       });
     });
@@ -149,42 +154,98 @@ export default class GameManager {
     console.log(`Playing Elfengold Round: ${this.round}`);
     // Check to see if we have played enough rounds
     if (this.round > this.numRounds) {
-      this.displayGameOver();
+      this.mainScene.scene.launch('winnerscene');
       return;
     }
 
-    // Phase 1 & 2
-    this.dealCardsAndCounter();
-    this.itemManager.flipCounters();
+    this.setUpRoundElfengold();
 
-    // Phase 3: Draw additional Transportation counters
-    this.playerManager.readyUpPlayers();
-    this.mainScene.scene.launch('drawcountersscene', () => {
-      this.mainScene.scene.stop('drawcountersscene');
-
-      // Phase 4: Auction
-
-      // Phase 5: Plan the Travel Routes
+    // In first round, we skip phase 1 & 2
+    if (this.round === 1) {
+      // Phase 3: Draw Tokens and Counters
       this.playerManager.readyUpPlayers(); // Reinitialize players turn
-      this.mainScene.scene.launch('planroutescene', () => {
-        this.mainScene.scene.stop('planroutescene');
-
-        // Phase 6: Move the Elf Boot
+      this.mainScene.scene.launch('drawtwocounterscene', () => {
+        this.mainScene.scene.stop('drawtwocounterscene');
+        // Phase 4: Auction
         this.playerManager.readyUpPlayers(); // Reinitialize players turn
-        this.mainScene.scene.launch('selectionscene', () => {
-          this.mainScene.scene.stop('selectionscene');
+        this.mainScene.scene.launch('auctionscene', () => {
+          this.mainScene.scene.stop('auctionscene');
 
-          // Phase 7: Finish the Round
-          // @TODO: Still missing round cleanup function/scene.
-          this.playerManager.setNextStartingPlayer();
-          this.round++;
-          this.playRoundElfengold();
+          // Phase 5: Plan the Travel Routes
+          this.playerManager.readyUpPlayers(); // Reinitialize players turn
+          this.mainScene.scene.launch('planroutescene', () => {
+            this.mainScene.scene.stop('planroutescene');
+
+            // Phase 6: Move the Elf Boot
+            this.playerManager.readyUpPlayers(); // Reinitialize players turn
+            this.mainScene.scene.launch('selectionscene', () => {
+              this.mainScene.scene.stop('selectionscene');
+
+              // Phase 7: Finish the Round
+              this.playerManager.readyUpPlayers();
+              this.mainScene.scene.launch('roundcleanupscene', () => {
+                this.mainScene.scene.stop('roundcleanupscene');
+                this.playerManager.setNextStartingPlayer();
+                this.round++;
+                this.playRoundElfengold();
+              });
+            });
+          });
         });
       });
-    });
+    }
+
+    // In subsequence rounds we go through all phases
+    else {
+      // Phase 1: Draw Travel Cards
+      this.playerManager.readyUpPlayers(); // Reinitialize players turn
+      this.mainScene.scene.launch('drawcardssscene', () => {
+        this.mainScene.scene.stop('drawcardssscene');
+
+        // Phase 2: Distribute Gold Coins
+        // Handled by setUpRoundElfengold()
+
+        // Phase 3: Draw Tokens and Counters
+        this.playerManager.readyUpPlayers(); // Reinitialize players turn
+        this.mainScene.scene.launch('drawtwocounterscene', () => {
+          this.mainScene.scene.stop('drawtwocounterscene');
+          // Phase 4: Auction
+          this.playerManager.readyUpPlayers(); // Reinitialize players turn
+          this.mainScene.scene.launch('auctionscene', () => {
+            this.mainScene.scene.stop('auctionscene');
+
+            // Phase 5: Plan the Travel Routes
+            this.playerManager.readyUpPlayers(); // Reinitialize players turn
+            this.mainScene.scene.launch('planroutescene', () => {
+              this.mainScene.scene.stop('planroutescene');
+
+              // Phase 6: Move the Elf Boot
+              this.playerManager.readyUpPlayers(); // Reinitialize players turn
+              this.mainScene.scene.launch('selectionscene', () => {
+                this.mainScene.scene.stop('selectionscene');
+
+                // Phase 7: Finish the Round
+                if (this.round < this.numRounds) {
+                  this.playerManager.readyUpPlayers();
+                  this.mainScene.scene.launch('roundcleanupscene', () => {
+                    this.mainScene.scene.stop('roundcleanupscene');
+                    this.playerManager.setNextStartingPlayer();
+                    this.round++;
+                    this.playRoundElfengold();
+                  });
+                } else {
+                  this.round++;
+                  this.playRoundElfengold();
+                }
+              });
+            });
+          });
+        });
+      });
+    }
   }
 
-  private dealCardsAndCounter(): void {
+  private setUpRoundElfenland(): void {
     for (const player of this.playerManager.getPlayers()) {
       // Deal up to 8 cards
       while (player.getCards().length < 8) {
@@ -201,12 +262,44 @@ export default class GameManager {
         const tree: Obstacle = this.itemManager.getTreeObstacle();
         player.addItem(tree);
       }
+
+      this.itemManager.flipCounters();
+    }
+  }
+
+  private setUpRoundElfengold(): void {
+    const isFirstRound: boolean = this.round === 1;
+
+    // If firstRound, Deal up to 5 cards and initlaize faceUpPile
+    if (isFirstRound) {
+      for (const player of this.playerManager.getPlayers()) {
+        while (player.getCards().length < 5) {
+          const randomCard: CardUnit = this.cardManager.getRandomCard();
+          player.addCard(randomCard);
+        }
+        player.setGold(12);
+      }
+
+      // Initialze faceUpPile for subsequence rounds
+      for (let i = 0; i < 3; i++) {
+        CardManager.getInstance().flipCard();
+      }
+      CardManager.getInstance().addGoldCardsToPile();
+    }
+
+    // If not first round, then only give them gold
+    else {
+      this.playerManager.getPlayers().forEach(player => {
+        player.setGold(player.getGold() + 2);
+      });
     }
   }
 
   private initializePlayers(): void {
     // Get all towns in Array format to initialize player's random secret town
-    const allTownsArray = RoadManager.getInstance().getAllTownsAsArray();
+    const allTownsArray = RoadManager.getInstance()
+      .getAllTownsAsArray()
+      .filter(town => town.getName() !== 'null');
 
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
@@ -240,35 +333,5 @@ export default class GameManager {
         this.playerManager.setLocalPlayer(player);
       }
     });
-  }
-
-  private displayGameOver(): void {
-    // Create text to notify whose turn it is using boot color substring
-    const playerText: Phaser.GameObjects.Text = this.mainScene.add
-      .text(10, 5, 'GAMEOVER', {
-        fontFamily: 'MedievalSharp',
-        fontSize: '50px',
-      })
-      .setColor('white');
-
-    // Grab width of text to determine size of panel behind
-    const textWidth: number = playerText.width;
-
-    // Create brown ui panel element relative to the size of the text
-    const brownPanel: Phaser.GameObjects.RenderTexture = this.mainScene.add
-      .nineslice(0, 0, textWidth + 20, 60, 'brown-panel', 24)
-      .setOrigin(0, 0);
-
-    // Grab width of current game to center our container
-    const gameWidth: number = this.mainScene.scale.width;
-
-    // Initialize container to group elements
-    // Need to center the container relative to the gameWidth and the size of the text box
-    const container: Phaser.GameObjects.Container =
-      this.mainScene.add.container(gameWidth / 2 - brownPanel.width / 2, 20);
-
-    // Render the brown panel and text
-    container.add(brownPanel).setDepth(3);
-    container.add(playerText).setDepth(3);
   }
 }
