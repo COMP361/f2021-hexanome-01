@@ -1,4 +1,10 @@
-import {CardUnit, GoldCard, TravelCard} from '../classes/CardUnit';
+import {
+  CardUnit,
+  GoldCard,
+  MagicSpellCard,
+  TownCard,
+  TravelCard,
+} from '../classes/CardUnit';
 import Edge from '../classes/Edge';
 import {Counter, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
@@ -6,7 +12,6 @@ import {EdgeType} from '../enums/EdgeType';
 import {GameVariant} from '../enums/GameVariant';
 import {TravelCardType} from '../enums/TravelCardType';
 import GameManager from './GameManager';
-import PlayerManager from './PlayerManager';
 
 export class CardManager {
   private static cardManagerInstance: CardManager;
@@ -74,6 +79,10 @@ export class CardManager {
     return;
   }
 
+  public getFaceUpPile(): Array<CardUnit> {
+    return this.faceUpPile;
+  }
+
   public getGoldCardPile(): Array<GoldCard> {
     return this.goldCardPile;
   }
@@ -92,7 +101,7 @@ export class CardManager {
     this.cardPile.push(card);
   }
 
-  // this must be called 5 times after 5 cards are distributed to every player
+  // this must be called 3 times after 3 cards are distributed to every player
   // also called every time a player picked a card or picked a gold card.
   public flipCard(): void {
     const randomCard = this.getRandomCard();
@@ -101,7 +110,7 @@ export class CardManager {
     }
   }
 
-  // must call this function after flipping 5 cards
+  // must call this function after flipping 3 cards
   public addGoldCardsToPile(): void {
     for (let i = 0; i < 7; i++) {
       this.cardPile.push(new GoldCard(3));
@@ -189,5 +198,33 @@ export class CardManager {
       }
     }
     return true;
+  }
+
+  public update(manager: any) {
+    this.cardPile = manager.cardPile.map((card: any) => {
+      if (card.type === 'magic-spell-card') {
+        return new MagicSpellCard(card.name);
+      } else if (card.type === 'travel-card') {
+        return new TravelCard(card.name);
+      } else if (card.type === 'gold-card') {
+        return new GoldCard(card.amount);
+      } else {
+        return new TownCard(card.name);
+      }
+    });
+    this.faceUpPile = manager.faceUpPile.map((card: any) => {
+      if (card.type === 'magic-spell-card') {
+        return new MagicSpellCard(card.name);
+      } else if (card.type === 'travel-card') {
+        return new TravelCard(card.name);
+      } else if (card.type === 'gold-card') {
+        return new GoldCard(card.amount);
+      } else {
+        return new TownCard(card.name);
+      }
+    });
+    this.goldCardPile = manager.goldCardPile.map((card: any) => {
+      return new GoldCard(card.amount);
+    });
   }
 }
