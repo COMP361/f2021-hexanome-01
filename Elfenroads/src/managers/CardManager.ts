@@ -1,10 +1,4 @@
-import {
-  CardUnit,
-  GoldCard,
-  MagicSpellCard,
-  TownCard,
-  TravelCard,
-} from '../classes/CardUnit';
+import {CardUnit, GoldCard, TravelCard} from '../classes/CardUnit';
 import Edge from '../classes/Edge';
 import {Counter, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
@@ -198,33 +192,5 @@ export class CardManager {
       }
     }
     return true;
-  }
-
-  public update(manager: any) {
-    this.cardPile = manager.cardPile.map((card: any) => {
-      if (card.type === 'magic-spell-card') {
-        return new MagicSpellCard(card.name);
-      } else if (card.type === 'travel-card') {
-        return new TravelCard(card.name);
-      } else if (card.type === 'gold-card') {
-        return new GoldCard(card.amount);
-      } else {
-        return new TownCard(card.name);
-      }
-    });
-    this.faceUpPile = manager.faceUpPile.map((card: any) => {
-      if (card.type === 'magic-spell-card') {
-        return new MagicSpellCard(card.name);
-      } else if (card.type === 'travel-card') {
-        return new TravelCard(card.name);
-      } else if (card.type === 'gold-card') {
-        return new GoldCard(card.amount);
-      } else {
-        return new TownCard(card.name);
-      }
-    });
-    this.goldCardPile = manager.goldCardPile.map((card: any) => {
-      return new GoldCard(card.amount);
-    });
   }
 }

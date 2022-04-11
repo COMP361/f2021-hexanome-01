@@ -1,5 +1,4 @@
 import Edge from '../classes/Edge';
-import {Counter, GoldPiece, Obstacle, Spell} from '../classes/ItemUnit';
 import Town from '../classes/Town';
 import {EdgeType} from '../enums/EdgeType';
 
@@ -700,34 +699,5 @@ export default class RoadManager {
   // Returns an array of towns from our allTowns Map
   public getAllTownsAsArray(): Array<Town> {
     return Array.from(this.allTowns.values());
-  }
-
-  public update(manager: any): any {
-    this.allEdges.forEach((edge: any, i: number) => {
-      const newEdgeObject = manager.allEdges[i];
-      edge.setItems(
-        newEdgeObject.items.map((item: any) => {
-          if (item.type === 'spell') {
-            return new Spell(item.name, item.allowedEdges, item.isHidden);
-          } else if (item.type === 'counter') {
-            return new Counter(
-              item.name,
-              item.allowedEdges,
-              item.cardsNeeded,
-              item.isHidden
-            );
-          } else if (item.type === 'gold-piece') {
-            return new GoldPiece(item.allowedEdges, item.isHidden);
-          } else {
-            return new Obstacle(
-              item.name,
-              item.allowedEdges,
-              item.needsCounter,
-              item.isHidden
-            );
-          }
-        })
-      );
-    });
   }
 }
