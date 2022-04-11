@@ -6,6 +6,7 @@ import {
   getSessionId,
   getUser,
 } from '../utils/storageUtils';
+import {BidManager} from './BidManager';
 import {CardManager} from './CardManager';
 import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
@@ -72,22 +73,23 @@ export default class SocketManager {
       // For each manager received, update our local managers.
       if (managers['CardManager']) {
         CardManager.getInstance().update(managers['CardManager']);
-        console.log(CardManager.getInstance());
       }
 
       if (managers['ItemManager']) {
         ItemManager.getInstance().update(managers['ItemManager']);
-        console.log(ItemManager.getInstance());
       }
 
       if (managers['PlayerManager']) {
         PlayerManager.getInstance().update(managers['PlayerManager']);
-        console.log(PlayerManager.getInstance());
       }
 
       if (managers['RoadManager']) {
         RoadManager.getInstance().update(managers['RoadManager']);
-        console.log(RoadManager.getInstance());
+      }
+
+      if (managers['BigManager']) {
+        BidManager.getInstance().update(managers['BidManager']);
+        console.log(BidManager.getInstance());
       }
 
       // We always restart the UI after receiving a state update.
@@ -162,6 +164,14 @@ export default class SocketManager {
         }),
       ];
       data.RoadManager = newRoadManager;
+    }
+    if (data.BidManager) {
+      const newBidManager = {...data.BigManager};
+      newBidManager.bidItems = [...data.BidManager.bidItems.map(demapItem)];
+      newBidManager.auctionedOffItems = [
+        ...data.BidManager.auctionedOffItems.map(demapItem),
+      ];
+      data.BidManager = newBidManager;
     }
     // Send the cleaned managers to all active users
     this.socket.emit('statusChange', {

@@ -151,10 +151,12 @@ export default class GameManager {
                     this.mainScene.scene.stop('roundcleanupscene');
                     this.playerManager.setNextStartingPlayer();
                     this.round++;
+                    this.initialized = false;
                     this.playRoundElfenland();
                   });
                 } else {
                   this.round++;
+                  this.initialized = false;
                   this.playRoundElfenland();
                 }
               });
@@ -220,10 +222,12 @@ export default class GameManager {
                       this.mainScene.scene.stop('roundcleanupscene');
                       this.playerManager.setNextStartingPlayer();
                       this.round++;
+                      this.initialized = false;
                       this.playRoundElfengold();
                     });
                   } else {
                     this.round++;
+                    this.initialized = false;
                     this.playRoundElfengold();
                   }
                 });
