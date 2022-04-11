@@ -286,7 +286,6 @@ export default class DrawTwoCardScene extends Phaser.Scene {
     // If the currentPlayer has drawn the correct amount, then switch players
     if (this.amountToDraw === CardManager.getInstance().getAmountDrawn()) {
       CardManager.getInstance().setAmountDrawn(0);
-      PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
       this.scene.get('uiscene').scene.restart();
       this.callback();
     }

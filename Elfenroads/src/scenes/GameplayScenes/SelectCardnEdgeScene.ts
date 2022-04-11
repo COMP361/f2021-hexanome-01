@@ -64,25 +64,29 @@ export default class SelectionScene extends Phaser.Scene {
       .on('pointerup', () => {
         passTurnButton.clearTint();
         this.sound.play('pass');
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
 
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          this.callback();
-        } else {
-          this.scene.restart();
-        }
+        this.scene.launch('choosecoinscene', () => {
+          this.scene.get('choosecoinscene').scene.stop();
+          PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+          PlayerManager.getInstance().setNextPlayer();
+          this.scene.get('uiscene').scene.restart();
+          let finishedPlayers: integer = 0;
+          PlayerManager.getInstance()
+            .getPlayers()
+            .forEach(player => {
+              if (player.getPassedTurn() === true) {
+                finishedPlayers++;
+              }
+            });
+
+          if (
+            finishedPlayers === PlayerManager.getInstance().getPlayers().length
+          ) {
+            this.callback();
+          } else {
+            this.scene.restart();
+          }
+        });
       });
   }
 

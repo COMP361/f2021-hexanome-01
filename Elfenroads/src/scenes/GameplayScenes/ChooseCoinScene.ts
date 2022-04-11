@@ -10,7 +10,7 @@ export default class ChooseCoinScene extends Phaser.Scene {
   create(callback: Function) {
     this.createUIBanner();
     this.createUIGetButton();
-    this.createUIPassButton();
+    this.createUIGoldButton();
     this.callback = callback;
   }
 
@@ -41,33 +41,15 @@ export default class ChooseCoinScene extends Phaser.Scene {
       .on('pointerup', () => {
         getCardsButton.clearTint();
         PlayerManager.getInstance().getCurrentPlayer().chooseCards();
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
-
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
+        this.scene.launch('drawtwocardscene', () => {
+          this.scene.get('drawtwocardscene').scene.stop();
           this.callback();
-        } else {
-          this.scene.launch('drawtwocardscene', () => {
-            this.scene.stop('drawtwocardscene');
-          });
-          this.scene.restart();
-        }
+        });
       });
   }
 
   // Button to skip turn
-  private createUIPassButton(): void {
+  private createUIGoldButton(): void {
     // Create small button with the "next" icon
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
@@ -76,7 +58,18 @@ export default class ChooseCoinScene extends Phaser.Scene {
       height - 30,
       'brown-box'
     );
-    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
+    const goldImage = this.add
+      .image(passTurnButton.x, passTurnButton.y, 'gold-cirle')
+      .setScale(1);
+
+    this.add
+      .text(goldImage.getCenter().x, goldImage.getCenter().y, `${100}`, {
+        fontFamily: 'MedievalSharp',
+        fontSize: '19px',
+        color: 'black',
+      })
+      .setOrigin(0.5, 0.5)
+      .setDepth(4);
 
     // Add interactive pointer options for passTurnButton
     // After click, currentPlayer is updated via playerManager
@@ -92,25 +85,7 @@ export default class ChooseCoinScene extends Phaser.Scene {
         passTurnButton.clearTint();
         this.sound.play('pass');
         PlayerManager.getInstance().getCurrentPlayer().chooseGold();
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
-
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          this.callback();
-        } else {
-          this.scene.restart();
-        }
+        this.callback();
       });
   }
 
