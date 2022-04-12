@@ -169,6 +169,7 @@ export default class DrawTwoCounterScene extends Phaser.Scene {
         itemSprite.clearTint();
         this.sound.play('collect');
         for (const item of this.counters) {
+          console.log(item);
           PlayerManager.getInstance().getCurrentPlayer().addItem(item);
         }
         this.counters = [];

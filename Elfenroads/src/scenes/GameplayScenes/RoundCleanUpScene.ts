@@ -151,7 +151,11 @@ export default class RoundCleanUpScene extends Phaser.Scene {
   }
 
   private chooseCounterToKeep(): void {
-    if (PlayerManager.getInstance().getCurrentPlayer().getItems().length < 2) {
+    if (
+      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
+        PlayerManager.getInstance().getLocalPlayer().getBootColour() &&
+      PlayerManager.getInstance().getCurrentPlayer().getItems().length < 2
+    ) {
       this.passTurnButton();
       // PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
       // PlayerManager.getInstance().setNextPlayer();

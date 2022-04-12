@@ -172,6 +172,7 @@ export default class Player {
   }
 
   public addItem(pItem: ItemUnit): void {
+    console.log(pItem);
     this.myItems.push(pItem);
   }
 

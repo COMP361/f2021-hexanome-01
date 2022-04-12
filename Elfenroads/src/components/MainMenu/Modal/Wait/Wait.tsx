@@ -28,14 +28,15 @@ export default function Wait({socket, setSocket}: any) {
         const sessions = data.AllSessions;
         sessions.forEach((session: any) => {
           if (session.sessionid === sessionId) {
+            console.log(session.gameParameters.displayName);
             storeSessionId(
               session.sessionid,
-              session.gameSession.gameParameters.displayName,
+              session.gameParameters.displayName,
               null
             );
             setSessionId(session.sessionid);
             socket.emit('joinLobby', {
-              game: session.gameSession.gameParameters.displayName,
+              game: session.gameParameters.displayName,
               session_id: session.sessionid,
             });
           }

@@ -458,6 +458,8 @@ export class CardManager {
           }
         }
       } else {
+        console.log(edgeType);
+        console.log(travelcounter);
         let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
         console.log(numCardsRequired);
         if (numCardsRequired === undefined) return false;

@@ -146,6 +146,7 @@ export default class SocketManager {
         (player: any) => {
           const newPlayer = {...player};
           newPlayer.myItems = player.myItems.map(demapItem);
+          console.log(player, newPlayer);
           return newPlayer;
         }
       );

@@ -20,7 +20,12 @@ export default class AuctionScene extends Phaser.Scene {
   create(callback: Function) {
     this.callback = callback;
     this.createUIBanner();
-    this.createPassTurnButton();
+    if (
+      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
+      PlayerManager.getInstance().getLocalPlayer().getBootColour()
+    ) {
+      this.createPassTurnButton();
+    }
     this.createAuction();
     SocketManager.getInstance().setScene(this.scene);
   }

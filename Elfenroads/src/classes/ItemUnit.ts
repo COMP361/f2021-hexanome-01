@@ -68,6 +68,7 @@ export class Counter extends ItemUnit {
     if (cardsNeeded instanceof Map) {
       this.cardsNeeded = cardsNeeded;
     } else {
+      console.log(counterType, cardsNeeded);
       this.cardsNeeded = new Map(
         Object.entries(cardsNeeded).map(entry => {
           return [

@@ -20,7 +20,7 @@ export default class DrawCardsScene extends Phaser.Scene {
     this.createUIBanner();
 
     // Create pass turn button
-    this.createPassTurnButton();
+    // this.createPassTurnButton();
 
     // Render all cards
     this.renderFaceUpPile();
