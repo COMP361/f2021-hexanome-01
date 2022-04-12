@@ -30,7 +30,6 @@ export default class SelectionScene extends Phaser.Scene {
     this.edgeMenus = [];
     this.callback = callback;
     this.createUIBanner();
-    this.createUIPassTurnButton();
 
     // Only allow local player to interact with UI if its their turn
     if (
@@ -39,6 +38,7 @@ export default class SelectionScene extends Phaser.Scene {
     ) {
       this.makeCardsInteractive();
       this.makeEdgesInteractive();
+      this.createUIPassTurnButton();
     }
     SocketManager.getInstance().setScene(this.scene);
   }

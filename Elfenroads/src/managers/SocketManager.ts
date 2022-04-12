@@ -68,7 +68,9 @@ export default class SocketManager {
       // When a round is initialized, the host sends the state to all
       // players any time a new player joins, so we keep track of
       // whether or not we've already received the initial state.
-      if (managers.roundSetup) this.initialized = true;
+      if (managers.roundSetup) {
+        this.initialized = true;
+      }
 
       // For each manager received, update our local managers.
       if (managers['CardManager']) {
@@ -89,7 +91,6 @@ export default class SocketManager {
 
       if (managers['BidManager']) {
         BidManager.getInstance().update(managers['BidManager']);
-        console.log(BidManager.getInstance());
       }
 
       // We always restart the UI after receiving a state update.
@@ -101,6 +102,9 @@ export default class SocketManager {
         // otherwise, restart the scene.
       } else {
         this.getScene()?.restart();
+      }
+      if (managers.roundSetup) {
+        PlayerManager.getInstance().readyUpPlayers();
       }
     });
 
@@ -201,5 +205,9 @@ export default class SocketManager {
 
   public getUI(): any {
     return this.ui;
+  }
+
+  public setInitialized(initialized: boolean): void {
+    this.initialized = initialized;
   }
 }

@@ -64,62 +64,63 @@ export default class PlanRouteScene extends Phaser.Scene {
     container.add(brownPanel);
     container.add(drawCounterText);
 
-    /**
-     * SHOWCASE FOR CHANGING PLAYER TURN
-     */
-    // Create small button with the "next" icon
-    const width = this.cameras.main.width;
-    const height = this.cameras.main.height;
-    const passTurnButton = this.add.sprite(
-      width - 30,
-      height - 30,
-      'brown-box'
-    );
-    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
+    if (
+      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
+      PlayerManager.getInstance().getLocalPlayer().getBootColour()
+    ) {
+      const width = this.cameras.main.width;
+      const height = this.cameras.main.height;
+      const passTurnButton = this.add.sprite(
+        width - 30,
+        height - 30,
+        'brown-box'
+      );
+      this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
 
-    // Add interactive pointer options for passTurnButton
-    // After click, currentPlayer is updated via playerManager
-    // PlayerTurnScene is rerendered to show whose turn it is
-    passTurnButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        passTurnButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        passTurnButton.clearTint();
-      })
-      .on('pointerup', () => {
-        passTurnButton.clearTint();
-        this.sound.play('pass');
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
+      // Add interactive pointer options for passTurnButton
+      // After click, currentPlayer is updated via playerManager
+      // PlayerTurnScene is rerendered to show whose turn it is
+      passTurnButton
+        .setInteractive()
+        .on('pointerdown', () => {
+          passTurnButton.setTint(0xd3d3d3);
+        })
+        .on('pointerout', () => {
+          passTurnButton.clearTint();
+        })
+        .on('pointerup', () => {
+          passTurnButton.clearTint();
+          this.sound.play('pass');
+          PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+          PlayerManager.getInstance().setNextPlayer();
+          this.scene.get('uiscene').scene.restart();
+          let finishedPlayers: integer = 0;
+          PlayerManager.getInstance()
+            .getPlayers()
+            .forEach(player => {
+              if (player.getPassedTurn() === true) {
+                finishedPlayers++;
+              }
+            });
 
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          SocketManager.getInstance().emitStatusChange({
-            nextPhase: true,
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-            RoadManager: RoadManager.getInstance(),
-          });
-        } else {
-          SocketManager.getInstance().emitStatusChange({
-            ItemManager: ItemManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-            RoadManager: RoadManager.getInstance(),
-          });
-        }
-      });
+          if (
+            finishedPlayers === PlayerManager.getInstance().getPlayers().length
+          ) {
+            SocketManager.getInstance().emitStatusChange({
+              nextPhase: true,
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+              RoadManager: RoadManager.getInstance(),
+            });
+          } else {
+            SocketManager.getInstance().emitStatusChange({
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+              RoadManager: RoadManager.getInstance(),
+            });
+          }
+        });
+    }
 
     this.planRoute();
     SocketManager.getInstance().setScene(this.scene);

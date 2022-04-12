@@ -23,9 +23,15 @@ export default class RoundCleanUpScene extends Phaser.Scene {
     this.callback = callback;
     this.cleanUpCounters();
     this.createUIBanner();
-    // this.passTurnButton();
+    if (
+      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
+      PlayerManager.getInstance().getLocalPlayer().getBootColour()
+    ) {
+      this.passTurnButton();
+    }
     this.chooseCounterToKeep();
     SocketManager.getInstance().setScene(this.scene);
+    SocketManager.getInstance().setInitialized(false);
   }
 
   private cleanUpCounters(): void {
