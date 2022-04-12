@@ -23,6 +23,8 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('R2', 'assets/boardgame/R2.png');
     this.load.image('R3', 'assets/boardgame/R3.png');
     this.load.image('R4', 'assets/boardgame/R4.png');
+    this.load.image('R5', 'assets/boardgame/5.png');
+    this.load.image('R6', 'assets/boardgame/6.png');
 
     // Assets for font
     this.load.webfont(
