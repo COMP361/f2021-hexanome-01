@@ -57,8 +57,8 @@ export default class GameService {
 
   private async createLSUsers(): Promise<void> {
     await this.createLSUser(
-      'ElfenlandVer1',
-      'f2021-EFLDV1',
+      'Elfenland-base',
+      'f2021-EFLDV2',
       'FFFFFF',
       'ROLE_SERVICE',
     ).catch(() => {
@@ -66,7 +66,49 @@ export default class GameService {
     });
 
     await this.createLSUser(
-      'ElfenlandVer2',
+      'Elfenland-4rounds',
+      'f2021-EFLDV2',
+      'FFFFFF',
+      'ROLE_SERVICE',
+    ).catch(() => {
+      return;
+    });
+    await this.createLSUser(
+      'Elfenland-destination',
+      'f2021-EFLDV2',
+      'FFFFFF',
+      'ROLE_SERVICE',
+    ).catch(() => {
+      return;
+    });
+    await this.createLSUser(
+      'Elfengold-base',
+      'f2021-EFLDV2',
+      'FFFFFF',
+      'ROLE_SERVICE',
+    ).catch(() => {
+      return;
+    });
+    await this.createLSUser(
+      'Elfengold-witch',
+      'f2021-EFLDV2',
+      'FFFFFF',
+      'ROLE_SERVICE',
+    ).catch(() => {
+      return;
+    });
+
+    await this.createLSUser(
+      'Elfengold-destination',
+      'f2021-EFLDV2',
+      'FFFFFF',
+      'ROLE_SERVICE',
+    ).catch(() => {
+      return;
+    });
+
+    await this.createLSUser(
+      'Elfengold-random',
       'f2021-EFLDV2',
       'FFFFFF',
       'ROLE_SERVICE',
@@ -160,27 +202,111 @@ export default class GameService {
 
   async registerGameServices(): Promise<void> {
     await this.createLSUsers();
-    await this.deleteGameService(
-      'ElfenlandVer1',
-      'ElfenlandVer1',
-      'f2021-EFLDV1',
-    );
 
     await this.deleteGameService(
-      'ElfenlandVer2',
-      'ElfenlandVer2',
+      'Elfenland-base',
+      'Elfenland-base',
       'f2021-EFLDV2',
-    );
-    await this.registerGameService(
-      'ElfenlandVer1',
-      'ElfenlandVer1',
-      'f2021-EFLDV1',
-    );
+    ).catch(() => {
+      return;
+    });
+
+    await this.deleteGameService(
+      'Elfenland-4rounds',
+      'Elfenland-4rounds',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+    await this.deleteGameService(
+      'Elfenland-destination',
+      'Elfenland-destination',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+    await this.deleteGameService(
+      'Elfengold-base',
+      'Elfengold-base',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+    await this.deleteGameService(
+      'Elfengold-witch',
+      'Elfengold-witch',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+
+    await this.deleteGameService(
+      'Elfengold-destination',
+      'Elfengold-destination',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+
+    await this.deleteGameService(
+      'Elfengold-random',
+      'Elfengold-random',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
 
     await this.registerGameService(
-      'ElfenlandVer2',
-      'ElfenlandVer2',
+      'Elfenland-base',
+      'Elfenland-base',
       'f2021-EFLDV2',
-    );
+    ).catch(() => {
+      return;
+    });
+
+    await this.registerGameService(
+      'Elfenland-4rounds',
+      'Elfenland-4rounds',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+    await this.registerGameService(
+      'Elfenland-destination',
+      'Elfenland-destination',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+    await this.registerGameService(
+      'Elfengold-base',
+      'Elfengold-base',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+    await this.registerGameService(
+      'Elfengold-witch',
+      'Elfengold-witch',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+
+    await this.registerGameService(
+      'Elfengold-destination',
+      'Elfengold-destination',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
+
+    await this.registerGameService(
+      'Elfengold-random',
+      'Elfengold-random',
+      'f2021-EFLDV2',
+    ).catch(() => {
+      return;
+    });
   }
 }

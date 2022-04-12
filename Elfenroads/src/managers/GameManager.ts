@@ -1,4 +1,4 @@
-import {CardUnit} from '../classes/CardUnit';
+import {CardUnit, MagicSpellCard} from '../classes/CardUnit';
 import {ItemUnit, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {BootColour} from '../enums/BootColour';
@@ -8,8 +8,9 @@ import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getUser} from '../utils/storageUtils';
-import {GameVariant} from '../enums/GameVariant';
 import SocketManager from './SocketManager';
+import {GameVariant, SubVariant} from '../enums/GameVariant';
+import {BidManager} from './BidManager';
 
 const colorMap: any = {
   '008000': BootColour.Green,
@@ -25,7 +26,8 @@ const phaseMap: any = {
   0: ['drawcountersscene', 'planroutescene', 'selectionscene', 'reset'],
   // Elfengold
   1: [
-    'drawcardssscene',
+    'drawcardsscene',
+    'drawtwocounterscene',
     'auctionscene',
     'planroutescene',
     'selectionscene',
@@ -51,6 +53,7 @@ export default class GameManager {
   private round: integer;
   private numRounds: integer;
   private gameVariant: GameVariant;
+  private subVariant: SubVariant;
   private mainScene!: Phaser.Scene;
   private phase: integer;
 
@@ -64,6 +67,7 @@ export default class GameManager {
 
     // hard coded this for now
     this.gameVariant = GameVariant.elfenland;
+    this.subVariant = SubVariant.base;
     this.numRounds = 3;
     this.round = 1;
     this.phase = -1;
@@ -90,9 +94,16 @@ export default class GameManager {
     return this.gameVariant;
   }
 
+  public getSubVariant(): SubVariant {
+    return this.subVariant;
+  }
+
   public playGame(mainScene: Phaser.Scene): void {
     // Step 0: Initialize the main Phaser.Scene
     this.mainScene = mainScene;
+
+    //Step 0.5: Init game variant
+    this.initializeVariants();
 
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
@@ -102,6 +113,7 @@ export default class GameManager {
     this.cardManager.initializePile();
 
     // Step 4: Play specific type of round based on game version
+    if (this.gameVariant === GameVariant.elfengold) this.numRounds = 6;
     this.playRound();
   }
 
@@ -210,6 +222,19 @@ export default class GameManager {
       .getAllTownsAsArray()
       .filter(town => town.getName() !== 'null');
 
+    if (this.subVariant === SubVariant.random) {
+      const allTownsArray2 = allTownsArray.filter(
+        town => town.getName() !== 'elvenhold'
+      );
+      for (const town of allTownsArray2) {
+        const randomTown =
+          allTownsArray2[Math.floor(Math.random() * allTownsArray2.length)];
+        const temp = randomTown.getGoldValue();
+        randomTown.setGoldValue(town.getGoldValue());
+        town.setGoldValue(temp);
+      }
+    }
+
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     const {name} = getUser();
@@ -253,6 +278,7 @@ export default class GameManager {
     }
     this.phase++;
     // Reset if the round is over
+    console.log(phaseMap[this.gameVariant][this.phase]);
     if (phaseMap[this.gameVariant][this.phase] === 'reset') {
       // Finish the round
       if (this.round < this.numRounds) {
@@ -265,12 +291,14 @@ export default class GameManager {
           this.round++;
           this.phase = -1;
           this.initialized = false;
+          console.log(this.phase, this.round);
           this.playRound();
         });
       } else {
         this.round++;
         this.phase = -1;
         this.initialized = false;
+        console.log(this.phase, this.round);
         this.playRound();
       }
     } else {
@@ -285,10 +313,37 @@ export default class GameManager {
       // Reinitialize players turn
       this.playerManager.readyUpPlayers();
       // Launch the next scene
+      console.log(phaseMap[this.gameVariant][this.phase]);
       this.mainScene.scene.launch(
         phaseMap[this.gameVariant][this.phase],
         this.nextScene
       );
     }
   };
+  private initializeVariants(): void {
+    const session = getSession();
+    const variant = localStorage.getItem('game') || '';
+    console.log(variant);
+    const words = variant.split('-');
+    if (words[0] === 'Elfengold') {
+      this.gameVariant = GameVariant.elfengold;
+    } else {
+      this.gameVariant = GameVariant.elfenland;
+    }
+    if (words[1] === 'base') {
+      this.subVariant = SubVariant.base;
+    } else if (words[1] === '4rounds') {
+      this.subVariant = SubVariant.fourrounds;
+    } else if (words[1] === 'destination') {
+      this.subVariant = SubVariant.destination;
+    } else if (words[1] === 'random') {
+      this.subVariant = SubVariant.random;
+    } else if (words[1] === 'witch') {
+      this.subVariant = SubVariant.witch;
+    }
+    //do work for 4rounds here
+    if (this.subVariant === SubVariant.fourrounds) {
+      this.numRounds = 4;
+    }
+  }
 }

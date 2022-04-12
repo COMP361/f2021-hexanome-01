@@ -7,7 +7,7 @@ import Player from '../classes/Player';
 import PlayerIcon from '../classes/PlayerIcon';
 import SettingsMenu from '../classes/SettingsMenu';
 import Town from '../classes/Town';
-import {GameVariant} from '../enums/GameVariant';
+import {GameVariant, SubVariant} from '../enums/GameVariant';
 import GameManager from '../managers/GameManager';
 import PlayerManager from '../managers/PlayerManager';
 import RoadManager from '../managers/RoadManager';
@@ -101,14 +101,16 @@ export default class UIScene extends Phaser.Scene {
     const currentRoundNumber: number = GameManager.getInstance().getRound();
 
     // Render card based on the position of the map and current round
-    this.add
+    const round = this.add
       .sprite(
         map.getTopRight().x - 90,
         map.getTopRight().y + 85,
         `R${currentRoundNumber}`
       )
-      .setDepth(3)
-      .setScale(0.165);
+      .setDepth(3);
+    if (currentRoundNumber < 5) {
+      round.setScale(0.165);
+    }
   }
 
   // Renders the Player icons on the left.
@@ -487,6 +489,11 @@ export default class UIScene extends Phaser.Scene {
     // Add the text and brown panel to container to be displayed
     container.add(brownPanel);
     container.add(secretTownText);
+    if (
+      !(GameManager.getInstance().getSubVariant() === SubVariant.destination)
+    ) {
+      container.setVisible(false);
+    }
   }
 
   // Renders the current Counters/Items on each edge.

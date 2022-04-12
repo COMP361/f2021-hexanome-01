@@ -23,7 +23,10 @@ import SelectionScene from '../../scenes/GameplayScenes/SelectCardnEdgeScene';
 import WinnerScene from '../../scenes/GameplayScenes/WinnerScene';
 import RoundCleanUpScene from '../../scenes/GameplayScenes/RoundCleanUpScene';
 import AuctionScene from '../../scenes/GameplayScenes/AuctionScene';
+import DrawTwoCounterScene from '../../scenes/GameplayScenes/DrawTwoCounterScene';
 import DrawCardsScene from '../../scenes/GameplayScenes/DrawCardsScene';
+import DrawTwoCardScene from '../../scenes/GameplayScenes/DrawTwoCardScene';
+import ChooseCoinScene from '../../scenes/GameplayScenes/ChooseCoinScene';
 
 // Phaser Game config
 const game = {
@@ -56,7 +59,10 @@ const game = {
     WinnerScene,
     RoundCleanUpScene,
     AuctionScene,
+    DrawTwoCounterScene,
     DrawCardsScene,
+    DrawTwoCardScene,
+    ChooseCoinScene,
   ],
 };
 

@@ -339,7 +339,6 @@ export default class AuctionScene extends Phaser.Scene {
   }
 
   private createAuction(): void {
-    this.bidManager.startBid();
     this.displayItems();
     this.renderPointer();
     this.createBidCounter();

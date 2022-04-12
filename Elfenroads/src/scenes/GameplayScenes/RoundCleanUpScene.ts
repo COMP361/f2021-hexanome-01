@@ -21,10 +21,29 @@ export default class RoundCleanUpScene extends Phaser.Scene {
 
   create(callback: Function) {
     this.callback = callback;
+    this.cleanUpCounters();
     this.createUIBanner();
-    this.passTurnButton();
+    // this.passTurnButton();
     this.chooseCounterToKeep();
     SocketManager.getInstance().setScene(this.scene);
+  }
+
+  private cleanUpCounters(): void {
+    const edges = RoadManager.getInstance().getEdges();
+    for (const edge of edges) {
+      const items = edge.getItems();
+      for (const item of items) {
+        if (
+          !(
+            GameManager.getInstance().getGameVariant() ===
+              GameVariant.elfenland && item instanceof Obstacle
+          )
+        ) {
+          ItemManager.getInstance().addToPile(item);
+        }
+        edge.removeItem(item);
+      }
+    }
   }
 
   private createUIBanner(): void {
@@ -92,38 +111,6 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         this.sound.play('pass');
         const player: Player = PlayerManager.getInstance().getCurrentPlayer();
 
-        if (player.getItems().length !== 0) {
-          if (
-            GameManager.getInstance().getGameVariant() === GameVariant.elfenland
-          ) {
-            const validItems: Array<ItemUnit> = player
-              .getItems()
-              .filter(item => {
-                return !(item instanceof Obstacle);
-              });
-            let itemIndex = Math.floor(Math.random() * validItems.length);
-            for (const item of validItems) {
-              if (itemIndex !== 0) {
-                player.removeItem(item);
-              }
-              itemIndex--;
-            }
-          } else {
-            const playerItems = player.getItems();
-            const itemIndex =
-              playerItems[Math.floor(Math.random() * playerItems.length)];
-            let itemIndex2 =
-              playerItems[Math.floor(Math.random() * playerItems.length)];
-            while (itemIndex === itemIndex2) {
-              itemIndex2 =
-                playerItems[Math.floor(Math.random() * playerItems.length)];
-            }
-            player.clearItems();
-            player.addItem(itemIndex);
-            player.addItem(itemIndex2);
-          }
-        }
-
         player.setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
         this.scene.get('uiscene').scene.restart();
@@ -158,29 +145,63 @@ export default class RoundCleanUpScene extends Phaser.Scene {
   }
 
   private chooseCounterToKeep(): void {
-    this.selectedItem = null;
-    const graphics = this.add.graphics();
-    if (
-      PlayerManager.getInstance().getCurrentPlayer() ===
-      PlayerManager.getInstance().getLocalPlayer()
-    ) {
-      UIScene.itemSprites.forEach(item => {
-        item
-          .setInteractive()
-          .on('pointerdown', () => {
-            item.setTint(0xd3d3d3);
-          })
-          .on('pointerup', () => {
-            if (
-              GameManager.getInstance().getGameVariant() ===
-              GameVariant.elfenland
-            ) {
-              this.selectOneItem(item, graphics);
-            } else {
-              this.selectTwoItems(item, graphics);
-            }
-          });
-      });
+    if (PlayerManager.getInstance().getCurrentPlayer().getItems().length < 2) {
+      this.passTurnButton();
+      // PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+      // PlayerManager.getInstance().setNextPlayer();
+      // this.scene.get('uiscene').scene.restart();
+      // let finishedPlayers: integer = 0;
+      // PlayerManager.getInstance()
+      //   .getPlayers()
+      //   .forEach(player => {
+      //     if (player.getPassedTurn() === true) {
+      //       finishedPlayers++;
+      //     }
+      //   });
+
+      // if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
+      //   console.log('Round Cleanup, nextPhase, skipped');
+      //   SocketManager.getInstance().emitStatusChange({
+      //     nextPhase: true,
+      //     CardManager: CardManager.getInstance(),
+      //     ItemManager: ItemManager.getInstance(),
+      //     PlayerManager: PlayerManager.getInstance(),
+      //     RoadManager: RoadManager.getInstance(),
+      //   });
+      // } else {
+      //   console.log('Round Cleanup, skipped');
+      //   SocketManager.getInstance().emitStatusChange({
+      //     CardManager: CardManager.getInstance(),
+      //     ItemManager: ItemManager.getInstance(),
+      //     PlayerManager: PlayerManager.getInstance(),
+      //     RoadManager: RoadManager.getInstance(),
+      //   });
+      // }
+    } else {
+      this.selectedItem = null;
+      const graphics = this.add.graphics();
+      if (
+        PlayerManager.getInstance().getCurrentPlayer() ===
+        PlayerManager.getInstance().getLocalPlayer()
+      ) {
+        UIScene.itemSprites.forEach(item => {
+          item
+            .setInteractive()
+            .on('pointerdown', () => {
+              item.setTint(0xd3d3d3);
+            })
+            .on('pointerup', () => {
+              if (
+                GameManager.getInstance().getGameVariant() ===
+                GameVariant.elfenland
+              ) {
+                this.selectOneItem(item, graphics);
+              } else {
+                this.selectTwoItems(item, graphics);
+              }
+            });
+        });
+      }
     }
   }
 
@@ -201,6 +222,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
     if (playerItem instanceof Counter) {
       for (const item of validItems) {
         if (playerItem !== item) {
+          ItemManager.getInstance().addToPile(item);
           player.removeItem(item);
         }
       }
@@ -217,6 +239,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
+        console.log('Round Cleanup, nextPhase');
         SocketManager.getInstance().emitStatusChange({
           nextPhase: true,
           CardManager: CardManager.getInstance(),
@@ -225,6 +248,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           RoadManager: RoadManager.getInstance(),
         });
       } else {
+        console.log('Round Cleanup');
         SocketManager.getInstance().emitStatusChange({
           CardManager: CardManager.getInstance(),
           ItemManager: ItemManager.getInstance(),
@@ -253,7 +277,12 @@ export default class RoundCleanUpScene extends Phaser.Scene {
       this.selectedItemSprite.clearTint();
       const player: Player = PlayerManager.getInstance().getCurrentPlayer();
       const playerItems: Array<ItemUnit> = player.getItems();
-      console.log(playerItems);
+      for (const item of playerItems) {
+        if (item !== playerItem || item !== this.selectedItem) {
+          ItemManager.getInstance().addToPile(item);
+        }
+      }
+      console.log(ItemManager.getInstance().getItemPile().length);
       player.clearItems();
       player.addItem(playerItem);
       player.addItem(this.selectedItem);
@@ -270,6 +299,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
+        console.log('Round Cleanup, nextPhase');
         SocketManager.getInstance().emitStatusChange({
           nextPhase: true,
           CardManager: CardManager.getInstance(),
@@ -278,6 +308,7 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           RoadManager: RoadManager.getInstance(),
         });
       } else {
+        console.log('Round Cleanup');
         SocketManager.getInstance().emitStatusChange({
           CardManager: CardManager.getInstance(),
           ItemManager: ItemManager.getInstance(),

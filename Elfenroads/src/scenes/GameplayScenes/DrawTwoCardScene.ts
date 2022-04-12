@@ -2,32 +2,27 @@ import Phaser from 'phaser';
 import {CardUnit, GoldCard} from '../../classes/CardUnit';
 import {CardManager} from '../../managers/CardManager';
 import PlayerManager from '../../managers/PlayerManager';
-import SocketManager from '../../managers/SocketManager';
 
-export default class DrawCardsScene extends Phaser.Scene {
+export default class DrawTwoCardScene extends Phaser.Scene {
   private callback!: Function;
   private amountToDraw!: number;
 
   constructor() {
-    super('drawcardsscene');
+    super('drawtwocardscene');
   }
 
   create(callback: Function) {
+    this.scene.get('choosecoinscene').scene.stop();
     this.callback = callback;
-    this.amountToDraw = 3;
+    this.amountToDraw = 2;
 
     // Create UI banner in the middle of the screen
     this.createUIBanner();
-
-    // Create pass turn button
-    this.createPassTurnButton();
 
     // Render all cards
     this.renderFaceUpPile();
     this.renderFaceDownPile();
     this.renderGoldPile();
-
-    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner() {
@@ -35,7 +30,7 @@ export default class DrawCardsScene extends Phaser.Scene {
     const drawCounterText: Phaser.GameObjects.Text = this.add.text(
       10,
       6,
-      'To Draw Card',
+      'Has Chosen to Select Two Cards',
       {
         fontFamily: 'MedievalSharp',
         fontSize: '30px',
@@ -58,60 +53,6 @@ export default class DrawCardsScene extends Phaser.Scene {
     // Render the brown panel and text
     container.add(brownPanel);
     container.add(drawCounterText);
-  }
-
-  private createPassTurnButton() {
-    // Create small button with the "next" icon
-    const width = this.cameras.main.width;
-    const height = this.cameras.main.height;
-    const passTurnButton = this.add.sprite(
-      width - 30,
-      height - 30,
-      'brown-box'
-    );
-    this.add.image(passTurnButton.x, passTurnButton.y, 'next').setScale(0.7);
-
-    // Add interactive pointer options for passTurnButton
-    // After click, currentPlayer is updated via playerManager
-    // PlayerTurnScene is rerendered to show whose turn it is
-    passTurnButton
-      .setInteractive()
-      .on('pointerdown', () => {
-        passTurnButton.setTint(0xd3d3d3);
-      })
-      .on('pointerout', () => {
-        passTurnButton.clearTint();
-      })
-      .on('pointerup', () => {
-        passTurnButton.clearTint();
-        this.sound.play('pass');
-        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-        PlayerManager.getInstance().setNextPlayer();
-        this.scene.get('uiscene').scene.restart();
-        let finishedPlayers: integer = 0;
-        PlayerManager.getInstance()
-          .getPlayers()
-          .forEach(player => {
-            if (player.getPassedTurn() === true) {
-              finishedPlayers++;
-            }
-          });
-
-        if (
-          finishedPlayers === PlayerManager.getInstance().getPlayers().length
-        ) {
-          SocketManager.getInstance().emitStatusChange({
-            nextPhase: true,
-            CardManager: CardManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-          });
-        } else {
-          SocketManager.getInstance().emitStatusChange({
-            CardManager: CardManager.getInstance(),
-            PlayerManager: PlayerManager.getInstance(),
-          });
-        }
-      });
   }
 
   private renderFaceUpPile() {
@@ -311,42 +252,14 @@ export default class DrawCardsScene extends Phaser.Scene {
     // If the currentPlayer has drawn the correct amount, then switch players
     if (this.amountToDraw === CardManager.getInstance().getAmountDrawn()) {
       CardManager.getInstance().setAmountDrawn(0);
-      PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
-      PlayerManager.getInstance().setNextPlayer();
       this.scene.get('uiscene').scene.restart();
-      let finishedPlayers: integer = 0;
-      PlayerManager.getInstance()
-        .getPlayers()
-        .forEach(player => {
-          if (player.getPassedTurn() === true) {
-            finishedPlayers++;
-          }
-        });
-
-      if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
-        SocketManager.getInstance().emitStatusChange({
-          nextPhase: true,
-          CardManager: CardManager.getInstance(),
-          PlayerManager: PlayerManager.getInstance(),
-        });
-      } else {
-        SocketManager.getInstance().emitStatusChange({
-          CardManager: CardManager.getInstance(),
-          PlayerManager: PlayerManager.getInstance(),
-        });
-      }
+      this.callback();
     }
 
     // Else, currentPlayer needs to go again
     else {
-      SocketManager.getInstance().emitStatusChange({
-        CardManager: CardManager.getInstance(),
-        PlayerManager: PlayerManager.getInstance(),
-      });
+      this.scene.get('uiscene').scene.restart();
+      this.scene.restart();
     }
-  }
-
-  public nextPhase(): void {
-    this.callback();
   }
 }

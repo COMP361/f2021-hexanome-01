@@ -190,5 +190,6 @@ export class BidManager {
       }
     });
     this.isActive = manager.isActive;
+    console.log(this);
   }
 }

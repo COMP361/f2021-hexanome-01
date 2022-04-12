@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import DrawCardsScene from './GameplayScenes/DrawCardsScene';
 
 export default class Preloader extends Phaser.Scene {
   constructor() {
@@ -22,6 +23,8 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('R2', 'assets/boardgame/R2.png');
     this.load.image('R3', 'assets/boardgame/R3.png');
     this.load.image('R4', 'assets/boardgame/R4.png');
+    this.load.image('R5', 'assets/boardgame/5.png');
+    this.load.image('R6', 'assets/boardgame/6.png');
 
     // Assets for font
     this.load.webfont(
@@ -29,11 +32,14 @@ export default class Preloader extends Phaser.Scene {
       'https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap'
     );
 
-    // Assets for BoardScene.js
+    // Assets for DrawCardsScene.ts
+    this.load.image('unknown-card', 'assets/boardgame/blue.png');
+
+    // Assets for BoardScene.ts
     this.load.image('brownBackground', 'assets/background/brown.jpg');
     this.load.image('map', 'assets/boardgame/mapNEW.png');
 
-    // Assets for UIScene.js
+    // Assets for UIScene.ts
     this.load.image(
       'brown-cirle',
       'assets/ui/rpgpack/PNG/buttonRound_brown.png'
@@ -143,6 +149,10 @@ export default class Preloader extends Phaser.Scene {
 
     // Assets for DrawCounterScene
     this.load.image('cross', 'assets/ui/uipack_fixed/PNG/grey_crossWhite.png');
+
+    // Assets for ChooseCoinScene
+    this.load.image('get-cards', 'assets/boardgame/playing-cards.png');
+    this.load.image('witch-flight', 'assets/boardgame/witch_flight.png');
 
     // music
     this.load.audio('medieval-music', 'audio/medieval-music.mp3');

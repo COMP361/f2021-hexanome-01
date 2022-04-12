@@ -1,6 +1,5 @@
 import {GameObjects} from 'phaser';
 import Edge from '../../classes/Edge';
-import EdgeMenu from '../../classes/EdgeMenu';
 import {
   Counter,
   GoldPiece,
@@ -8,7 +7,6 @@ import {
   Obstacle,
   Spell,
 } from '../../classes/ItemUnit';
-import {ObstacleType} from '../../enums/ObstacleType';
 import {SpellType} from '../../enums/SpellType';
 import {CardManager} from '../../managers/CardManager';
 import ItemManager from '../../managers/ItemManager';
@@ -311,6 +309,7 @@ export default class PlanRouteScene extends Phaser.Scene {
                 return;
               }
             }
+            edge.addItem(this.selectedItem);
             edge.addItem(this.selectedDoubleItem);
             currPlayer.removeItem(this.selectedDoubleItem);
             this.selectedDoubleItemSprite.destroy();

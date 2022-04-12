@@ -187,6 +187,7 @@ export const singleSession = (sessionId: any) =>
             gameParameters {
                 maxSessionPlayers
                 minSessionPlayers
+                displayName
             }
             launched
           }

@@ -241,6 +241,9 @@ export default class ItemManager {
   }
 
   getRandomItem(): ItemUnit {
+    if (this.itemPile.length === 0) {
+      this.initializePile();
+    }
     const index = Math.floor(Math.random() * this.itemPile.length);
     const item = this.itemPile[index];
     this.itemPile.splice(index, 1);

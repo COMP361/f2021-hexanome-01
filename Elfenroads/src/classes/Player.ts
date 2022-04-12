@@ -1,4 +1,7 @@
+import internal from 'stream';
 import {BootColour} from '../enums/BootColour';
+import {SubVariant} from '../enums/GameVariant';
+import GameManager from '../managers/GameManager';
 import RoadManager from '../managers/RoadManager';
 import {
   CardUnit,
@@ -22,12 +25,14 @@ export default class Player {
   private visitedTowns: Array<Town>;
   private secretTown: Town;
   private passedTurn: boolean;
+  private goldToAdd: integer;
 
   constructor(pBootColour: BootColour, pCurrentLocation: Town) {
     this.bootColour = pBootColour;
     this.currentLocation = pCurrentLocation;
 
     this.gold = 0;
+    this.goldToAdd = 0;
     this.score = 0;
     this.myItems = [];
     this.myCards = [];
@@ -77,7 +82,10 @@ export default class Player {
   }
 
   public getActualScore(): integer {
-    if (this.secretTown.isNull()) {
+    if (
+      this.secretTown.isNull() ||
+      GameManager.getInstance().getSubVariant() === SubVariant.destination
+    ) {
       return this.score;
     } else {
       return (
@@ -128,6 +136,31 @@ export default class Player {
 
   public setGold(pGold: integer): void {
     this.gold = pGold;
+  }
+
+  public addGoldToAdd(pGold: integer): void {
+    this.goldToAdd += pGold;
+  }
+
+  public getGoldToAdd(): integer {
+    return this.goldToAdd;
+  }
+
+  public chooseGold(): void {
+    this.gold += this.goldToAdd;
+    this.goldToAdd = 0;
+  }
+
+  public chooseCards(): void {
+    this.goldToAdd = 0;
+  }
+
+  public hasEnoughCoins(pAmount: integer): boolean {
+    return this.gold >= pAmount;
+  }
+
+  public deductCoins(pAmount: integer): void {
+    this.gold -= pAmount;
   }
 
   public setScore(pScore: integer): void {

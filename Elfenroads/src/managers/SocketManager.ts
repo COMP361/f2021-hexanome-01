@@ -87,7 +87,7 @@ export default class SocketManager {
         RoadManager.getInstance().update(managers['RoadManager']);
       }
 
-      if (managers['BigManager']) {
+      if (managers['BidManager']) {
         BidManager.getInstance().update(managers['BidManager']);
         console.log(BidManager.getInstance());
       }
@@ -134,6 +134,7 @@ export default class SocketManager {
   }
 
   public emitStatusChange(data: any): void {
+    console.log('emitting status change');
     // Maps can't be converted to objects, so we need to convert them manually
     if (data.PlayerManager) {
       const newPlayerManager = {...data.PlayerManager};
@@ -166,7 +167,7 @@ export default class SocketManager {
       data.RoadManager = newRoadManager;
     }
     if (data.BidManager) {
-      const newBidManager = {...data.BigManager};
+      const newBidManager = {...data.BidManager};
       newBidManager.bidItems = [...data.BidManager.bidItems.map(demapItem)];
       newBidManager.auctionedOffItems = [
         ...data.BidManager.auctionedOffItems.map(demapItem),
