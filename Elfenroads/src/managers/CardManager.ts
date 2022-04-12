@@ -2,6 +2,7 @@ import {
   CardUnit,
   GoldCard,
   MagicSpellCard,
+  TownCard,
   TravelCard,
 } from '../classes/CardUnit';
 import Edge from '../classes/Edge';
@@ -428,6 +429,7 @@ export class CardManager {
           obstacle = <Obstacle>item;
         }
       }
+      console.log(travelcounter);
       if (travelcounter === undefined) return false;
 
       // check if it is the case of caravan
@@ -456,11 +458,15 @@ export class CardManager {
           }
         }
       } else {
+        console.log(edgeType);
+        console.log(travelcounter);
         let numCardsRequired = travelcounter.getCardsNeeded().get(edgeType);
+        console.log(numCardsRequired);
         if (numCardsRequired === undefined) return false;
         if (obstacle !== undefined) {
           if (isElfengold && hasWitchCard) {
             if (player.hasEnoughCoins(1)) {
+              console.log(numCardsRequired);
               if (cards.length !== numCardsRequired) return false;
               player.deductCoins(1);
               return true;
@@ -471,6 +477,7 @@ export class CardManager {
             numCardsRequired += 1;
           }
         }
+        console.log(cards.length);
         if (cards.length !== numCardsRequired) return false;
       }
     }
@@ -488,5 +495,35 @@ export class CardManager {
       }
     }
     return false;
+  }
+
+  public update(manager: any) {
+    this.cardPile = manager.cardPile.map((card: any) => {
+      if (card.type === 'magic-spell-card') {
+        return new MagicSpellCard(card.name);
+      } else if (card.type === 'travel-card') {
+        return new TravelCard(card.name);
+      } else if (card.type === 'gold-card') {
+        return new GoldCard(card.amount);
+      } else {
+        return new TownCard(card.name);
+      }
+    });
+    this.faceUpPile = manager.faceUpPile.map((card: any) => {
+      if (card.type === 'magic-spell-card') {
+        return new MagicSpellCard(card.name);
+      } else if (card.type === 'travel-card') {
+        return new TravelCard(card.name);
+      } else if (card.type === 'gold-card') {
+        return new GoldCard(card.amount);
+      } else {
+        return new TownCard(card.name);
+      }
+    });
+    this.goldCardPile = manager.goldCardPile.map((card: any) => {
+      return new GoldCard(card.amount);
+    });
+    this.amountDrawn = manager.amountDrawn;
+    return this;
   }
 }

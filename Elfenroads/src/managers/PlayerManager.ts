@@ -204,4 +204,17 @@ export default class PlayerManager {
     // Subtract 1 because of starting town Elvenhold
     currentPlayer.setScore(score - 1);
   }
+
+  public update(manager: any) {
+    console.log(manager);
+    this.setCurrentPlayerIndex(manager.currentPlayerIndex);
+    this.players.forEach((player: Player) => {
+      const updatedPlayerObject = manager.players.find(
+        (newPlayer: any) => newPlayer.bootColour === player.getBootColour()
+      );
+      player.update(updatedPlayerObject);
+    });
+    console.log(this);
+    return this;
+  }
 }

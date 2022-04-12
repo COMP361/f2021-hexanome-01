@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import {ItemUnit} from '../../classes/ItemUnit';
 import {BidManager} from '../../managers/BidManager';
+import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
+import SocketManager from '../../managers/SocketManager';
 import UIScene from '../UIScene';
 
 export default class AuctionScene extends Phaser.Scene {
@@ -18,8 +20,14 @@ export default class AuctionScene extends Phaser.Scene {
   create(callback: Function) {
     this.callback = callback;
     this.createUIBanner();
-    this.createPassTurnButton();
+    if (
+      PlayerManager.getInstance().getCurrentPlayer().getBootColour() ===
+      PlayerManager.getInstance().getLocalPlayer().getBootColour()
+    ) {
+      this.createPassTurnButton();
+    }
     this.createAuction();
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner(): void {
@@ -103,12 +111,25 @@ export default class AuctionScene extends Phaser.Scene {
               player.setPassedTurn(false);
             });
           if (this.bidManager.endBid()) {
-            this.callback();
+            SocketManager.getInstance().emitStatusChange({
+              nextPhase: true,
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+              BidManager: BidManager.getInstance(),
+            });
           } else {
-            this.scene.restart();
+            SocketManager.getInstance().emitStatusChange({
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+              BidManager: BidManager.getInstance(),
+            });
           }
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+            BidManager: BidManager.getInstance(),
+          });
         }
       });
   }
@@ -309,21 +330,26 @@ export default class AuctionScene extends Phaser.Scene {
 
   private confirmBid(): void {
     if (this.currentBid > this.bidManager.getHighestBid()) {
-      const playerManager = PlayerManager.getInstance();
-      const currentPlayer = playerManager.getCurrentPlayer();
+      const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
       this.bidManager.setBid(currentPlayer, this.currentBid);
 
-      playerManager.setNextPlayer();
-      this.scene.get('uiscene').scene.restart();
-      this.scene.restart();
+      PlayerManager.getInstance().setNextPlayer();
+      SocketManager.getInstance().emitStatusChange({
+        ItemManager: ItemManager.getInstance(),
+        PlayerManager: PlayerManager.getInstance(),
+        BidManager: BidManager.getInstance(),
+      });
     }
   }
 
   private createAuction(): void {
-    this.bidManager.startBid();
     this.displayItems();
     this.renderPointer();
     this.createBidCounter();
     this.showCurrentBid();
+  }
+
+  public nextPhase(): void {
+    this.callback();
   }
 }

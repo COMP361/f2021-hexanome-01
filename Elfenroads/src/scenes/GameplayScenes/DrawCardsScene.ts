@@ -2,13 +2,14 @@ import Phaser from 'phaser';
 import {CardUnit, GoldCard} from '../../classes/CardUnit';
 import {CardManager} from '../../managers/CardManager';
 import PlayerManager from '../../managers/PlayerManager';
+import SocketManager from '../../managers/SocketManager';
 
 export default class DrawCardsScene extends Phaser.Scene {
   private callback!: Function;
   private amountToDraw!: number;
 
   constructor() {
-    super('drawcardssscene');
+    super('drawcardsscene');
   }
 
   create(callback: Function) {
@@ -19,12 +20,14 @@ export default class DrawCardsScene extends Phaser.Scene {
     this.createUIBanner();
 
     // Create pass turn button
-    this.createPassTurnButton();
+    // this.createPassTurnButton();
 
     // Render all cards
     this.renderFaceUpPile();
     this.renderFaceDownPile();
     this.renderGoldPile();
+
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner() {
@@ -97,9 +100,16 @@ export default class DrawCardsScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.callback();
+          SocketManager.getInstance().emitStatusChange({
+            nextPhase: true,
+            CardManager: CardManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       });
   }
@@ -314,16 +324,29 @@ export default class DrawCardsScene extends Phaser.Scene {
         });
 
       if (finishedPlayers === PlayerManager.getInstance().getPlayers().length) {
-        this.callback();
+        SocketManager.getInstance().emitStatusChange({
+          nextPhase: true,
+          CardManager: CardManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+        });
       } else {
-        this.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+        });
       }
     }
 
     // Else, currentPlayer needs to go again
     else {
-      this.scene.get('uiscene').scene.restart();
-      this.scene.restart();
+      SocketManager.getInstance().emitStatusChange({
+        CardManager: CardManager.getInstance(),
+        PlayerManager: PlayerManager.getInstance(),
+      });
     }
+  }
+
+  public nextPhase(): void {
+    this.callback();
   }
 }

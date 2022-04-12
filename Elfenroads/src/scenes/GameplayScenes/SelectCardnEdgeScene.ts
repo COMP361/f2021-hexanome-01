@@ -7,6 +7,8 @@ import EdgeMenu from '../../classes/EdgeMenu';
 import RoadManager from '../../managers/RoadManager';
 import {EdgeType} from '../../enums/EdgeType';
 import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
+import SocketManager from '../../managers/SocketManager';
+import ItemManager from '../../managers/ItemManager';
 import GameManager from '../../managers/GameManager';
 import {GameVariant} from '../../enums/GameVariant';
 import Town from '../../classes/Town';
@@ -28,7 +30,6 @@ export default class SelectionScene extends Phaser.Scene {
     this.edgeMenus = [];
     this.callback = callback;
     this.createUIBanner();
-    this.createUIPassTurnButton();
 
     // Only allow local player to interact with UI if its their turn
     if (
@@ -37,7 +38,9 @@ export default class SelectionScene extends Phaser.Scene {
     ) {
       this.makeCardsInteractive();
       this.makeEdgesInteractive();
+      this.createUIPassTurnButton();
     }
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   // Button to skip turn
@@ -87,9 +90,18 @@ export default class SelectionScene extends Phaser.Scene {
               finishedPlayers ===
               PlayerManager.getInstance().getPlayers().length
             ) {
-              this.callback();
+              SocketManager.getInstance().emitStatusChange({
+                nextPhase: true,
+                CardManager: CardManager.getInstance(),
+                ItemManager: ItemManager.getInstance(),
+                PlayerManager: PlayerManager.getInstance(),
+              });
             } else {
-              this.scene.restart();
+              SocketManager.getInstance().emitStatusChange({
+                CardManager: CardManager.getInstance(),
+                ItemManager: ItemManager.getInstance(),
+                PlayerManager: PlayerManager.getInstance(),
+              });
             }
           });
         } else {
@@ -108,9 +120,18 @@ export default class SelectionScene extends Phaser.Scene {
           if (
             finishedPlayers === PlayerManager.getInstance().getPlayers().length
           ) {
-            this.callback();
+            SocketManager.getInstance().emitStatusChange({
+              nextPhase: true,
+              CardManager: CardManager.getInstance(),
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+            });
           } else {
-            this.scene.restart();
+            SocketManager.getInstance().emitStatusChange({
+              CardManager: CardManager.getInstance(),
+              ItemManager: ItemManager.getInstance(),
+              PlayerManager: PlayerManager.getInstance(),
+            });
           }
         }
       });
@@ -248,20 +269,24 @@ export default class SelectionScene extends Phaser.Scene {
             selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
           } else {
             if (c instanceof MagicSpellCard) {
+              UIScene.cardSprites.splice(UIScene.cardSprites.indexOf(card), 1);
               card.destroy();
               CardManager.getInstance().addToPile(
                 PlayerManager.getInstance().getCurrentPlayer(),
                 c
               );
+              PlayerManager.getInstance().setCurrentTown(
+                PlayerManager.getInstance().getCurrentPlayerIndex(),
+                town
+              );
             }
           }
         }
-        PlayerManager.getInstance().setCurrentTown(
-          PlayerManager.getInstance().getCurrentPlayerIndex(),
-          town
-        );
-        currentScene.scene.get('uiscene').scene.restart();
-        currentScene.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+        });
       } else {
         for (let i = 0; i < selectedCardSprites.length; i++) {
           // remove selection of card
@@ -290,8 +315,11 @@ export default class SelectionScene extends Phaser.Scene {
             .on('pointerup', () => {
               card.clearTint();
             });
-          currentScene.scene.get('uiscene').scene.restart();
-          currentScene.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       }
     }
@@ -474,8 +502,11 @@ export default class SelectionScene extends Phaser.Scene {
           edge,
           GameManager.getInstance().getGameVariant() === GameVariant.elfengold
         );
-        currentScene.scene.get('uiscene').scene.restart();
-        currentScene.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+        });
       } else {
         for (let i = 0; i < selectedCardSprites.length; i++) {
           // remove selection of card
@@ -509,5 +540,8 @@ export default class SelectionScene extends Phaser.Scene {
         }
       }
     }
+  }
+  public nextPhase(): void {
+    this.callback();
   }
 }

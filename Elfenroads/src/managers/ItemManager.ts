@@ -278,15 +278,49 @@ export default class ItemManager {
     this.itemPile.push(item);
   }
 
-  update(manager: any): void {
-    this.itemPile = manager.itemPile.map(
-      (counter: any) =>
-        new Counter(counter.name, counter.allowedEdges, counter.cardsNeeded)
-    );
-    this.faceUpPile = manager.faceUpPile.map(
-      (counter: any) =>
-        new Counter(counter.name, counter.allowedEdges, counter.cardsNeeded)
-    );
-    console.log(this.itemPile);
+  update(manager: any) {
+    this.itemPile = manager.itemPile.map((item: any) => {
+      if (item.type === 'spell') {
+        return new Spell(item.name, item.allowedEdges, item.isHidden);
+      } else if (item.type === 'counter') {
+        return new Counter(
+          item.name,
+          item.allowedEdges,
+          item.cardsNeeded,
+          item.isHidden
+        );
+      } else if (item.type === 'gold-piece') {
+        return new GoldPiece(item.allowedEdges, item.isHidden);
+      } else {
+        return new Obstacle(
+          item.name,
+          item.allowedEdges,
+          item.needsCounter,
+          item.isHidden
+        );
+      }
+    });
+    this.faceUpPile = manager.faceUpPile.map((item: any) => {
+      if (item.type === 'spell') {
+        return new Spell(item.name, item.allowedEdges, item.isHidden);
+      } else if (item.type === 'counter') {
+        return new Counter(
+          item.name,
+          item.allowedEdges,
+          item.cardsNeeded,
+          item.isHidden
+        );
+      } else if (item.type === 'gold-piece') {
+        return new GoldPiece(item.allowedEdges, item.isHidden);
+      } else {
+        return new Obstacle(
+          item.name,
+          item.allowedEdges,
+          item.needsCounter,
+          item.isHidden
+        );
+      }
+    });
+    return this;
   }
 }

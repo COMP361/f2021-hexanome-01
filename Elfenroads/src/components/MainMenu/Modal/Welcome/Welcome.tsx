@@ -2,7 +2,7 @@ import {getUser} from '../../../../utils/storageUtils';
 import './Welcome.scss';
 import React from 'react';
 
-export default function Welcome({create, join}: any) {
+export default function Welcome({create, join, load}: any) {
   const {name} = getUser();
   return (
     <section className="welcome">
@@ -15,7 +15,9 @@ export default function Welcome({create, join}: any) {
       <button className="welcome__button" onClick={create}>
         Create Game
       </button>
-      <button className="welcome__button">Load Game</button>
+      <button className="welcome__button" onClick={load}>
+        Load Game
+      </button>
     </section>
   );
 }

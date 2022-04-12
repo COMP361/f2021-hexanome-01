@@ -1,4 +1,10 @@
-import {ItemUnit} from '../classes/ItemUnit';
+import {
+  Counter,
+  GoldPiece,
+  ItemUnit,
+  Obstacle,
+  Spell,
+} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
@@ -125,5 +131,65 @@ export class BidManager {
 
   public getActive(): boolean {
     return this.isActive;
+  }
+
+  public update(manager: any): void {
+    this.bidItems = manager.bidItems.map((item: any) => {
+      if (item.type === 'spell') {
+        return new Spell(item.name, item.allowedEdges, item.isHidden);
+      } else if (item.type === 'counter') {
+        return new Counter(
+          item.name,
+          item.allowedEdges,
+          item.cardsNeeded,
+          item.isHidden
+        );
+      } else if (item.type === 'gold-piece') {
+        return new GoldPiece(item.allowedEdges, item.isHidden);
+      } else {
+        return new Obstacle(
+          item.name,
+          item.allowedEdges,
+          item.needsCounter,
+          item.isHidden
+        );
+      }
+    });
+    this.currentItem = manager.currentItem;
+    this.highestBid = manager.highestBid;
+    let highestBidPlayer = null;
+    if (manager.highestBidPlayer) {
+      highestBidPlayer = PlayerManager.getInstance()
+        .getPlayers()
+        .find(
+          (player: any) =>
+            manager.highestBidPlayer.bootColour === player.getBootColour()
+        )
+        ?.update(manager.highestBidPlayer);
+    }
+    this.highestBidPlayer = highestBidPlayer || null;
+    this.auctionedOffItems = manager.auctionedOffItems.map((item: any) => {
+      if (item.type === 'spell') {
+        return new Spell(item.name, item.allowedEdges, item.isHidden);
+      } else if (item.type === 'counter') {
+        return new Counter(
+          item.name,
+          item.allowedEdges,
+          item.cardsNeeded,
+          item.isHidden
+        );
+      } else if (item.type === 'gold-piece') {
+        return new GoldPiece(item.allowedEdges, item.isHidden);
+      } else {
+        return new Obstacle(
+          item.name,
+          item.allowedEdges,
+          item.needsCounter,
+          item.isHidden
+        );
+      }
+    });
+    this.isActive = manager.isActive;
+    console.log(this);
   }
 }

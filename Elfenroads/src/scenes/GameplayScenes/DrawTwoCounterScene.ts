@@ -1,7 +1,10 @@
 import Phaser from 'phaser';
 import {ItemUnit} from '../../classes/ItemUnit';
+import {BidManager} from '../../managers/BidManager';
+import {CardManager} from '../../managers/CardManager';
 import ItemManager from '../../managers/ItemManager';
 import PlayerManager from '../../managers/PlayerManager';
+import SocketManager from '../../managers/SocketManager';
 
 export default class DrawTwoCounterScene extends Phaser.Scene {
   public counterSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -20,10 +23,12 @@ export default class DrawTwoCounterScene extends Phaser.Scene {
     this.createUIBanner();
 
     // Create pass turn button
-    this.createPassTurnButton();
+    // this.createPassTurnButton();
 
     // Render face up or hidden counters
     this.renderTwoCounters();
+
+    SocketManager.getInstance().setScene(this.scene);
   }
 
   private createUIBanner() {
@@ -97,9 +102,18 @@ export default class DrawTwoCounterScene extends Phaser.Scene {
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.callback();
+          SocketManager.getInstance().emitStatusChange({
+            nextPhase: true,
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       });
   }
@@ -155,12 +169,14 @@ export default class DrawTwoCounterScene extends Phaser.Scene {
         itemSprite.clearTint();
         this.sound.play('collect');
         for (const item of this.counters) {
+          console.log(item);
           PlayerManager.getInstance().getCurrentPlayer().addItem(item);
         }
         this.counters = [];
         for (const sprite of this.counterSprites) {
           sprite.destroy();
         }
+        PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
         PlayerManager.getInstance().setNextPlayer();
         this.scene.get('uiscene').scene.restart();
 
@@ -168,17 +184,33 @@ export default class DrawTwoCounterScene extends Phaser.Scene {
         PlayerManager.getInstance()
           .getPlayers()
           .forEach(player => {
-            if (player.getItems().length === 5) {
+            if (player.getPassedTurn()) {
               finishedPlayers++;
             }
           });
+        BidManager.getInstance().startBid();
         if (
           finishedPlayers === PlayerManager.getInstance().getPlayers().length
         ) {
-          this.callback();
+          SocketManager.getInstance().emitStatusChange({
+            nextPhase: true,
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+            BidManager: BidManager.getInstance(),
+          });
         } else {
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+            BidManager: BidManager.getInstance(),
+          });
         }
       });
+  }
+
+  public nextPhase(): void {
+    this.callback();
   }
 }
