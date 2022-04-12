@@ -7,10 +7,14 @@ import React from 'react';
 export default function Join({choose}: any) {
   const [games, setGames]: [any[], any] = useState([]);
 
-  useEffect(() => {
+  const getSessions = () => {
     allSessions()
       .then((res: any) => res.data.data)
       .then((data: any) => setGames(data.AllSessions));
+  };
+
+  useEffect(() => {
+    getSessions();
   }, []);
 
   const attemptJoin = (sessionId: any) => {
@@ -19,7 +23,9 @@ export default function Join({choose}: any) {
 
   return (
     <section className="join">
-      <h1 className="join__title">Join Game</h1>
+      <h1 className="join__title">
+        Join Game <button onClick={getSessions}>Refresh</button>
+      </h1>
       <table className="join__table">
         <tr>
           <th className="join__header">Game</th>
@@ -41,7 +47,7 @@ export default function Join({choose}: any) {
                     game.gameParameters.maxSessionPlayers && (
                     <tr className="join__row" key={game.sessionid}>
                       <td className="join__td">
-                        {game.gameParameters.displayName}
+                        {game.gameParameters.displayName.replace('-', ' ')}
                       </td>
                       <td className="join__td">{game.creator}</td>
                       <td className="join__td">

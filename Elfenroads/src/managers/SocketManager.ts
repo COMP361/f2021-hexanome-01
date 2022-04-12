@@ -12,14 +12,6 @@ import ItemManager from './ItemManager';
 import PlayerManager from './PlayerManager';
 import RoadManager from './RoadManager';
 
-const demapItem = (item: any) => {
-  const newItem = {...item};
-  if (item instanceof Counter) {
-    newItem.cardsNeeded = Object.fromEntries(item.getCardsNeeded());
-  }
-  return newItem;
-};
-
 export default class SocketManager {
   private static instance: SocketManager;
   private socket: any;
@@ -83,6 +75,7 @@ export default class SocketManager {
 
       if (managers['PlayerManager']) {
         PlayerManager.getInstance().update(managers['PlayerManager']);
+        console.log(PlayerManager.getInstance());
       }
 
       if (managers['RoadManager']) {
@@ -139,52 +132,10 @@ export default class SocketManager {
 
   public emitStatusChange(data: any): void {
     console.log('emitting status change');
-    // Maps can't be converted to objects, so we need to convert them manually
-    if (data.PlayerManager) {
-      const newPlayerManager = {...data.PlayerManager};
-      newPlayerManager.players = data.PlayerManager.players.map(
-        (player: any) => {
-          const newPlayer = {...player};
-          newPlayer.myItems = player.myItems.map(demapItem);
-          console.log(player, newPlayer);
-          return newPlayer;
-        }
-      );
-      data.PlayerManager = newPlayerManager;
-    }
-    if (data.ItemManager) {
-      const newItemManager = {...data.ItemManager};
-      newItemManager.itemPile = [...data.ItemManager.itemPile.map(demapItem)];
-      newItemManager.faceUpPile = [
-        ...data.ItemManager.faceUpPile.map(demapItem),
-      ];
-      data.ItemManager = newItemManager;
-    }
-    if (data.RoadManager) {
-      const newRoadManager = {...data.RoadManager};
-      newRoadManager.allEdges = [
-        ...data.RoadManager.allEdges.map((edge: any) => {
-          const newEdge = {...edge};
-          newEdge.items = edge.items.map(demapItem);
-          return newEdge;
-        }),
-      ];
-      data.RoadManager = newRoadManager;
-    }
-    if (data.BidManager) {
-      const newBidManager = {...data.BidManager};
-      newBidManager.bidItems = [...data.BidManager.bidItems.map(demapItem)];
-      newBidManager.auctionedOffItems = [
-        ...data.BidManager.auctionedOffItems.map(demapItem),
-      ];
-      data.BidManager = newBidManager;
-    }
     // Send the cleaned managers to all active users
     this.socket.emit('statusChange', {
       ...this.headers,
-      data: {
-        ...data,
-      },
+      data: data,
     });
   }
 

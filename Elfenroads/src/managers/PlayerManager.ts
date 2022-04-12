@@ -205,7 +205,8 @@ export default class PlayerManager {
     currentPlayer.setScore(score - 1);
   }
 
-  public update(manager: any): void {
+  public update(manager: any) {
+    console.log(manager);
     this.setCurrentPlayerIndex(manager.currentPlayerIndex);
     this.players.forEach((player: Player) => {
       const updatedPlayerObject = manager.players.find(
@@ -213,5 +214,7 @@ export default class PlayerManager {
       );
       player.update(updatedPlayerObject);
     });
+    console.log(this);
+    return this;
   }
 }

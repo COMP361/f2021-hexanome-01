@@ -269,19 +269,24 @@ export default class SelectionScene extends Phaser.Scene {
             selectedCardSprites.splice(selectedCardSprites.indexOf(card), 1);
           } else {
             if (c instanceof MagicSpellCard) {
+              UIScene.cardSprites.splice(UIScene.cardSprites.indexOf(card), 1);
               card.destroy();
               CardManager.getInstance().addToPile(
                 PlayerManager.getInstance().getCurrentPlayer(),
                 c
               );
+              PlayerManager.getInstance().setCurrentTown(
+                PlayerManager.getInstance().getCurrentPlayerIndex(),
+                town
+              );
             }
           }
         }
-        PlayerManager.getInstance().setCurrentTown(
-          PlayerManager.getInstance().getCurrentPlayerIndex(),
-          town
-        );
-        this.scene.restart();
+        SocketManager.getInstance().emitStatusChange({
+          CardManager: CardManager.getInstance(),
+          ItemManager: ItemManager.getInstance(),
+          PlayerManager: PlayerManager.getInstance(),
+        });
       } else {
         for (let i = 0; i < selectedCardSprites.length; i++) {
           // remove selection of card
@@ -310,7 +315,11 @@ export default class SelectionScene extends Phaser.Scene {
             .on('pointerup', () => {
               card.clearTint();
             });
-          this.scene.restart();
+          SocketManager.getInstance().emitStatusChange({
+            CardManager: CardManager.getInstance(),
+            ItemManager: ItemManager.getInstance(),
+            PlayerManager: PlayerManager.getInstance(),
+          });
         }
       }
     }
@@ -493,7 +502,6 @@ export default class SelectionScene extends Phaser.Scene {
           edge,
           GameManager.getInstance().getGameVariant() === GameVariant.elfengold
         );
-        console.log('Select c&c, moveBoot');
         SocketManager.getInstance().emitStatusChange({
           CardManager: CardManager.getInstance(),
           ItemManager: ItemManager.getInstance(),

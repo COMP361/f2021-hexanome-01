@@ -278,7 +278,7 @@ export default class ItemManager {
     this.itemPile.push(item);
   }
 
-  update(manager: any): void {
+  update(manager: any) {
     this.itemPile = manager.itemPile.map((item: any) => {
       if (item.type === 'spell') {
         return new Spell(item.name, item.allowedEdges, item.isHidden);
@@ -321,5 +321,6 @@ export default class ItemManager {
         );
       }
     });
+    return this;
   }
 }

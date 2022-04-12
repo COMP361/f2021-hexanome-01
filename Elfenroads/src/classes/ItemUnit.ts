@@ -4,6 +4,40 @@ import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
 import Edge from './Edge';
 
+const cardsNeededMap: any = {
+  elfcycle: new Map([
+    [EdgeType.Plain, 1],
+    [EdgeType.Wood, 1],
+    [EdgeType.Mountain, 2],
+  ]),
+  cloud: new Map([
+    [EdgeType.Plain, 2],
+    [EdgeType.Wood, 2],
+    [EdgeType.Mountain, 1],
+  ]),
+  unicorn: new Map([
+    [EdgeType.Wood, 1],
+    [EdgeType.Desert, 2],
+    [EdgeType.Mountain, 1],
+  ]),
+  'troll-wagon': new Map([
+    [EdgeType.Plain, 1],
+    [EdgeType.Wood, 2],
+    [EdgeType.Desert, 2],
+    [EdgeType.Mountain, 2],
+  ]),
+  dragon: new Map([
+    [EdgeType.Plain, 1],
+    [EdgeType.Wood, 2],
+    [EdgeType.Desert, 1],
+    [EdgeType.Mountain, 1],
+  ]),
+  pig: new Map([
+    [EdgeType.Plain, 1],
+    [EdgeType.Wood, 1],
+  ]),
+};
+
 export abstract class ItemUnit {
   private name: string;
   private allowedEdges: Array<EdgeType>;
@@ -65,29 +99,7 @@ export class Counter extends ItemUnit {
     isHidden = false
   ) {
     super(counterType, allowedEdges, false, isHidden, 'counter');
-    if (cardsNeeded instanceof Map) {
-      this.cardsNeeded = cardsNeeded;
-    } else {
-      console.log(counterType, cardsNeeded);
-      this.cardsNeeded = new Map(
-        Object.entries(cardsNeeded).map(entry => {
-          return [
-            entry[0] === 'Plain' || entry[0] === '0'
-              ? EdgeType.Plain
-              : entry[0] === 'Wood' || entry[0] === '1'
-              ? EdgeType.Wood
-              : entry[0] === 'Desert' || entry[0] === '2'
-              ? EdgeType.Desert
-              : entry[0] === 'Mountain' || entry[0] === '3'
-              ? EdgeType.Mountain
-              : entry[0] === 'River' || entry[0] === '4'
-              ? EdgeType.River
-              : EdgeType.Lake,
-            Number(entry[1]),
-          ];
-        })
-      );
-    }
+    this.cardsNeeded = cardsNeededMap[this.getName()];
   }
 
   public getCardsNeeded(): Map<EdgeType, number> {

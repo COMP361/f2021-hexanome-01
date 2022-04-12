@@ -330,11 +330,10 @@ export default class AuctionScene extends Phaser.Scene {
 
   private confirmBid(): void {
     if (this.currentBid > this.bidManager.getHighestBid()) {
-      const playerManager = PlayerManager.getInstance();
-      const currentPlayer = playerManager.getCurrentPlayer();
+      const currentPlayer = PlayerManager.getInstance().getCurrentPlayer();
       this.bidManager.setBid(currentPlayer, this.currentBid);
 
-      playerManager.setNextPlayer();
+      PlayerManager.getInstance().setNextPlayer();
       SocketManager.getInstance().emitStatusChange({
         ItemManager: ItemManager.getInstance(),
         PlayerManager: PlayerManager.getInstance(),

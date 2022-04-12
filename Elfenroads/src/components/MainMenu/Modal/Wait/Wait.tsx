@@ -87,8 +87,12 @@ export default function Wait({socket, setSocket}: any) {
     <section className="wait">
       {session && (
         <>
-          <p className="wait__game">Version 1</p>
-          <h1 className="wait__title">Elfenland</h1>
+          <p className="wait__game">
+            {session.gameSession.gameParameters.displayName.split('-')[1]}
+          </p>
+          <h1 className="wait__title">
+            {session.gameSession.gameParameters.displayName.split('-')[0]}
+          </h1>
           <h2 className="wait__subtitle">
             Players{' '}
             <span className="wait__player-count">

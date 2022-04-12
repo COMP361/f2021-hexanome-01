@@ -174,6 +174,7 @@ export default class UIScene extends Phaser.Scene {
 
     // Loop through players and render their boots based on current Town.
     allPlayers.forEach(player => {
+      console.log(player);
       const pos = UIScene.getResponsivePosition(
         this,
         player.getCurrentLocation().getXposition(),

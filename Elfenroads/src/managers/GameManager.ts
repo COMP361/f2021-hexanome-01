@@ -59,10 +59,12 @@ export default class GameManager {
 
   private constructor() {
     // Instantiate all other Singleton Managers
+
     this.itemManager = ItemManager.getInstance();
     this.cardManager = CardManager.getInstance();
     this.playerManager = PlayerManager.getInstance();
     this.roadManager = RoadManager.getInstance();
+
     this.initialized = false;
 
     // hard coded this for now
@@ -102,19 +104,59 @@ export default class GameManager {
     // Step 0: Initialize the main Phaser.Scene
     this.mainScene = mainScene;
 
-    //Step 0.5: Init game variant
-    this.initializeVariants();
-
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
 
-    // Step 2: initialize the item and card pile
-    this.itemManager.initializePile();
-    this.cardManager.initializePile();
+    const savestate = JSON.parse(localStorage.getItem('savestate') || '{}');
+    if (savestate.accessToken) {
+      this.cardManager = CardManager.getInstance().update(
+        savestate.CardManager
+      );
+      this.itemManager = ItemManager.getInstance().update(
+        savestate.ItemManager
+      );
+      this.playerManager = PlayerManager.getInstance().update(
+        savestate.PlayerManager
+      );
+      this.roadManager = RoadManager.getInstance().update(
+        savestate.RoadManager
+      );
+      this.initialized = true;
+      SocketManager.getInstance().setInitialized(true);
+      BidManager.getInstance().update(savestate.BidManager);
+      this.gameVariant =
+        savestate.gameVariant === 0
+          ? GameVariant.elfenland
+          : GameVariant.elfengold;
+      this.subVariant =
+        savestate.subVariant === 0
+          ? SubVariant.base
+          : savestate.subVariant === 1
+          ? SubVariant.random
+          : savestate.subVariant === 2
+          ? SubVariant.destination
+          : savestate.subVariant === 3
+          ? SubVariant.witch
+          : SubVariant.fourrounds;
+      this.round = savestate.round;
+      this.phase = savestate.phase;
+      this.numRounds = savestate.numRounds;
 
-    // Step 4: Play specific type of round based on game version
-    if (this.gameVariant === GameVariant.elfengold) this.numRounds = 6;
-    this.playRound();
+      this.mainScene.scene.get('uiscene').scene.restart();
+
+      this.nextScene(true);
+    } else {
+      //Step 0.5: Init game variant
+      this.initializeVariants();
+
+      // Step 2: initialize the item and card pile
+      this.itemManager.initializePile();
+      this.cardManager.initializePile();
+
+      // Step 4: Play specific type of round based on game version
+      if (this.gameVariant === GameVariant.elfengold) this.numRounds = 6;
+      this.playRound();
+    }
   }
 
   private playRound(): void {
@@ -271,9 +313,10 @@ export default class GameManager {
 
   // This needs to be an arrow function in order to give access to this.*
   // inside of other classes (i.e. the scenes it's being sent to).
-  nextScene = (): void => {
+  nextScene = (fromSave = false): void => {
     // If this isn't the first phase, stop the previous scene
-    if (this.phase !== -1) {
+    this.getState();
+    if (!(this.phase === -1 && this.round === 1)) {
       this.mainScene.scene.stop(phaseMap[this.gameVariant][this.phase]);
     }
     this.phase++;
@@ -283,7 +326,7 @@ export default class GameManager {
       // Finish the round
       if (this.round < this.numRounds) {
         // Reinitialize players turn
-        this.playerManager.readyUpPlayers();
+        if (!fromSave) this.playerManager.readyUpPlayers();
         // Launch cleanup
         this.mainScene.scene.launch('roundcleanupscene', () => {
           this.mainScene.scene.stop('roundcleanupscene');
@@ -311,7 +354,7 @@ export default class GameManager {
         this.phase = 1;
       }
       // Reinitialize players turn
-      this.playerManager.readyUpPlayers();
+      if (!fromSave) this.playerManager.readyUpPlayers();
       // Launch the next scene
       console.log(phaseMap[this.gameVariant][this.phase]);
       this.mainScene.scene.launch(
@@ -345,5 +388,36 @@ export default class GameManager {
     if (this.subVariant === SubVariant.fourrounds) {
       this.numRounds = 4;
     }
+  }
+  public getState(): void {
+    console.log(
+      JSON.stringify({
+        BidManager: {...BidManager.getInstance()},
+        CardManager: {...CardManager.getInstance()},
+        ItemManager: {...ItemManager.getInstance()},
+        PlayerManager: {...PlayerManager.getInstance()},
+        RoadManager: {...RoadManager.getInstance()},
+        gameVariant: this.gameVariant,
+        subVariant: this.subVariant,
+        phase: this.phase,
+        session: {
+          gameSession: {
+            creator: 'Red_Player',
+            gameParameters: {
+              maxSessionPlayers: 6,
+              minSessionPlayers: 2,
+              displayName: 'Elfengold-witch',
+            },
+            launched: true,
+          },
+          users: [
+            {name: 'Red_Player', preferredColour: 'FF0000'},
+            {name: 'Green_Player', preferredColour: '008000'},
+            {name: 'Blue_Player', preferredColour: '0000FF'},
+          ],
+        },
+        sessionId: '2532057958759611227',
+      })
+    );
   }
 }

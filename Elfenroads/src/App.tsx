@@ -10,6 +10,9 @@ export default function App() {
   const [socket, setSocket] = useState(null);
   let interval: any;
   useEffect(() => {
+    localStorage.setItem('savestate', '{}');
+  }, []);
+  useEffect(() => {
     interval = setInterval(() => {
       const user = getUser() || null;
       if (user) {

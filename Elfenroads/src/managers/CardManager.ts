@@ -524,5 +524,6 @@ export class CardManager {
       return new GoldCard(card.amount);
     });
     this.amountDrawn = manager.amountDrawn;
+    return this;
   }
 }
