@@ -10,7 +10,7 @@ export default class MainScene extends Phaser.Scene {
   create() {
 
     // play music
-    // this.sound.play('medieval-music');
+    this.sound.play('medieval-music');
 
     // Launch UI related scenes
     this.scene.launch('uiscene');
