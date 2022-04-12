@@ -1,9 +1,14 @@
-import {CardUnit, GoldCard, TravelCard} from '../classes/CardUnit';
+import {
+  CardUnit,
+  GoldCard,
+  MagicSpellCard,
+  TravelCard,
+} from '../classes/CardUnit';
 import Edge from '../classes/Edge';
 import {Counter, Obstacle, Spell} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {EdgeType} from '../enums/EdgeType';
-import {GameVariant} from '../enums/GameVariant';
+import {GameVariant, SubVariant} from '../enums/GameVariant';
 import {ObstacleType} from '../enums/ObstacleType';
 import {SpellType} from '../enums/SpellType';
 import {TravelCardType} from '../enums/TravelCardType';
@@ -46,6 +51,11 @@ export class CardManager {
           this.cardPile.push(new TravelCard(TravelCardType.TrollWagon));
         }
         this.cardPile.push(new TravelCard(TravelCardType.Raft));
+      }
+    }
+    if (GameManager.getInstance().getSubVariant() === SubVariant.witch) {
+      for (let i = 0; i < 6; i++) {
+        this.cardPile.push(new MagicSpellCard(SpellType.Witch));
       }
     }
   }
