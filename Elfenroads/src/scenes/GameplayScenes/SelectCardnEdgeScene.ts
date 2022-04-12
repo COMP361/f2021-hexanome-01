@@ -10,6 +10,7 @@ import {Counter, ItemUnit, Obstacle} from '../../classes/ItemUnit';
 import GameManager from '../../managers/GameManager';
 import {GameVariant} from '../../enums/GameVariant';
 import Town from '../../classes/Town';
+import Game from '../../components/Game';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
@@ -65,8 +66,33 @@ export default class SelectionScene extends Phaser.Scene {
         passTurnButton.clearTint();
         this.sound.play('pass');
 
-        this.scene.launch('choosecoinscene', () => {
-          this.scene.get('choosecoinscene').scene.stop();
+        if (
+          GameManager.getInstance().getGameVariant() === GameVariant.elfengold
+        ) {
+          this.scene.launch('choosecoinscene', () => {
+            this.scene.get('choosecoinscene').scene.stop();
+            PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
+            PlayerManager.getInstance().setNextPlayer();
+            this.scene.get('uiscene').scene.restart();
+            let finishedPlayers: integer = 0;
+            PlayerManager.getInstance()
+              .getPlayers()
+              .forEach(player => {
+                if (player.getPassedTurn() === true) {
+                  finishedPlayers++;
+                }
+              });
+
+            if (
+              finishedPlayers ===
+              PlayerManager.getInstance().getPlayers().length
+            ) {
+              this.callback();
+            } else {
+              this.scene.restart();
+            }
+          });
+        } else {
           PlayerManager.getInstance().getCurrentPlayer().setPassedTurn(true);
           PlayerManager.getInstance().setNextPlayer();
           this.scene.get('uiscene').scene.restart();
@@ -86,7 +112,7 @@ export default class SelectionScene extends Phaser.Scene {
           } else {
             this.scene.restart();
           }
-        });
+        }
       });
   }
 
