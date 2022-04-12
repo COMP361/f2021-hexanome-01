@@ -12,6 +12,7 @@ import ItemManager from '../../managers/ItemManager';
 import GameManager from '../../managers/GameManager';
 import {GameVariant} from '../../enums/GameVariant';
 import Town from '../../classes/Town';
+import Game from '../../components/Game';
 
 export default class SelectionScene extends Phaser.Scene {
   private selectedCardSprites!: Array<Phaser.GameObjects.Sprite>;
