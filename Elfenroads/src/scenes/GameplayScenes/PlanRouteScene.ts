@@ -296,6 +296,7 @@ export default class PlanRouteScene extends Phaser.Scene {
                 return;
               }
             }
+            edge.addItem(this.selectedItem);
             edge.addItem(this.selectedDoubleItem);
             currPlayer.removeItem(this.selectedDoubleItem);
             this.selectedDoubleItemSprite.destroy();

@@ -1,4 +1,4 @@
-import {CardUnit} from '../classes/CardUnit';
+import {CardUnit, MagicSpellCard} from '../classes/CardUnit';
 import {ItemUnit, Obstacle} from '../classes/ItemUnit';
 import Player from '../classes/Player';
 import {BootColour} from '../enums/BootColour';
