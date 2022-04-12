@@ -28,10 +28,14 @@ export default function Wait({socket, setSocket}: any) {
         const sessions = data.AllSessions;
         sessions.forEach((session: any) => {
           if (session.sessionid === sessionId) {
-            storeSessionId(session.sessionid, 'Elfenland-base', null);
+            storeSessionId(
+              session.sessionid,
+              session.gameSession.gameParameters.displayName,
+              null
+            );
             setSessionId(session.sessionid);
             socket.emit('joinLobby', {
-              game: 'Elfenland-base',
+              game: session.gameSession.gameParameters.displayName,
               session_id: session.sessionid,
             });
           }
