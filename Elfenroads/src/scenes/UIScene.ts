@@ -98,14 +98,16 @@ export default class UIScene extends Phaser.Scene {
     const currentRoundNumber: number = GameManager.getInstance().getRound();
 
     // Render card based on the position of the map and current round
-    this.add
+    const round = this.add
       .sprite(
         map.getTopRight().x - 90,
         map.getTopRight().y + 85,
         `R${currentRoundNumber}`
       )
-      .setDepth(3)
-      .setScale(0.165);
+      .setDepth(3);
+    if (currentRoundNumber < 5) {
+      round.setScale(0.165);
+    }
   }
 
   // Renders the Player icons on the left.
