@@ -37,7 +37,6 @@ export default class RoundCleanUpScene extends Phaser.Scene {
           )
         ) {
           ItemManager.getInstance().addToPile(item);
-          console.log(item);
         }
         edge.removeItem(item);
       }

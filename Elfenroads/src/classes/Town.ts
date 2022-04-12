@@ -96,4 +96,8 @@ export default class Town {
   public getGoldValue(): number {
     return this.goldValue;
   }
+
+  public setGoldValue(gold: number): void {
+    this.goldValue = gold;
+  }
 }

@@ -9,7 +9,7 @@ import RoadManager from './RoadManager';
 import Phaser from 'phaser';
 import {getSession, getSessionId, getUser} from '../utils/storageUtils';
 import {io} from 'socket.io-client';
-import {GameVariant} from '../enums/GameVariant';
+import {GameVariant, SubVariant} from '../enums/GameVariant';
 import {throwServerError} from '@apollo/client';
 import {Console} from 'console';
 
@@ -40,6 +40,7 @@ export default class GameManager {
   private round: integer;
   private numRounds: integer;
   private gameVariant: GameVariant;
+  private subVariant: SubVariant;
   private mainScene!: Phaser.Scene;
 
   private constructor() {
@@ -50,11 +51,11 @@ export default class GameManager {
     this.roadManager = RoadManager.getInstance();
     this.socket = io('http://elfenroads.westus3.cloudapp.azure.com:3455/');
     this.socket.emit('joinLobby', {
-      game: 'ElfenlandVer1',
+      game: 'Elfenland-base',
       session_id: getSessionId(),
     });
     this.socket.emit('chat', {
-      game: 'ElfenlandVer1',
+      game: 'Elfenland-base',
       session_id: getSessionId(),
       data: getUser().name,
     });
@@ -62,6 +63,7 @@ export default class GameManager {
 
     // hard coded this for now
     this.gameVariant = GameVariant.elfengold;
+    this.subVariant = SubVariant.base;
     this.numRounds = 3;
     this.round = 1;
   }
@@ -81,9 +83,16 @@ export default class GameManager {
     return this.gameVariant;
   }
 
+  public getSubVariant(): SubVariant {
+    return this.subVariant;
+  }
+
   public playGame(mainScene: Phaser.Scene): void {
     // Step 0: Initialize the main Phaser.Scene
     this.mainScene = mainScene;
+
+    //Step 0.5: Init game variant
+    this.initializeVariants();
 
     // Step 1: Get players and inialize them based on their bootchoices
     this.initializePlayers();
@@ -98,6 +107,7 @@ export default class GameManager {
         this.playRoundElfenland();
         break;
       case GameVariant.elfengold:
+        this.numRounds = 6;
         this.playRoundElfengold();
         break;
       default:
@@ -301,6 +311,19 @@ export default class GameManager {
       .getAllTownsAsArray()
       .filter(town => town.getName() !== 'null');
 
+    if (this.subVariant === SubVariant.random) {
+      const allTownsArray2 = allTownsArray.filter(
+        town => town.getName() !== 'elvenhold'
+      );
+      for (const town of allTownsArray2) {
+        const randomTown =
+          allTownsArray2[Math.floor(Math.random() * allTownsArray2.length)];
+        const temp = randomTown.getGoldValue();
+        randomTown.setGoldValue(town.getGoldValue());
+        town.setGoldValue(temp);
+      }
+    }
+
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     const {name} = getUser();
@@ -333,5 +356,32 @@ export default class GameManager {
         this.playerManager.setLocalPlayer(player);
       }
     });
+  }
+
+  private initializeVariants(): void {
+    const session = getSession();
+    const variant = session.gameSession.gameParameters.displayName;
+    console.log(session.gameSession.gameParameters.displayName);
+    const words = variant.split('-');
+    if (words[0] === 'Elfengold') {
+      this.gameVariant = GameVariant.elfengold;
+    } else {
+      this.gameVariant = GameVariant.elfenland;
+    }
+    if (words[1] === 'base') {
+      this.subVariant = SubVariant.base;
+    } else if (words[1] === '4rounds') {
+      this.subVariant = SubVariant.fourrounds;
+    } else if (words[1] === 'destination') {
+      this.subVariant = SubVariant.destination;
+    } else if (words[1] === 'random') {
+      this.subVariant = SubVariant.random;
+    } else if (words[1] === 'witch') {
+      this.subVariant = SubVariant.witch;
+    }
+    //do work for 4rounds here
+    if (this.subVariant === SubVariant.fourrounds) {
+      this.numRounds = 4;
+    }
   }
 }

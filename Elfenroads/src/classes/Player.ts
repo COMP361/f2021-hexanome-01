@@ -1,5 +1,7 @@
 import internal from 'stream';
 import {BootColour} from '../enums/BootColour';
+import {SubVariant} from '../enums/GameVariant';
+import GameManager from '../managers/GameManager';
 import RoadManager from '../managers/RoadManager';
 import {CardUnit} from './CardUnit';
 import {ItemUnit} from './ItemUnit';
@@ -73,7 +75,10 @@ export default class Player {
   }
 
   public getActualScore(): integer {
-    if (this.secretTown.isNull()) {
+    if (
+      this.secretTown.isNull() ||
+      GameManager.getInstance().getSubVariant() === SubVariant.destination
+    ) {
       return this.score;
     } else {
       return (

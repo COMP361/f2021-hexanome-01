@@ -75,4 +75,5 @@ type Mutation {
   registerSaveGame(gamedata: String!, players: String!, savegameid: String!, game: String!): String!
   deleteSaveGame(savegameid: String!, game: String!): String!
   registerSaveGameData(gamedata: String!, savegameid: String!, game: String!): String!
+  deleteSaveGameData(savegameid: String!, game: String!): String!
 }
