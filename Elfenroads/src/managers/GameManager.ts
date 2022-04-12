@@ -311,6 +311,19 @@ export default class GameManager {
       .getAllTownsAsArray()
       .filter(town => town.getName() !== 'null');
 
+    if (this.subVariant === SubVariant.random) {
+      const allTownsArray2 = allTownsArray.filter(
+        town => town.getName() !== 'elvenhold'
+      );
+      for (const town of allTownsArray2) {
+        const randomTown =
+          allTownsArray2[Math.floor(Math.random() * allTownsArray2.length)];
+        const temp = randomTown.getGoldValue();
+        randomTown.setGoldValue(town.getGoldValue());
+        town.setGoldValue(temp);
+      }
+    }
+
     // Create our players. Imagine we have many to add based on the lobby.
     // Starting town is set to elvenhold.
     const {name} = getUser();
